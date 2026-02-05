@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36915.13 d17.14
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowmobileWPF", "SnowmobileWPF\SnowmobileWPF.csproj", "{970FDF2E-3813-4CF8-ADA1-4A4DAB957BAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowmobileLibrary", "SnowmobileLibrary\SnowmobileLibrary.csproj", "{CED8FC3B-8FAC-4456-9922-6242AC9B17F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{970FDF2E-3813-4CF8-ADA1-4A4DAB957BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{970FDF2E-3813-4CF8-ADA1-4A4DAB957BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{970FDF2E-3813-4CF8-ADA1-4A4DAB957BAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CED8FC3B-8FAC-4456-9922-6242AC9B17F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CED8FC3B-8FAC-4456-9922-6242AC9B17F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CED8FC3B-8FAC-4456-9922-6242AC9B17F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CED8FC3B-8FAC-4456-9922-6242AC9B17F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
