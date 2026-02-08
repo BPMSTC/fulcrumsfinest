@@ -11,7 +11,6 @@
 
         // Contact
         public string Phone { get; set; }
-        public Email Email { get; set; }
 
         // Flags
         public bool Active { get; set; }
