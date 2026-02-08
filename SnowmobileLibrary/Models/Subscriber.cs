@@ -11,7 +11,7 @@
 
         // Contact
         public string Phone { get; set; }
-        public string Email { get; set; }
+        public Email Email { get; set; }
 
         // Flags
         public bool Active { get; set; }
@@ -22,7 +22,7 @@
         public bool Commercial { get; set; }
 
         // Metadata
-        public DateTime DateJoined { get; set; }
+        public DateOnly DateJoined { get; set; }
         public string? Notes { get; set; }
     }
 }

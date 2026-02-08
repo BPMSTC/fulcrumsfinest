@@ -6,7 +6,7 @@
         public int AddressId { get; set; }
 
         // Foreign key to Subscriber
-        public int VSCA { get; set; }
+        public Subscriber VSCA { get; set; }
 
         public string Street { get; set; }
         public string City { get; set; }

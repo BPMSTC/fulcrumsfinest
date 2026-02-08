@@ -8,11 +8,11 @@ namespace SnowmobileLibrary.Models
         public int SubscriptionId { get; set; }
 
         // Foreign key to Subscriber
-        public int VSCA { get; set; }
+        public Subscriber VSCA { get; set; }
 
         // Lifecycle
-        public DateTime ExpDate { get; set; }
-        public DateTime DateRenewed { get; set; }
+        public DateOnly ExpDate { get; set; }
+        public DateOnly DateRenewed { get; set; }
 
         // Fulfillment & Tracking
         public int IssuesRemaining { get; set; }
