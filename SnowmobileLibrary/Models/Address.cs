@@ -1,24 +1,39 @@
-﻿namespace SnowmobileLibrary.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SnowmobileLibrary.Models
 {
     public class Address
     {
-        // Primary key
+        [Key]
         public int AddressId { get; set; }
 
-        // Foreign key to Subscriber
-        public Subscriber VSCA { get; set; }
+        [ForeignKey(nameof(Subscriber))]
+        public int VSCA { get; set; }
 
-        public string Street { get; set; }
-        public string City { get; set; }
+        public Subscriber Subscriber { get; set; } = null!;
 
-        // State or province
-        public string Region { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string Street { get; set; } = string.Empty;
 
-        // ZIP or postal code
-        public string PostalCode { get; set; }
-        public string Country { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string City { get; set; } = string.Empty;
 
-        // Metadata
+        [Required]
+        [MaxLength(50)]
+        public string Region { get; set; } = string.Empty; // State or Province
+
+        [Required]
+        [MaxLength(20)]
+        public string PostalCode { get; set; } = string.Empty; // ZIP or postal
+
+        [Required]
+        [MaxLength(50)]
+        public string Country { get; set; } = string.Empty;
+
+        [Required]
         public bool IsActive { get; set; }
     }
 }

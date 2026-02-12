@@ -1,14 +1,24 @@
-﻿namespace SnowmobileLibrary.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SnowmobileLibrary.Models
 {
     public class Email
     {
-        // Primary key
+        [Key]
         public int EmailId { get; set; }
 
-        // Foreign key to Subscriber
-        public Subscriber VSCA { get; set; }
+        [ForeignKey(nameof(Subscriber))]
+        public int VSCA { get; set; }
 
-        // Email address
-        public string EmailAddress { get; set; }
+        public Subscriber Subscriber { get; set; } = null!;
+
+        [Required]
+        [EmailAddress]
+        [MaxLength(320)]
+        public string EmailAddress { get; set; } = string.Empty;
+
+        [Required]
+        public bool IsActive { get; set; } // Whether or not the email is active
     }
 }
