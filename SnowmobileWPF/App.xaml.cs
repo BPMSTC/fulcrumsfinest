@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Data;
-using System;
 using System.Windows;
 
 namespace SnowmobileWPF
@@ -17,10 +17,12 @@ namespace SnowmobileWPF
             AppHost = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) =>
                 {
+                    // Load appsettings.json for local DB connection
                     config.AddJsonFile("appsettings.json", optional: false);
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    // Get connection string from configuration
                     var connectionString = context.Configuration
                         .GetConnectionString("DefaultConnection");
 
@@ -29,24 +31,56 @@ namespace SnowmobileWPF
 
                     services.AddTransient<MainWindow>();
                 })
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole(); // For development; can add file or other providers later
+                })
                 .Build();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await AppHost.StartAsync();
+            try
+            {
+                await AppHost.StartAsync();
 
-            var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+                var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
+                mainWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                // Log exception and show user-friendly message
+                var logger = AppHost.Services.GetRequiredService<ILogger<App>>();
+                logger.LogError(ex, "An error occurred while starting the application.");
 
-            base.OnStartup(e);
+                MessageBox.Show("An unexpected error occurred during startup. Please see the logs.",
+                                "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                Shutdown(); // Stop the application if startup fails
+            }
+            finally
+            {
+                base.OnStartup(e);
+            }
         }
 
         protected override async void OnExit(ExitEventArgs e)
         {
-            await AppHost.StopAsync();
-            AppHost.Dispose();
-            base.OnExit(e);
+            try
+            {
+                await AppHost.StopAsync();
+            }
+            catch (Exception ex)
+            {
+                var logger = AppHost.Services.GetRequiredService<ILogger<App>>();
+                logger.LogError(ex, "An error occurred while stopping the application.");
+            }
+            finally
+            {
+                AppHost.Dispose();
+                base.OnExit(e);
+            }
         }
     }
 }
