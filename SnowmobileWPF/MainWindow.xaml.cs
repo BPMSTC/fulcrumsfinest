@@ -20,5 +20,11 @@ namespace SnowmobileWPF
         {
             InitializeComponent();
         }
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchWindow searchWindow = new SearchWindow();
+            searchWindow.Owner = this;
+            searchWindow.ShowDialog();
+        }
     }
 }
