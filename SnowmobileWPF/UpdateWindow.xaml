@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="UpdateWindow" Height="450" Width="290">
+        Title="UpdateWindow" Height="450" Width="290"
+        Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -21,15 +22,23 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Label Content="Editing James Reich (VSCA: 1)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="James" VerticalAlignment="Center"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="Reich" VerticalAlignment="Center" Grid.Column="2"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="2" TextWrapping="Wrap" Text="8870 County Road C" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="Pittsville" VerticalAlignment="Center"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="WI" VerticalAlignment="Center" Grid.Column="2"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="54466" VerticalAlignment="Center"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="United States" VerticalAlignment="Center" Grid.Column="2"/>
-        <TextBox HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="5" TextWrapping="Wrap" Text="715-600-6265" VerticalAlignment="Center"/>
+        <Label Name="HeaderLabel" Content="Editing James Reich (VSCA: 1)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <TextBox Name="FirstNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="James" VerticalAlignment="Center"/>
+
+        <TextBox Name="LastNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="Reich" VerticalAlignment="Center" Grid.Column="2"/>
+
+        <TextBox Name="StreetAddressBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="2" TextWrapping="Wrap" Text="8870 County Road C" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+
+        <TextBox Name="CityBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="Pittsville" VerticalAlignment="Center"/>
+
+        <TextBox Name="RegionBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="WI" VerticalAlignment="Center" Grid.Column="2"/>
+
+        <TextBox Name="PostalCodeBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="54466" VerticalAlignment="Center"/>
+
+        <TextBox Name="CountryBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="United States" VerticalAlignment="Center" Grid.Column="2"/>
+
+        <TextBox Name="PhoneNumberBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="5" TextWrapping="Wrap" Text="715-600-6265" VerticalAlignment="Center"/>
+
         <Grid Grid.Row="6" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -37,12 +46,12 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <CheckBox Content="Active" Grid.Row="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="True"/>
-            <CheckBox Content="Contest" Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-            <CheckBox Content="Manual Mail" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-            <CheckBox Content="Commercial" Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
+            <CheckBox Name="ActiveCheckBox" Content="Active" Grid.Row="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="True"/>
+            <CheckBox Name="ContestCheckBox" Content="Contest" Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
+            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
+            <CheckBox Name="CommercialCheckBox" Content="Commercial" Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
         </Grid>
-        <Button Grid.Column="1" Content="Update" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch"/>
-        <Button Grid.Column="0" Content="Cancel" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch"/>
+        <Button Name="UpdateButton" Grid.Column="1" Content="Update" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="UpdateButton_Click"/>
+        <Button Name="CancelButton" Grid.Column="0" Content="Cancel" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="CancelButton_Click"/>
     </Grid>
 </Window>

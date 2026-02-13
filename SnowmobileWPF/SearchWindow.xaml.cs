@@ -23,5 +23,15 @@ namespace SnowmobileWPF
         {
             InitializeComponent();
         }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
     }
 }

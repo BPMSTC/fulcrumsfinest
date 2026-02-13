@@ -37,5 +37,12 @@ namespace SnowmobileLibrary.Models
 
         [MaxLength(500)]
         public string? Notes { get; set; }
+
+        public Address Address { get; set; }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName} (VSCA: {VSCA})";
+        }
     }
 }
