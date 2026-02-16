@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Subscribers" Height="450" Width="416">
     <Grid>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="105*"/>
+            <ColumnDefinition Width="311*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="SearchButton" Content="Search" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Click="SearchButton_Click" Grid.Column="0"/>
+            <Button Name="CreateDummyButton" Content="Create dummy" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Click="CreateDummyButton_Click" Grid.Column="1"/>
+            <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Click="DeleteButton_Click" Grid.Column="2"/>
+        </Grid>
+        <ListBox Name="SubscriberList" Margin="10,10,10,10" MouseDoubleClick="SubscriberList_MouseDoubleClick" Grid.Row="1" Grid.ColumnSpan="2">
+        </ListBox>
+        <Button Name="ClearSearchButton" Visibility="Hidden" Content="Clear search" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Margin="0,0,10,10" Click="ClearSearchButton_Click" Grid.Column="1"/>
     </Grid>
 </Window>
