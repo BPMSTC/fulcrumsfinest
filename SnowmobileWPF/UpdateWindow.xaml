@@ -22,22 +22,22 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Label Name="HeaderLabel" Content="Editing James Reich (VSCA: 1)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-        <TextBox Name="FirstNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="James" VerticalAlignment="Center"/>
+        <Label Name="HeaderLabel" Content="Editing John Doe (VSCA: 1)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <TextBox Name="FirstNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="FirstName" VerticalAlignment="Center"/>
 
-        <TextBox Name="LastNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="Reich" VerticalAlignment="Center" Grid.Column="2"/>
+        <TextBox Name="LastNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="LastName" VerticalAlignment="Center" Grid.Column="2"/>
 
-        <TextBox Name="StreetAddressBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="2" TextWrapping="Wrap" Text="8870 County Road C" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <TextBox Name="StreetAddressBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="2" TextWrapping="Wrap" Text="Address" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
 
-        <TextBox Name="CityBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="Pittsville" VerticalAlignment="Center"/>
+        <TextBox Name="CityBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="City" VerticalAlignment="Center"/>
 
-        <TextBox Name="RegionBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="WI" VerticalAlignment="Center" Grid.Column="2"/>
+        <TextBox Name="RegionBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="Region" VerticalAlignment="Center" Grid.Column="2"/>
 
-        <TextBox Name="PostalCodeBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="54466" VerticalAlignment="Center"/>
+        <TextBox Name="PostalCodeBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="PostCode" VerticalAlignment="Center"/>
 
-        <TextBox Name="CountryBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="United States" VerticalAlignment="Center" Grid.Column="2"/>
+        <TextBox Name="CountryBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="Country" VerticalAlignment="Center" Grid.Column="2"/>
 
-        <TextBox Name="PhoneNumberBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="5" TextWrapping="Wrap" Text="715-600-6265" VerticalAlignment="Center"/>
+        <TextBox Name="PhoneNumberBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="5" TextWrapping="Wrap" Text="PhoneNumber" VerticalAlignment="Center"/>
 
         <Grid Grid.Row="6" Grid.Column="0">
             <Grid.RowDefinitions>

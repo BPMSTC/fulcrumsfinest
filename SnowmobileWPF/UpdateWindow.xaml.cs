@@ -57,8 +57,19 @@ namespace SnowmobileWPF
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            // tbd
-            DialogResult = false;
+            _subscriber.FirstName = FirstNameBox.Text;
+            _subscriber.LastName = LastNameBox.Text;
+            _subscriber.Phone = PhoneNumberBox.Text;
+            _subscriber.Address.Street = StreetAddressBox.Text;
+            _subscriber.Address.City = CityBox.Text;
+            _subscriber.Address.Region = RegionBox.Text;
+            _subscriber.Address.PostalCode = PostalCodeBox.Text;
+            _subscriber.Address.Country = CountryBox.Text;
+            _subscriber.Active = ActiveCheckBox.IsChecked ?? false;
+            _subscriber.Contest = ContestCheckBox.IsChecked ?? false;
+            _subscriber.ManualMail = ManualMailCheckBox.IsChecked ?? false;
+            _subscriber.Commercial = CommercialCheckBox.IsChecked ?? false;
+            DialogResult = true;
         }
     }
 }

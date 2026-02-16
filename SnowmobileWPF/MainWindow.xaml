@@ -5,15 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="416">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="SubscriberList" Margin="10,38,10,10" Grid.ColumnSpan="2" MouseDoubleClick="SubscriberList_MouseDoubleClick"/>
-        <Button Name="SearchButton" Content="Search" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="147" Click="SearchButton_Click" Grid.ColumnSpan="2"/>
-        <Button Name="CreateDummyButton" Content="Create dummy" HorizontalAlignment="Left" Margin="162,10,0,0" VerticalAlignment="Top" Width="147" Click="CreateDummyButton_Click" Grid.ColumnSpan="2"/>
-        <Button Name="DeleteButton" Content="Delete" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="314,10,0,0" VerticalAlignment="Top" Width="203" Click="DeleteButton_Click"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="SearchButton" Content="Search" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Click="SearchButton_Click" Grid.Column="0"/>
+            <Button Name="CreateDummyButton" Content="Create dummy" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Click="CreateDummyButton_Click" Grid.Column="1"/>
+            <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Click="DeleteButton_Click" Grid.Column="2"/>
+        </Grid>
+        <ListBox Name="SubscriberList" Margin="10,10,10,10" MouseDoubleClick="SubscriberList_MouseDoubleClick" Grid.Row="1">
+        </ListBox>
+        <Button Name="ClearSearchButton" Visibility="Hidden" Content="Clear search" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Margin="10,10,10,10" Click="ClearSearchButton_Click"/>
     </Grid>
 </Window>

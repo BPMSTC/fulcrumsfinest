@@ -14,11 +14,23 @@ using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
+    public class SearchParams
+    {
+        public int? VSCA { get; set; }
+        
+        public string? FirstName { get; set; }
+        
+        public string? LastName { get; set; }
+
+        public string? PhoneNumber { get; set; }
+    }
     /// <summary>
     /// Interaction logic for SearchWindow.xaml
     /// </summary>
     public partial class SearchWindow : Window
     {
+        public SearchParams SearchParams { get; private set; }
+
         public SearchWindow()
         {
             InitializeComponent();
@@ -31,7 +43,14 @@ namespace SnowmobileWPF
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+            SearchParams = new SearchParams
+            {
+                VSCA = int.TryParse(VSCATextBox.Text, out int vsca) ? vsca : null,
+                FirstName = FirstNameTextBox.Text,
+                LastName = LastNameTextBox.Text,
+                PhoneNumber = PhoneNumberTextBox.Text
+            };
+            DialogResult = true;
         }
     }
 }

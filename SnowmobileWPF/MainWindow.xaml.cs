@@ -52,6 +52,30 @@ namespace SnowmobileWPF
             SearchWindow searchWindow = new SearchWindow();
             searchWindow.Owner = this;
             searchWindow.ShowDialog();
+
+            if (searchWindow.DialogResult == true)
+            {
+                SearchParams searchParams = searchWindow.SearchParams;
+                List<Subscriber> results = subscribers;
+                if (searchParams.VSCA != null)
+                {
+                    results = results.Where(s => s.VSCA == searchParams.VSCA).ToList();
+                }
+                if (!string.IsNullOrEmpty(searchParams.FirstName))
+                {
+                    results = results.Where(s => s.FirstName.Contains(searchParams.FirstName, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+                if (!string.IsNullOrEmpty(searchParams.LastName))
+                {
+                    results = results.Where(s => s.LastName.Contains(searchParams.LastName, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+                if (!string.IsNullOrEmpty(searchParams.PhoneNumber))
+                {
+                    results = results.Where(s => s.Phone.Contains(searchParams.PhoneNumber)).ToList();
+                }
+                ClearSearchButton.Visibility = Visibility.Visible;
+                SubscriberList.ItemsSource = results;
+            }
         }
 
         private void CreateDummyButton_Click(object sender, RoutedEventArgs e)
@@ -95,6 +119,12 @@ namespace SnowmobileWPF
                 UpdateWindow updateWindow = new UpdateWindow(selectedSubscriber);
                 updateWindow.Owner = this;
                 updateWindow.ShowDialog();
+
+                if (updateWindow.DialogResult == true)
+                {
+                    // Update the subscriber in the list
+                    UpdateSubscriberList();
+                }
             }
         }
 
@@ -112,6 +142,12 @@ namespace SnowmobileWPF
             {
                 MessageBox.Show("Please select a subscriber to delete.", "No Subscriber Selected", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateSubscriberList();
+            ClearSearchButton.Visibility = Visibility.Hidden;
         }
     }
 }
