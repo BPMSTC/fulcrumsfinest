@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SnowmobileWPF")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8adb858db8fd4e2d669c87a7380c7c9b9c81d095")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+753d4733496389803180367ce5065ef44977bfb1")]
 [assembly: System.Reflection.AssemblyProductAttribute("SnowmobileWPF")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SnowmobileWPF")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="151" Width="305">
+        Title="Login" Height="151" Width="305">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
