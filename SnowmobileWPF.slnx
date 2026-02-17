@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SnowmobileLibrary/SnowmobileLibrary.csproj" />
+  <Project Path="SnowmobileWPF/SnowmobileWPF.csproj" />
+</Solution>
