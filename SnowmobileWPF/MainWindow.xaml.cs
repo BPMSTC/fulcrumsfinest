@@ -53,28 +53,29 @@ namespace SnowmobileWPF
             searchWindow.Owner = this;
             searchWindow.ShowDialog();
 
+            // if user initiates a search
             if (searchWindow.DialogResult == true)
             {
                 SearchParams searchParams = searchWindow.SearchParams;
-                List<Subscriber> results = subscribers;
+                IEnumerable<Subscriber> results = subscribers;
                 if (searchParams.VSCA != null)
                 {
-                    results = results.Where(s => s.VSCA == searchParams.VSCA).ToList();
+                    results = results.Where(s => s.VSCA == searchParams.VSCA);
                 }
                 if (!string.IsNullOrEmpty(searchParams.FirstName))
                 {
-                    results = results.Where(s => s.FirstName.Contains(searchParams.FirstName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    results = results.Where(s => s.FirstName.Contains(searchParams.FirstName, StringComparison.OrdinalIgnoreCase));
                 }
                 if (!string.IsNullOrEmpty(searchParams.LastName))
                 {
-                    results = results.Where(s => s.LastName.Contains(searchParams.LastName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    results = results.Where(s => s.LastName.Contains(searchParams.LastName, StringComparison.OrdinalIgnoreCase));
                 }
                 if (!string.IsNullOrEmpty(searchParams.PhoneNumber))
                 {
-                    results = results.Where(s => s.Phone.Contains(searchParams.PhoneNumber)).ToList();
+                    results = results.Where(s => s.Phone.Contains(searchParams.PhoneNumber));
                 }
                 ClearSearchButton.Visibility = Visibility.Visible;
-                SubscriberList.ItemsSource = results;
+                SubscriberList.ItemsSource = results.ToList();
             }
         }
 
@@ -114,15 +115,16 @@ namespace SnowmobileWPF
 
         private void SubscriberList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            // check if an item is selected and cast it to a Subscriber
             if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
             {
                 UpdateWindow updateWindow = new UpdateWindow(selectedSubscriber);
                 updateWindow.Owner = this;
                 updateWindow.ShowDialog();
 
+                // if user clicks update, refresh the list to show any changes
                 if (updateWindow.DialogResult == true)
                 {
-                    // Update the subscriber in the list
                     UpdateSubscriberList();
                 }
             }
@@ -148,6 +150,20 @@ namespace SnowmobileWPF
         {
             UpdateSubscriberList();
             ClearSearchButton.Visibility = Visibility.Hidden;
+        }
+
+        private void SubscriberList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SubscriberList.SelectedItem != null) {
+                Subscriber selectedSubscriber = (Subscriber)SubscriberList.SelectedItem;
+                ViewingTitleLabel.Content = $"Viewing {SubscriberList.SelectedItem.ToString()}";
+                AddressLabel.Content = $"{selectedSubscriber.Address.Street}\n{selectedSubscriber.Address.City}, {selectedSubscriber.Address.Region} {selectedSubscriber.Address.PostalCode}\n{selectedSubscriber.Address.Country}";
+
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }
