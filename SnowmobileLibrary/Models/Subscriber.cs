@@ -40,9 +40,16 @@ namespace SnowmobileLibrary.Models
 
         public Address Address { get; set; }
 
+        public Subscription Subscription { get; set; }
+
         public override string ToString()
         {
             return $"{FirstName} {LastName} (VSCA: {VSCA})";
+        }
+        public Subscriber()
+        {
+            Address = new Address();
+            Subscription = new Subscription();
         }
     }
 }

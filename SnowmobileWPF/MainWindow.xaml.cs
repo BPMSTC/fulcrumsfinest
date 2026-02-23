@@ -1,4 +1,5 @@
 ﻿using SnowmobileLibrary.Models;
+using SnowmobileWPF.Repositories;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,33 +18,12 @@ namespace SnowmobileWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<Subscriber> subscribers = new List<Subscriber>();
-        public MainWindow()
+        private readonly ISubscriberRepository _subscriberRepository;
+
+        public MainWindow(ISubscriberRepository subscriberRepository)
         {
             InitializeComponent();
-            Subscriber subscriber = new Subscriber
-            {
-                VSCA = 12345,
-                FirstName = "John",
-                LastName = "Doe",
-                Phone = "715-867-5309",
-                Active = true,
-                Contest = false,
-                ManualMail = false,
-                Commercial = false,
-                DateJoined = new DateOnly(2020, 1, 1),
-                Address = new Address
-                {
-                    AddressId = new Random().Next(1, 100000),
-                    Street = "123 Main St",
-                    City = "Anytown",
-                    Region = "WI",
-                    PostalCode = "12345",
-                    Country = "USA",
-                    IsActive = true
-                }
-            };
-            subscribers.Add(subscriber);
+            _subscriberRepository = subscriberRepository;
             UpdateSubscriberList();
         }
 
@@ -57,25 +37,9 @@ namespace SnowmobileWPF
             if (searchWindow.DialogResult == true)
             {
                 SearchParams searchParams = searchWindow.SearchParams;
-                IEnumerable<Subscriber> results = subscribers;
-                if (searchParams.VSCA != null)
-                {
-                    results = results.Where(s => s.VSCA == searchParams.VSCA);
-                }
-                if (!string.IsNullOrEmpty(searchParams.FirstName))
-                {
-                    results = results.Where(s => s.FirstName.Contains(searchParams.FirstName, StringComparison.OrdinalIgnoreCase));
-                }
-                if (!string.IsNullOrEmpty(searchParams.LastName))
-                {
-                    results = results.Where(s => s.LastName.Contains(searchParams.LastName, StringComparison.OrdinalIgnoreCase));
-                }
-                if (!string.IsNullOrEmpty(searchParams.PhoneNumber))
-                {
-                    results = results.Where(s => s.Phone.Contains(searchParams.PhoneNumber));
-                }
+                List<Subscriber>? results = _subscriberRepository.Search(searchParams);
                 ClearSearchButton.Visibility = Visibility.Visible;
-                SubscriberList.ItemsSource = results.ToList();
+                SubscriberList.ItemsSource = results;
             }
         }
 
@@ -103,14 +67,14 @@ namespace SnowmobileWPF
                     IsActive = true
                 }
             };
-            subscribers.Add(subscriber);
+            _subscriberRepository.Create(subscriber, true);
             UpdateSubscriberList();
         }
 
         private void UpdateSubscriberList()
         {
             SubscriberList.ItemsSource = null;
-            SubscriberList.ItemsSource = subscribers;
+            SubscriberList.ItemsSource = _subscriberRepository.Retrieve(-1);
         }
 
         private void SubscriberList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -137,7 +101,7 @@ namespace SnowmobileWPF
                 MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {selectedSubscriber.FirstName} {selectedSubscriber.LastName}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    subscribers.Remove(selectedSubscriber);
+                    _subscriberRepository.Delete(selectedSubscriber);
                     UpdateSubscriberList();
                 }
             } else
@@ -157,8 +121,18 @@ namespace SnowmobileWPF
             if (SubscriberList.SelectedItem != null) {
                 Subscriber selectedSubscriber = (Subscriber)SubscriberList.SelectedItem;
                 ViewingTitleLabel.Content = $"Viewing {SubscriberList.SelectedItem.ToString()}";
-                AddressLabel.Content = $"{selectedSubscriber.Address.Street}\n{selectedSubscriber.Address.City}, {selectedSubscriber.Address.Region} {selectedSubscriber.Address.PostalCode}\n{selectedSubscriber.Address.Country}";
+                AddressLabel.Content = selectedSubscriber.Address.Street;
+                CSPLabel.Content = $"{selectedSubscriber.Address.City}, {selectedSubscriber.Address.Region} {selectedSubscriber.Address.PostalCode}";
+                CountryLabel.Content = selectedSubscriber.Address.Country;
 
+                ActiveCheckBox.IsChecked = selectedSubscriber.Active;
+                ContestCheckBox.IsChecked = selectedSubscriber.Contest;
+                ManualMailCheckBox.IsChecked = selectedSubscriber.ManualMail;
+                CommercialCheckBox.IsChecked = selectedSubscriber.Commercial;
+
+                ExpirationLabel.Content = $"Expires on {selectedSubscriber.Subscription.ExpDate.ToShortDateString()}";
+                RenewalLabel.Content = $"Last renewed on {selectedSubscriber.Subscription.DateRenewed.ToShortDateString()}";
+                SourceLabel.Content = $"Source: {selectedSubscriber.Subscription.Source}";
             }
             else
             {

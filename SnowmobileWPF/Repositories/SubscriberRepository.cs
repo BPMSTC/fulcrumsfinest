@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SnowmobileWPF
+namespace SnowmobileWPF.Repositories
 {
-    public class SubscriberRepository
+    public class SubscriberRepository : ISubscriberRepository
     {
         private readonly SnowmobileContext _context;
 
@@ -15,7 +15,7 @@ namespace SnowmobileWPF
             _context = context;
         }
 
-        public Subscriber? Search(SearchParams searchParams)
+        public List<Subscriber>? Search(SearchParams searchParams)
         {
             var query = _context.Subscribers.AsQueryable();
             if (searchParams.VSCA.HasValue)
@@ -26,7 +26,7 @@ namespace SnowmobileWPF
                 query = query.Where(s => s.LastName.Contains(searchParams.LastName));
             if (!string.IsNullOrEmpty(searchParams.PhoneNumber))
                 query = query.Where(s => s.Phone.Contains(searchParams.PhoneNumber));
-            return query.FirstOrDefault();
+            return query.ToList();
         }
 
         public List<Subscriber> Retrieve(int max)
@@ -34,8 +34,9 @@ namespace SnowmobileWPF
             return _context.Subscribers.Take(max).ToList();
         }
 
-        public void Create(Subscriber subscriber)
+        public void Create(Subscriber subscriber, bool forceCreation = false)
         {
+            // todo: check for existing subscriber if forceCreation is false
             _context.Subscribers.Add(subscriber);
             _context.SaveChanges();
         }

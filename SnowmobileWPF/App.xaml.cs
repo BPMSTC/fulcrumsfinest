@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Data;
+using SnowmobileWPF.Repositories;
 using System.Windows;
 
 namespace SnowmobileWPF
@@ -28,7 +29,7 @@ namespace SnowmobileWPF
 
                     services.AddDbContext<SnowmobileContext>(options =>
                         options.UseSqlServer(connectionString));
-
+                    services.AddScoped<ISubscriberRepository, LocalSubscriberRepository>();
                     services.AddTransient<MainWindow>();
                 })
                 .ConfigureLogging(logging =>
