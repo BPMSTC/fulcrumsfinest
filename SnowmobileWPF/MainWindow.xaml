@@ -61,6 +61,11 @@
 
                 </Grid>
             </TabItem>
+            <TabItem Header="Notes">
+                <Grid>
+                    <Label Name="NotesLabel" Content="No notes." HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
 
         </TabControl>
     </Grid>

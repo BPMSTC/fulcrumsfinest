@@ -1,15 +1,8 @@
 ﻿using SnowmobileLibrary.Models;
 using SnowmobileWPF.Repositories;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
@@ -56,6 +49,7 @@ namespace SnowmobileWPF
                 ManualMail = false,
                 Commercial = false,
                 DateJoined = new DateOnly(2020, 1, 1),
+                Notes = "This is a dummy subscriber for testing purposes.",
                 Address = new Address
                 {
                     AddressId = new Random().Next(1, 100000),
@@ -118,21 +112,43 @@ namespace SnowmobileWPF
 
         private void SubscriberList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (SubscriberList.SelectedItem != null) {
-                Subscriber selectedSubscriber = (Subscriber)SubscriberList.SelectedItem;
-                ViewingTitleLabel.Content = $"Viewing {SubscriberList.SelectedItem.ToString()}";
-                AddressLabel.Content = selectedSubscriber.Address.Street;
-                CSPLabel.Content = $"{selectedSubscriber.Address.City}, {selectedSubscriber.Address.Region} {selectedSubscriber.Address.PostalCode}";
-                CountryLabel.Content = selectedSubscriber.Address.Country;
+            if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
+            {
+                ViewingTitleLabel.Content = $"Viewing {SubscriberList.SelectedItem}";
+
+                // Handles potential null Address
+                AddressLabel.Content = selectedSubscriber.Address?.Street ?? string.Empty;
+                CSPLabel.Content =
+                    $"{selectedSubscriber.Address?.City ?? string.Empty}, " +
+                    $"{selectedSubscriber.Address?.Region ?? string.Empty} " +
+                    $"{selectedSubscriber.Address?.PostalCode ?? string.Empty}"
+                    .Trim()
+                    .TrimStart(',');
+                CountryLabel.Content = selectedSubscriber.Address?.Country ?? string.Empty;
 
                 ActiveCheckBox.IsChecked = selectedSubscriber.Active;
                 ContestCheckBox.IsChecked = selectedSubscriber.Contest;
                 ManualMailCheckBox.IsChecked = selectedSubscriber.ManualMail;
                 CommercialCheckBox.IsChecked = selectedSubscriber.Commercial;
 
-                ExpirationLabel.Content = $"Expires on {selectedSubscriber.Subscription.ExpDate.ToShortDateString()}";
-                RenewalLabel.Content = $"Last renewed on {selectedSubscriber.Subscription.DateRenewed.ToShortDateString()}";
-                SourceLabel.Content = $"Source: {selectedSubscriber.Subscription.Source}";
+                // Handles potential null Subscription
+                if (selectedSubscriber.Subscription != null)
+                {
+                    ExpirationLabel.Content = $"Expires on {selectedSubscriber.Subscription.ExpDate.ToShortDateString()}";
+                    RenewalLabel.Content = $"Last renewed on {selectedSubscriber.Subscription.DateRenewed.ToShortDateString()}";
+                    SourceLabel.Content = $"Source: {selectedSubscriber.Subscription.Source}";
+                }
+                else
+                {
+                    ExpirationLabel.Content = "Expires on N/A";
+                    RenewalLabel.Content = "Last renewed on N/A";
+                    SourceLabel.Content = "Source: N/A";
+                }
+
+                // Shows "No Notes." if Notes is null or whitespace, otherwise shows the notes
+                NotesLabel.Content = string.IsNullOrWhiteSpace(selectedSubscriber.Notes)
+                    ? "No Notes."
+                    : $"Notes: {selectedSubscriber.Notes}";
             }
             else
             {
