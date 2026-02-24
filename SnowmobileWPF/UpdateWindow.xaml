@@ -5,40 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="Update subscriber" Height="450" Width="290"
+        Title="Update subscriber" Height="500" Width="290"
         Loaded="Window_Loaded">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Label Name="HeaderLabel" Content="Editing John Doe (VSCA: 1)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-        <TextBox Name="FirstNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="FirstName" VerticalAlignment="Center"/>
 
-        <TextBox Name="LastNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="LastName" VerticalAlignment="Center" Grid.Column="2"/>
+        <Label Name="HeaderLabel"
+               Content="Editing John Doe (VSCA: 1)"
+               HorizontalAlignment="Left"
+               Margin="10,0,0,0"
+               VerticalAlignment="Center"
+               Grid.ColumnSpan="2"/>
 
-        <TextBox Name="StreetAddressBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="2" TextWrapping="Wrap" Text="Address" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <!-- First / Last Name -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="10,5">
+            <Label Content="First Name"/>
+            <TextBox Name="FirstNameBox"/>
+        </StackPanel>
 
-        <TextBox Name="CityBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="City" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,5">
+            <Label Content="Last Name"/>
+            <TextBox Name="LastNameBox"/>
+        </StackPanel>
 
-        <TextBox Name="RegionBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="Region" VerticalAlignment="Center" Grid.Column="2"/>
+        <!-- Address -->
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="10,5">
+            <Label Content="Street Address"/>
+            <TextBox Name="StreetAddressBox"/>
+        </StackPanel>
 
-        <TextBox Name="PostalCodeBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="PostCode" VerticalAlignment="Center"/>
+        <!-- City / Region -->
+        <StackPanel Grid.Row="3" Grid.Column="0" Margin="10,5">
+            <Label Content="City"/>
+            <TextBox Name="CityBox"/>
+        </StackPanel>
 
-        <TextBox Name="CountryBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="Country" VerticalAlignment="Center" Grid.Column="2"/>
+        <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,5">
+            <Label Content="Region / State"/>
+            <TextBox Name="RegionBox"/>
+        </StackPanel>
 
-        <TextBox Name="PhoneNumberBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="5" TextWrapping="Wrap" Text="PhoneNumber" VerticalAlignment="Center"/>
+        <!-- Postal Code / Country -->
+        <StackPanel Grid.Row="4" Grid.Column="0" Margin="10,5">
+            <Label Content="Postal Code"/>
+            <TextBox Name="PostalCodeBox"/>
+        </StackPanel>
 
+        <StackPanel Grid.Row="4" Grid.Column="1" Margin="10,5">
+            <Label Content="Country"/>
+            <TextBox Name="CountryBox"/>
+        </StackPanel>
+
+        <!-- Phone -->
+        <StackPanel Grid.Row="5" Grid.Column="0" Margin="10,5">
+            <Label Content="Phone Number"/>
+            <TextBox Name="PhoneNumberBox"/>
+        </StackPanel>
+        
+        <!-- Issues Left -->
+        <StackPanel Grid.Row="5" Grid.Column="1" Margin="10,5">
+            <Label Content="Issues left"/>
+            <TextBox Name="IssuesLeftBox"/>
+        </StackPanel>
+
+        <!-- Checkboxes -->
         <Grid Grid.Row="6" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -46,12 +91,26 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <CheckBox Name="ActiveCheckBox" Content="Active" Grid.Row="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="True"/>
-            <CheckBox Name="ContestCheckBox" Content="Contest" Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-            <CheckBox Name="CommercialCheckBox" Content="Commercial" Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
+
+            <CheckBox Name="ActiveCheckBox" Content="Active" Grid.Row="0" Margin="10,0,0,0" IsChecked="True"/>
+            <CheckBox Name="ContestCheckBox" Content="Contest" Grid.Row="1" Margin="10,0,0,0"/>
+            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" Grid.Row="2" Margin="10,0,0,0"/>
+            <CheckBox Name="CommercialCheckBox" Content="Commercial" Grid.Row="3" Margin="10,0,0,0"/>
         </Grid>
-        <Button Name="UpdateButton" Grid.Column="1" Content="Update" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="UpdateButton_Click"/>
-        <Button Name="CancelButton" Grid.Column="0" Content="Cancel" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="CancelButton_Click"/>
+
+        <!-- Buttons -->
+        <Button Name="CancelButton"
+                Grid.Row="7"
+                Grid.Column="0"
+                Content="Cancel"
+                Margin="10"
+                Click="CancelButton_Click"/>
+
+        <Button Name="UpdateButton"
+                Grid.Row="7"
+                Grid.Column="1"
+                Content="Update"
+                Margin="10"
+                Click="UpdateButton_Click"/>
     </Grid>
 </Window>

@@ -21,14 +21,21 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Label Content="Search..." HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="24" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-        <Label Content="VSCA" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2"/>
-        <TextBox Name="VSCATextBox" Margin="10,0,10,0" Grid.Row="1" Grid.Column="2" TextWrapping="Wrap" Text="" VerticalAlignment="Center"/>
+        
+        
+        <Label Content="Last name" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2"/>
+        <TextBox Name="LastNameTextBox" Margin="10,0,10,0" Grid.Row="1" Grid.Column="2" TextWrapping="Wrap" Text="" VerticalAlignment="Center"/>
+        
         <Label Content="First name" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="2"/>
         <TextBox Name="FirstNameTextBox" Margin="10,0,10,0" Grid.Row="2" Grid.Column="2" TextWrapping="Wrap" Text="" VerticalAlignment="Center"/>
-        <Label Content="Last name" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="2"/>
-        <TextBox Name="LastNameTextBox" Margin="10,0,10,0" Grid.Row="3" Grid.Column="2" TextWrapping="Wrap" Text="" VerticalAlignment="Center"/>
-        <Label Content="Phone number" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2"/>
-        <TextBox Name="PhoneNumberTextBox" Margin="10,0,10,0" Grid.Row="4" Grid.Column="2" TextWrapping="Wrap" Text="" VerticalAlignment="Center"/>
+        
+        <Label Content="Phone number" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="2"/>
+        <TextBox Name="PhoneNumberTextBox" Margin="10,0,10,0" Grid.Row="3" Grid.Column="2" TextWrapping="Wrap" Text="" VerticalAlignment="Center"/>
+        
+        <Label Content="VSCA" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2"/>
+        <TextBox Name="VSCATextBox" Margin="10,0,10,0" Grid.Row="4" Grid.Column="2" TextWrapping="Wrap" Text="" VerticalAlignment="Center"/>
+        
+        
         <Button Name="SearchButton" Grid.Column="2" Content="Search" Margin="10,10,10,10" Grid.Row="5" Click="SearchButton_Click"/>
         <Button Name="CancelButton" Grid.Column="0" Content="Cancel" Margin="10,10,10,10" Grid.Row="5" Grid.ColumnSpan="2" Click="CancelButton_Click"/>
     </Grid>

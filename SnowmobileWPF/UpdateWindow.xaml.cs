@@ -41,12 +41,15 @@ namespace SnowmobileWPF
                 RegionBox.Text = _subscriber.Address.Region;
                 PostalCodeBox.Text = _subscriber.Address.PostalCode;
                 CountryBox.Text = _subscriber.Address.Country;
+                //IssuesLeftBox.Text = _subscriber.IssuesLeft;
 
                 // Populate checkboxes
                 ActiveCheckBox.IsChecked = _subscriber.Active;
                 ContestCheckBox.IsChecked = _subscriber.Contest;
                 ManualMailCheckBox.IsChecked = _subscriber.ManualMail;
                 CommercialCheckBox.IsChecked = _subscriber.Commercial;
+
+                Update();
             }
         }
 
@@ -56,6 +59,12 @@ namespace SnowmobileWPF
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            Update();
+            DialogResult = true;
+        }
+
+        private void Update()
         {
             _subscriber.FirstName = FirstNameBox.Text;
             _subscriber.LastName = LastNameBox.Text;
@@ -69,7 +78,6 @@ namespace SnowmobileWPF
             _subscriber.Contest = ContestCheckBox.IsChecked ?? false;
             _subscriber.ManualMail = ManualMailCheckBox.IsChecked ?? false;
             _subscriber.Commercial = CommercialCheckBox.IsChecked ?? false;
-            DialogResult = true;
         }
     }
 }

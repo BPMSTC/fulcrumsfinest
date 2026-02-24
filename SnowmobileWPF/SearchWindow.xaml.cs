@@ -49,10 +49,10 @@ namespace SnowmobileWPF
         {
             SearchParams = new SearchParams
             {
-                VSCA = int.TryParse(VSCATextBox.Text, out int vsca) ? vsca : null,
-                FirstName = FirstNameTextBox.Text,
                 LastName = LastNameTextBox.Text,
-                PhoneNumber = PhoneNumberTextBox.Text
+                FirstName = FirstNameTextBox.Text,
+                PhoneNumber = PhoneNumberTextBox.Text,
+                VSCA = int.TryParse(VSCATextBox.Text, out int vsca) ? vsca : null
             };
             DialogResult = true;
         }
