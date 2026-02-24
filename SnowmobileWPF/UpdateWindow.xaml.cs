@@ -15,26 +15,37 @@ using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
+    internal enum UpdateMode
+    {
+        Create,
+        Edit
+    }
+
     /// <summary>
     /// Interaction logic for UpdateWindow.xaml
     /// </summary>
     public partial class UpdateWindow : Window
     {
-        private Subscriber _subscriber;
-        public UpdateWindow(Subscriber subscriber)
+        private Subscriber? _subscriber;
+
+        private UpdateMode mode;
+        
+        public UpdateWindow(Subscriber? subscriber)
         {
             InitializeComponent();
             _subscriber = subscriber;
+            mode = subscriber == null ? UpdateMode.Create : UpdateMode.Edit;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_subscriber != null)
+            if (mode == UpdateMode.Edit)
             {
                 HeaderLabel.Content = $"Editing {_subscriber.ToString()}";
                 FirstNameBox.Text = _subscriber.FirstName;
                 LastNameBox.Text = _subscriber.LastName;
                 PhoneNumberBox.Text = _subscriber.Phone;
+                EmailBox.Text = _subscriber.Email.EmailAddress;
 
                 StreetAddressBox.Text = _subscriber.Address.Street;
                 CityBox.Text = _subscriber.Address.City;
@@ -47,6 +58,11 @@ namespace SnowmobileWPF
                 ContestCheckBox.IsChecked = _subscriber.Contest;
                 ManualMailCheckBox.IsChecked = _subscriber.ManualMail;
                 CommercialCheckBox.IsChecked = _subscriber.Commercial;
+            } 
+            else
+            {
+                HeaderLabel.Content = "Creating new subscriber...";
+                _subscriber = new Subscriber();
             }
         }
 
@@ -65,6 +81,7 @@ namespace SnowmobileWPF
             _subscriber.Address.Region = RegionBox.Text;
             _subscriber.Address.PostalCode = PostalCodeBox.Text;
             _subscriber.Address.Country = CountryBox.Text;
+            _subscriber.Email.EmailAddress = EmailBox.Text;
             _subscriber.Active = ActiveCheckBox.IsChecked ?? false;
             _subscriber.Contest = ContestCheckBox.IsChecked ?? false;
             _subscriber.ManualMail = ManualMailCheckBox.IsChecked ?? false;

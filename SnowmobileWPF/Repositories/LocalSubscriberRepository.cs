@@ -38,6 +38,10 @@ namespace SnowmobileWPF.Repositories
                     DateRenewed = new DateOnly(2020, 1, 1),
                     ExpDate = new DateOnly(2021, 1, 1),
                     Source = SnowmobileLibrary.Enums.SubscriptionSource.Internet
+                },
+                Email = new Email
+                {
+                    EmailAddress = "jdoe@example.com"
                 }
             };
             subscribers.Add(subscriber);

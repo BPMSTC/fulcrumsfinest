@@ -42,6 +42,8 @@ namespace SnowmobileLibrary.Models
 
         public Subscription Subscription { get; set; }
 
+        public Email? Email { get; set; }
+
         public override string ToString()
         {
             return $"{FirstName} {LastName} (VSCA: {VSCA})";
@@ -50,6 +52,7 @@ namespace SnowmobileLibrary.Models
         {
             Address = new Address();
             Subscription = new Subscription();
+            Email = new Email();
         }
     }
 }

@@ -53,5 +53,6 @@
         </Grid>
         <Button Name="UpdateButton" Grid.Column="1" Content="Update" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="UpdateButton_Click"/>
         <Button Name="CancelButton" Grid.Column="0" Content="Cancel" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="CancelButton_Click"/>
+        <TextBox x:Name="EmailBox" Margin="10,0,10,0" Grid.Row="5" TextWrapping="Wrap" Text="Email Address" VerticalAlignment="Center" Grid.Column="1"/>
     </Grid>
 </Window>

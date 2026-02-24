@@ -65,6 +65,10 @@ namespace SnowmobileWPF
                     PostalCode = "12345",
                     Country = "USA",
                     IsActive = true
+                },
+                Email = new Email
+                {
+                    EmailAddress = "jdoe@example.com"
                 }
             };
             _subscriberRepository.Create(subscriber, true);
@@ -124,6 +128,8 @@ namespace SnowmobileWPF
                 AddressLabel.Content = selectedSubscriber.Address.Street;
                 CSPLabel.Content = $"{selectedSubscriber.Address.City}, {selectedSubscriber.Address.Region} {selectedSubscriber.Address.PostalCode}";
                 CountryLabel.Content = selectedSubscriber.Address.Country;
+                PhoneLabel.Content = selectedSubscriber.Phone;
+                EmailLabel.Content = selectedSubscriber.Email.EmailAddress;
 
                 ActiveCheckBox.IsChecked = selectedSubscriber.Active;
                 ContestCheckBox.IsChecked = selectedSubscriber.Contest;

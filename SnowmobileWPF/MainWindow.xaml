@@ -50,6 +50,7 @@
                     </Grid>
                     <Label x:Name="ContactHeader" FontSize="16" Content="Contact" HorizontalAlignment="Left" Margin="0,116,0,0" VerticalAlignment="Top"/>
                     <Label Name="PhoneLabel" Content="(715) 123-4567" HorizontalAlignment="Left" Margin="0,147,0,0" VerticalAlignment="Top"/>
+                    <Label Name="EmailLabel" Content="jdoe@example.com" HorizontalAlignment="Left" Margin="0,173,0,0" VerticalAlignment="Top"/>
                 </Grid>
 
             </TabItem>
