@@ -19,7 +19,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,20">
             <Button Name="SearchButton"
                     Content="Search"
-                    Style="{StaticResource PrimaryButton}"
+                    Style="{StaticResource SecondaryButton}"
                     Width="120"
                     Click="SearchButton_Click"
                     Margin="0,0,10,0"/>
@@ -127,9 +127,56 @@
 
                             <!-- Notes Tab -->
                             <TabItem Header="Notes">
-                                <ScrollViewer Margin="10" VerticalScrollBarVisibility="Auto">
-                                    <TextBlock Name="NotesLabel" Text="" TextWrapping="Wrap"/>
-                                </ScrollViewer>
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Action Buttons -->
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Right"
+                                                Margin="0,0,0,10">
+                                        <Button Name="EditNotesButton"
+                                                Content="Edit"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="80"
+                                                Margin="0,0,10,0"
+                                                Click="EditNotesButton_Click"/>
+
+                                        <Button Name="SaveNotesButton"
+                                                Content="Save"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="80"
+                                                Margin="0,0,10,0"
+                                                Visibility="Collapsed"
+                                                Click="SaveNotesButton_Click"/>
+
+                                        <Button Name="CancelNotesButton"
+                                                Content="Cancel"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="80"
+                                                Visibility="Collapsed"
+                                                Click="CancelNotesButton_Click"/>
+                                    </StackPanel>
+
+                                    <!-- Read-only view -->
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                        <TextBlock Name="NotesLabel"
+                                                   Text=""
+                                                   TextWrapping="Wrap"
+                                                   Height="Auto"/>
+                                    </ScrollViewer>
+
+                                    <!-- Edit view -->
+                                    <TextBox Name="NotesTextBox"
+                                             Grid.Row="1"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto"
+                                             Visibility="Collapsed"
+                                             Height="Auto"/>
+                                </Grid>
                             </TabItem>
                         </TabControl>
                     </Grid>

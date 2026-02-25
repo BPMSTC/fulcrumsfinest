@@ -13,6 +13,9 @@ namespace SnowmobileWPF
     {
         private readonly ISubscriberRepository _subscriberRepository;
 
+        // Used to restore notes if user cancels edit
+        private string _originalNotes = string.Empty;
+
         public MainWindow(ISubscriberRepository subscriberRepository)
         {
             InitializeComponent();
@@ -60,6 +63,7 @@ namespace SnowmobileWPF
                     IsActive = true
                 }
             };
+
             _subscriberRepository.Create(subscriber, true);
             UpdateSubscriberList();
         }
@@ -103,7 +107,10 @@ namespace SnowmobileWPF
             }
             else
             {
-                MessageBox.Show("Please select a subscriber to delete.", "No Subscriber Selected", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please select a subscriber to delete.",
+                    "No Subscriber Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
         }
 
@@ -117,7 +124,9 @@ namespace SnowmobileWPF
         {
             if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
             {
-                ViewingTitleLabel.Content = $"Viewing {selectedSubscriber.FirstName} {selectedSubscriber.LastName} (VSCA: {selectedSubscriber.VSCA})";
+                ViewingTitleLabel.Content =
+                    $"Viewing {selectedSubscriber.FirstName} {selectedSubscriber.LastName} (VSCA: {selectedSubscriber.VSCA})";
+
                 DetailsPanel.Visibility = Visibility.Visible;
 
                 // Address
@@ -142,9 +151,12 @@ namespace SnowmobileWPF
                 // Subscription
                 if (selectedSubscriber.Subscription != null)
                 {
-                    ExpirationLabel.Text = $"Expires on {selectedSubscriber.Subscription.ExpDate.ToShortDateString()}";
-                    RenewalLabel.Text = $"Last renewed on {selectedSubscriber.Subscription.DateRenewed.ToShortDateString()}";
-                    SourceLabel.Text = $"Source: {selectedSubscriber.Subscription.Source}";
+                    ExpirationLabel.Text =
+                        $"Expires on {selectedSubscriber.Subscription.ExpDate.ToShortDateString()}";
+                    RenewalLabel.Text =
+                        $"Last renewed on {selectedSubscriber.Subscription.DateRenewed.ToShortDateString()}";
+                    SourceLabel.Text =
+                        $"Source: {selectedSubscriber.Subscription.Source}";
                 }
                 else
                 {
@@ -154,11 +166,14 @@ namespace SnowmobileWPF
                 }
 
                 // Notes
-                NotesLabel.Text = string.IsNullOrWhiteSpace(selectedSubscriber.Notes) ? "No notes." : selectedSubscriber.Notes;
+                NotesLabel.Text = string.IsNullOrWhiteSpace(selectedSubscriber.Notes)
+                    ? "No notes."
+                    : selectedSubscriber.Notes;
+
+                ExitNotesEditMode();
             }
             else
             {
-                // No selection: reset
                 ViewingTitleLabel.Content = "Select a subscriber...";
                 DetailsPanel.Visibility = Visibility.Collapsed;
 
@@ -176,7 +191,59 @@ namespace SnowmobileWPF
                 RenewalLabel.Text = string.Empty;
                 SourceLabel.Text = string.Empty;
                 NotesLabel.Text = string.Empty;
+
+                ExitNotesEditMode();
             }
+        }
+
+        // Inline notes editing logic
+        private void EditNotesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SubscriberList.SelectedItem is not Subscriber selectedSubscriber)
+                return;
+
+            _originalNotes = selectedSubscriber.Notes ?? string.Empty;
+            NotesTextBox.Text = _originalNotes;
+
+            NotesLabel.Visibility = Visibility.Collapsed;
+            NotesTextBox.Visibility = Visibility.Visible;
+
+            EditNotesButton.Visibility = Visibility.Collapsed;
+            SaveNotesButton.Visibility = Visibility.Visible;
+            CancelNotesButton.Visibility = Visibility.Visible;
+
+            NotesTextBox.Focus();
+        }
+
+        private void SaveNotesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SubscriberList.SelectedItem is not Subscriber selectedSubscriber)
+                return;
+
+            selectedSubscriber.Notes = NotesTextBox.Text;
+            _subscriberRepository.Update(selectedSubscriber);
+
+            NotesLabel.Text = string.IsNullOrWhiteSpace(selectedSubscriber.Notes)
+                ? "No notes."
+                : selectedSubscriber.Notes;
+
+            ExitNotesEditMode();
+        }
+
+        private void CancelNotesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NotesTextBox.Text = _originalNotes;
+            ExitNotesEditMode();
+        }
+
+        private void ExitNotesEditMode()
+        {
+            NotesTextBox.Visibility = Visibility.Collapsed;
+            NotesLabel.Visibility = Visibility.Visible;
+
+            EditNotesButton.Visibility = Visibility.Visible;
+            SaveNotesButton.Visibility = Visibility.Collapsed;
+            CancelNotesButton.Visibility = Visibility.Collapsed;
         }
     }
 }
