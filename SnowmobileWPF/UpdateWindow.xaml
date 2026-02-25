@@ -5,54 +5,146 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="Update subscriber" Height="450" Width="290"
+        Title="Update Subscriber"
+        Height="650"
+        Width="520"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource BackgroundBrush}"
         Loaded="Window_Loaded">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
-        </Grid.RowDefinitions>
-        <Label Name="HeaderLabel" Content="Editing John Doe (VSCA: 1)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-        <TextBox Name="FirstNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="FirstName" VerticalAlignment="Center"/>
 
-        <TextBox Name="LastNameBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="LastName" VerticalAlignment="Center" Grid.Column="2"/>
-
-        <TextBox Name="StreetAddressBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="2" TextWrapping="Wrap" Text="Address" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-
-        <TextBox Name="CityBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="City" VerticalAlignment="Center"/>
-
-        <TextBox Name="RegionBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" TextWrapping="Wrap" Text="Region" VerticalAlignment="Center" Grid.Column="2"/>
-
-        <TextBox Name="PostalCodeBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="PostCode" VerticalAlignment="Center"/>
-
-        <TextBox Name="CountryBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="4" TextWrapping="Wrap" Text="Country" VerticalAlignment="Center" Grid.Column="2"/>
-
-        <TextBox Name="PhoneNumberBox" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="5" TextWrapping="Wrap" Text="PhoneNumber" VerticalAlignment="Center"/>
-
-        <Grid Grid.Row="6" Grid.Column="0">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="25">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <CheckBox Name="ActiveCheckBox" Content="Active" Grid.Row="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="True"/>
-            <CheckBox Name="ContestCheckBox" Content="Contest" Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-            <CheckBox Name="CommercialCheckBox" Content="Commercial" Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
+
+            <!-- Header -->
+            <TextBlock Name="HeaderLabel"
+                       Text="Editing Subscriber"
+                       Style="{StaticResource HeaderText}"
+                       TextAlignment="Center"/>
+
+            <!-- Name Fields -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="First Name"/>
+                    <TextBox Name="FirstNameBox"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Last Name"/>
+                    <TextBox Name="LastNameBox"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Street Address -->
+            <StackPanel Grid.Row="3" Margin="0,15,0,0">
+                <TextBlock Text="Street Address"/>
+                <TextBox Name="StreetAddressBox"/>
+            </StackPanel>
+
+            <!-- City / Region -->
+            <Grid Grid.Row="4" Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="City"/>
+                    <TextBox Name="CityBox"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Region / State"/>
+                    <TextBox Name="RegionBox"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Postal / Country -->
+            <Grid Grid.Row="5" Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Postal Code"/>
+                    <TextBox Name="PostalCodeBox"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Country"/>
+                    <TextBox Name="CountryBox"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Phone / Issues -->
+            <Grid Grid.Row="6" Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Phone Number"/>
+                    <TextBox Name="PhoneNumberBox"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Issues Left"/>
+                    <TextBox Name="IssuesLeftBox"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Status Checkboxes -->
+            <StackPanel Grid.Row="7" Margin="0,20,0,0">
+                <TextBlock Text="Subscriber Status"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,10"/>
+
+                <WrapPanel>
+                    <CheckBox Name="ActiveCheckBox" Content="Active" Margin="0,0,20,10"/>
+                    <CheckBox Name="ContestCheckBox" Content="Contest" Margin="0,0,20,10"/>
+                    <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" Margin="0,0,20,10"/>
+                    <CheckBox Name="CommercialCheckBox" Content="Commercial" Margin="0,0,20,10"/>
+                </WrapPanel>
+            </StackPanel>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Row="9"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,25,0,0">
+                <Button Name="CancelButton"
+                        Content="Cancel"
+                        Style="{StaticResource SecondaryButton}"
+                        Margin="0,0,10,0"
+                        Click="CancelButton_Click"/>
+                <Button Name="UpdateButton"
+                        Content="Update"
+                        Style="{StaticResource PrimaryButton}"
+                        Click="UpdateButton_Click"/>
+            </StackPanel>
+
         </Grid>
-        <Button Name="UpdateButton" Grid.Column="1" Content="Update" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="UpdateButton_Click"/>
-        <Button Name="CancelButton" Grid.Column="0" Content="Cancel" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" VerticalAlignment="Stretch" Click="CancelButton_Click"/>
-        <TextBox x:Name="EmailBox" Margin="10,0,10,0" Grid.Row="5" TextWrapping="Wrap" Text="Email Address" VerticalAlignment="Center" Grid.Column="1"/>
-    </Grid>
+    </ScrollViewer>
 </Window>

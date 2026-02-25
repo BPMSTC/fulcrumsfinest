@@ -5,64 +5,183 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="Subscribers" Height="450" Width="646">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        Title="Subscribers" Height="520" Width="820"
+        Background="{StaticResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+
+        <!-- Top Action Buttons -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,20">
+            <Button Name="SearchButton"
+                    Content="Search"
+                    Style="{StaticResource SecondaryButton}"
+                    Width="120"
+                    Click="SearchButton_Click"
+                    Margin="0,0,10,0"/>
+            <Button Name="CreateDummyButton"
+                    Content="Create Dummy"
+                    Style="{StaticResource SecondaryButton}"
+                    Width="120"
+                    Click="CreateDummyButton_Click"
+                    Margin="0,0,10,0"/>
+            <Button Name="DeleteButton"
+                    Content="Delete"
+                    Style="{StaticResource SecondaryButton}"
+                    Width="120"
+                    Click="DeleteButton_Click"/>
+        </StackPanel>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-            <Button Name="SearchButton" Content="Search" HorizontalAlignment="Stretch" Margin="10,2,2,2" VerticalAlignment="Stretch" Click="SearchButton_Click" Grid.Column="0"/>
-            <Button Name="CreateDummyButton" Content="Create dummy" HorizontalAlignment="Stretch" Margin="2,2,2,2" VerticalAlignment="Stretch" Click="CreateDummyButton_Click" Grid.Column="1"/>
-            <Button Name="DeleteButton" Content="Delete" HorizontalAlignment="Stretch" Margin="2,2,10,2" VerticalAlignment="Stretch" Click="DeleteButton_Click" Grid.Column="2"/>
-        </Grid>
-        <ListBox Name="SubscriberList" Margin="10,10,10,10" MouseDoubleClick="SubscriberList_MouseDoubleClick" Grid.Row="1" SelectionChanged="SubscriberList_SelectionChanged">
-        </ListBox>
-        <Button Name="ClearSearchButton" Visibility="Hidden" Content="Clear search" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Margin="0,0,10,10" Click="ClearSearchButton_Click" Grid.Column="0"/>
-        <Label Name="ViewingTitleLabel" Grid.Column="1" Content="Viewing John Doe (VSCA: 12345)" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"/>
-        <TabControl Grid.Column="1" Margin="0,0,10,10" Grid.Row="1">
-            <TabItem Header="Personal Details">
-                <Grid>
-                    <Label Name="AddressHeader" FontSize="16" Content="Address" HorizontalAlignment="Left" Margin="0,2,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                    <Label Name="AddressLabel" Content="Street" HorizontalAlignment="Left" Margin="0,33,0,0" VerticalAlignment="Top"/>
-                    <Label Name="CSPLabel" Content="City State Postcode" HorizontalAlignment="Left" Margin="0,59,0,0" VerticalAlignment="Top"/>
-                    <Label Name="CountryLabel" Content="Country" HorizontalAlignment="Left" Margin="0,85,0,0" VerticalAlignment="Top"/>
-                    <Grid HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="109">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <CheckBox Name="ActiveCheckBox" Content="Active" IsEnabled="false" Grid.Row="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="True"/>
-                        <CheckBox Name="ContestCheckBox" Content="Contest" IsEnabled="false" Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-                        <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" IsEnabled="false" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
-                        <CheckBox Name="CommercialCheckBox" Content="Commercial" IsEnabled="false" Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="False"/>
+
+            <!-- Subscriber List -->
+            <Border BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="1" CornerRadius="5" Background="White" Padding="5" Margin="0,0,15,0">
+                <ListBox Name="SubscriberList"
+                         MouseDoubleClick="SubscriberList_MouseDoubleClick"
+                         SelectionChanged="SubscriberList_SelectionChanged"
+                         Background="White"
+                         BorderThickness="0"
+                         Foreground="{StaticResource PrimaryBrush}">
+                </ListBox>
+            </Border>
+
+            <!-- Details Panel -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Centered Title and Clear Search -->
+                <DockPanel Margin="0,0,0,15">
+                    <Label Name="ViewingTitleLabel"
+                           Content="Select a subscriber..."
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource PrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           DockPanel.Dock="Left"/>
+                    <Button Name="ClearSearchButton"
+                            Content="Clear Search"
+                            Style="{StaticResource SecondaryButton}"
+                            Width="120"
+                            Visibility="Hidden"
+                            DockPanel.Dock="Right"
+                            Click="ClearSearchButton_Click"/>
+                </DockPanel>
+
+                <!-- Details Panel -->
+                <Border Name="DetailsPanel"
+                        Grid.Row="1"
+                        Background="White"
+                        CornerRadius="5"
+                        BorderBrush="{StaticResource PrimaryBrush}"
+                        BorderThickness="1"
+                        Padding="15"
+                        Visibility="Collapsed">
+                    <Grid>
+                        <TabControl Background="White">
+                            <!-- Personal Details Tab -->
+                            <TabItem Header="Personal Details">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="10">
+                                    <StackPanel>
+                                        <!-- Address -->
+                                        <TextBlock Text="Address" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,0,0,5"/>
+                                        <TextBlock Name="AddressLabel" Text="" Margin="10,0,0,0"/>
+                                        <TextBlock Name="CSPLabel" Text="" Margin="10,0,0,0"/>
+                                        <TextBlock Name="CountryLabel" Text="" Margin="10,0,0,10"/>
+
+                                        <!-- Contact -->
+                                        <TextBlock Text="Contact" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,10,0,5"/>
+                                        <TextBlock Name="PhoneLabel" Text="" Margin="10,0,0,10"/>
+
+                                        <!-- Status -->
+                                        <TextBlock Text="Subscriber Status" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,10,0,5"/>
+                                        <UniformGrid Columns="2" Rows="2" Margin="10,0,0,0">
+                                            <CheckBox Name="ActiveCheckBox" Content="Active" IsEnabled="False" Margin="0,0,20,10"/>
+                                            <CheckBox Name="ContestCheckBox" Content="Contest" IsEnabled="False" Margin="0,0,20,10"/>
+                                            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" IsEnabled="False" Margin="0,0,20,10"/>
+                                            <CheckBox Name="CommercialCheckBox" Content="Commercial" IsEnabled="False" Margin="0,0,20,10"/>
+                                        </UniformGrid>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+
+                            <!-- Subscription Tab -->
+                            <TabItem Header="Subscription">
+                                <StackPanel Margin="10">
+                                    <TextBlock Name="ExpirationLabel" Text="" Margin="0,0,0,5"/>
+                                    <TextBlock Name="RenewalLabel" Text="" Margin="0,0,0,5"/>
+                                    <TextBlock Name="SourceLabel" Text=""/>
+                                </StackPanel>
+                            </TabItem>
+
+                            <!-- Notes Tab -->
+                            <TabItem Header="Notes">
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Action Buttons -->
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Right"
+                                                Margin="0,0,0,10">
+                                        <Button Name="EditNotesButton"
+                                                Content="Edit"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="80"
+                                                Margin="0,0,10,0"
+                                                Click="EditNotesButton_Click"/>
+
+                                        <Button Name="SaveNotesButton"
+                                                Content="Save"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="80"
+                                                Margin="0,0,10,0"
+                                                Visibility="Collapsed"
+                                                Click="SaveNotesButton_Click"/>
+
+                                        <Button Name="CancelNotesButton"
+                                                Content="Cancel"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="80"
+                                                Visibility="Collapsed"
+                                                Click="CancelNotesButton_Click"/>
+                                    </StackPanel>
+
+                                    <!-- Read-only view -->
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                        <TextBlock Name="NotesLabel"
+                                                   Text=""
+                                                   TextWrapping="Wrap"
+                                                   Height="Auto"/>
+                                    </ScrollViewer>
+
+                                    <!-- Edit view -->
+                                    <TextBox Name="NotesTextBox"
+                                             Grid.Row="1"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto"
+                                             Visibility="Collapsed"
+                                             Height="Auto"/>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
                     </Grid>
-                    <Label x:Name="ContactHeader" FontSize="16" Content="Contact" HorizontalAlignment="Left" Margin="0,116,0,0" VerticalAlignment="Top"/>
-                    <Label Name="PhoneLabel" Content="(715) 123-4567" HorizontalAlignment="Left" Margin="0,147,0,0" VerticalAlignment="Top"/>
-                    <Label Name="EmailLabel" Content="jdoe@example.com" HorizontalAlignment="Left" Margin="0,173,0,0" VerticalAlignment="Top"/>
-                </Grid>
-
-            </TabItem>
-            <TabItem Header="Subscription">
-                <Grid>
-                    <Label Name="ExpirationLabel" Content="Expires on 2/23/2026" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <Label Name="RenewalLabel" Content="Last renewed on 2/23/2026" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,26,0,0"/>
-                    <Label x:Name="SourceLabel" Content="Source: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,52,0,0"/>
-
-                </Grid>
-            </TabItem>
-
-        </TabControl>
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

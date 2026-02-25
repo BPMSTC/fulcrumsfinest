@@ -1,15 +1,8 @@
 ﻿using SnowmobileLibrary.Models;
 using SnowmobileWPF.Repositories;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
@@ -19,6 +12,9 @@ namespace SnowmobileWPF
     public partial class MainWindow : Window
     {
         private readonly ISubscriberRepository _subscriberRepository;
+
+        // Used to restore notes if user cancels edit
+        private string _originalNotes = string.Empty;
 
         public MainWindow(ISubscriberRepository subscriberRepository)
         {
@@ -33,7 +29,6 @@ namespace SnowmobileWPF
             searchWindow.Owner = this;
             searchWindow.ShowDialog();
 
-            // if user initiates a search
             if (searchWindow.DialogResult == true)
             {
                 SearchParams searchParams = searchWindow.SearchParams;
@@ -56,6 +51,7 @@ namespace SnowmobileWPF
                 ManualMail = false,
                 Commercial = false,
                 DateJoined = new DateOnly(2020, 1, 1),
+                Notes = "This is a dummy subscriber for testing purposes.",
                 Address = new Address
                 {
                     AddressId = new Random().Next(1, 100000),
@@ -71,6 +67,7 @@ namespace SnowmobileWPF
                     EmailAddress = "jdoe@example.com"
                 }
             };
+
             _subscriberRepository.Create(subscriber, true);
             UpdateSubscriberList();
         }
@@ -83,14 +80,12 @@ namespace SnowmobileWPF
 
         private void SubscriberList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // check if an item is selected and cast it to a Subscriber
             if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
             {
                 UpdateWindow updateWindow = new UpdateWindow(selectedSubscriber);
                 updateWindow.Owner = this;
                 updateWindow.ShowDialog();
 
-                // if user clicks update, refresh the list to show any changes
                 if (updateWindow.DialogResult == true)
                 {
                     UpdateSubscriberList();
@@ -102,15 +97,24 @@ namespace SnowmobileWPF
         {
             if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
             {
-                MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {selectedSubscriber.FirstName} {selectedSubscriber.LastName}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(
+                    $"Are you sure you want to delete {selectedSubscriber.FirstName} {selectedSubscriber.LastName}?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
                 if (result == MessageBoxResult.Yes)
                 {
                     _subscriberRepository.Delete(selectedSubscriber);
                     UpdateSubscriberList();
                 }
-            } else
+            }
+            else
             {
-                MessageBox.Show("Please select a subscriber to delete.", "No Subscriber Selected", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please select a subscriber to delete.",
+                    "No Subscriber Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
         }
 
@@ -122,28 +126,128 @@ namespace SnowmobileWPF
 
         private void SubscriberList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (SubscriberList.SelectedItem != null) {
-                Subscriber selectedSubscriber = (Subscriber)SubscriberList.SelectedItem;
-                ViewingTitleLabel.Content = $"Viewing {SubscriberList.SelectedItem.ToString()}";
-                AddressLabel.Content = selectedSubscriber.Address.Street;
-                CSPLabel.Content = $"{selectedSubscriber.Address.City}, {selectedSubscriber.Address.Region} {selectedSubscriber.Address.PostalCode}";
-                CountryLabel.Content = selectedSubscriber.Address.Country;
-                PhoneLabel.Content = selectedSubscriber.Phone;
-                EmailLabel.Content = selectedSubscriber.Email.EmailAddress;
+            if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
+            {
+                ViewingTitleLabel.Content =
+                    $"Viewing {selectedSubscriber.FirstName} {selectedSubscriber.LastName} (VSCA: {selectedSubscriber.VSCA})";
 
+                DetailsPanel.Visibility = Visibility.Visible;
+
+                // Address
+                AddressLabel.Text = selectedSubscriber.Address?.Street ?? string.Empty;
+                CSPLabel.Text =
+                    $"{selectedSubscriber.Address?.City ?? string.Empty}, " +
+                    $"{selectedSubscriber.Address?.Region ?? string.Empty} " +
+                    $"{selectedSubscriber.Address?.PostalCode ?? string.Empty}"
+                    .Trim()
+                    .TrimStart(',');
+                CountryLabel.Text = selectedSubscriber.Address?.Country ?? string.Empty;
+
+                // Contact
+                PhoneLabel.Text = selectedSubscriber.Phone ?? string.Empty;
+
+                // Status
                 ActiveCheckBox.IsChecked = selectedSubscriber.Active;
                 ContestCheckBox.IsChecked = selectedSubscriber.Contest;
                 ManualMailCheckBox.IsChecked = selectedSubscriber.ManualMail;
                 CommercialCheckBox.IsChecked = selectedSubscriber.Commercial;
 
-                ExpirationLabel.Content = $"Expires on {selectedSubscriber.Subscription.ExpDate.ToShortDateString()}";
-                RenewalLabel.Content = $"Last renewed on {selectedSubscriber.Subscription.DateRenewed.ToShortDateString()}";
-                SourceLabel.Content = $"Source: {selectedSubscriber.Subscription.Source}";
+                // Subscription
+                if (selectedSubscriber.Subscription != null)
+                {
+                    ExpirationLabel.Text =
+                        $"Expires on {selectedSubscriber.Subscription.ExpDate.ToShortDateString()}";
+                    RenewalLabel.Text =
+                        $"Last renewed on {selectedSubscriber.Subscription.DateRenewed.ToShortDateString()}";
+                    SourceLabel.Text =
+                        $"Source: {selectedSubscriber.Subscription.Source}";
+                }
+                else
+                {
+                    ExpirationLabel.Text = "Expires on N/A";
+                    RenewalLabel.Text = "Last renewed on N/A";
+                    SourceLabel.Text = "Source: N/A";
+                }
+
+                // Notes
+                NotesLabel.Text = string.IsNullOrWhiteSpace(selectedSubscriber.Notes)
+                    ? "No notes."
+                    : selectedSubscriber.Notes;
+
+                ExitNotesEditMode();
             }
             else
             {
-                return;
+                ViewingTitleLabel.Content = "Select a subscriber...";
+                DetailsPanel.Visibility = Visibility.Collapsed;
+
+                AddressLabel.Text = string.Empty;
+                CSPLabel.Text = string.Empty;
+                CountryLabel.Text = string.Empty;
+                PhoneLabel.Text = string.Empty;
+
+                ActiveCheckBox.IsChecked = false;
+                ContestCheckBox.IsChecked = false;
+                ManualMailCheckBox.IsChecked = false;
+                CommercialCheckBox.IsChecked = false;
+
+                ExpirationLabel.Text = string.Empty;
+                RenewalLabel.Text = string.Empty;
+                SourceLabel.Text = string.Empty;
+                NotesLabel.Text = string.Empty;
+
+                ExitNotesEditMode();
             }
+        }
+
+        // Inline notes editing logic
+        private void EditNotesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SubscriberList.SelectedItem is not Subscriber selectedSubscriber)
+                return;
+
+            _originalNotes = selectedSubscriber.Notes ?? string.Empty;
+            NotesTextBox.Text = _originalNotes;
+
+            NotesLabel.Visibility = Visibility.Collapsed;
+            NotesTextBox.Visibility = Visibility.Visible;
+
+            EditNotesButton.Visibility = Visibility.Collapsed;
+            SaveNotesButton.Visibility = Visibility.Visible;
+            CancelNotesButton.Visibility = Visibility.Visible;
+
+            NotesTextBox.Focus();
+        }
+
+        private void SaveNotesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SubscriberList.SelectedItem is not Subscriber selectedSubscriber)
+                return;
+
+            selectedSubscriber.Notes = NotesTextBox.Text;
+            _subscriberRepository.Update(selectedSubscriber);
+
+            NotesLabel.Text = string.IsNullOrWhiteSpace(selectedSubscriber.Notes)
+                ? "No notes."
+                : selectedSubscriber.Notes;
+
+            ExitNotesEditMode();
+        }
+
+        private void CancelNotesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NotesTextBox.Text = _originalNotes;
+            ExitNotesEditMode();
+        }
+
+        private void ExitNotesEditMode()
+        {
+            NotesTextBox.Visibility = Visibility.Collapsed;
+            NotesLabel.Visibility = Visibility.Visible;
+
+            EditNotesButton.Visibility = Visibility.Visible;
+            SaveNotesButton.Visibility = Visibility.Collapsed;
+            CancelNotesButton.Visibility = Visibility.Collapsed;
         }
     }
 }

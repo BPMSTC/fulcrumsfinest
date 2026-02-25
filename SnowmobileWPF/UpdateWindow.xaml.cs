@@ -1,17 +1,5 @@
 ﻿using SnowmobileLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
@@ -26,11 +14,9 @@ namespace SnowmobileWPF
     /// </summary>
     public partial class UpdateWindow : Window
     {
-        private Subscriber? _subscriber;
+        private readonly Subscriber _subscriber;
 
-        private UpdateMode mode;
-        
-        public UpdateWindow(Subscriber? subscriber)
+        public UpdateWindow(Subscriber subscriber)
         {
             InitializeComponent();
             _subscriber = subscriber;
@@ -39,54 +25,72 @@ namespace SnowmobileWPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (mode == UpdateMode.Edit)
-            {
-                HeaderLabel.Content = $"Editing {_subscriber.ToString()}";
-                FirstNameBox.Text = _subscriber.FirstName;
-                LastNameBox.Text = _subscriber.LastName;
-                PhoneNumberBox.Text = _subscriber.Phone;
-                EmailBox.Text = _subscriber.Email.EmailAddress;
+            if (_subscriber == null)
+                return;
 
-                StreetAddressBox.Text = _subscriber.Address.Street;
-                CityBox.Text = _subscriber.Address.City;
-                RegionBox.Text = _subscriber.Address.Region;
-                PostalCodeBox.Text = _subscriber.Address.PostalCode;
-                CountryBox.Text = _subscriber.Address.Country;
+            // Header
+            HeaderLabel.Text = $"Editing {_subscriber.ToString()}";
 
-                // Populate checkboxes
-                ActiveCheckBox.IsChecked = _subscriber.Active;
-                ContestCheckBox.IsChecked = _subscriber.Contest;
-                ManualMailCheckBox.IsChecked = _subscriber.ManualMail;
-                CommercialCheckBox.IsChecked = _subscriber.Commercial;
-            } 
-            else
-            {
-                HeaderLabel.Content = "Creating new subscriber...";
-                _subscriber = new Subscriber();
-            }
+            // Basic Info
+            FirstNameBox.Text = _subscriber.FirstName;
+            LastNameBox.Text = _subscriber.LastName;
+            PhoneNumberBox.Text = _subscriber.Phone;
+
+            // Address
+            StreetAddressBox.Text = _subscriber.Address.Street;
+            CityBox.Text = _subscriber.Address.City;
+            RegionBox.Text = _subscriber.Address.Region;
+            PostalCodeBox.Text = _subscriber.Address.PostalCode;
+            CountryBox.Text = _subscriber.Address.Country;
+
+            // Issues
+            //IssuesLeftBox.Text = _subscriber.IssuesLeft.ToString(CultureInfo.InvariantCulture);
+
+            // Status Flags
+            ActiveCheckBox.IsChecked = _subscriber.Active;
+            ContestCheckBox.IsChecked = _subscriber.Contest;
+            ManualMailCheckBox.IsChecked = _subscriber.ManualMail;
+            CommercialCheckBox.IsChecked = _subscriber.Commercial;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+            Close();
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            _subscriber.FirstName = FirstNameBox.Text;
-            _subscriber.LastName = LastNameBox.Text;
-            _subscriber.Phone = PhoneNumberBox.Text;
-            _subscriber.Address.Street = StreetAddressBox.Text;
-            _subscriber.Address.City = CityBox.Text;
-            _subscriber.Address.Region = RegionBox.Text;
-            _subscriber.Address.PostalCode = PostalCodeBox.Text;
-            _subscriber.Address.Country = CountryBox.Text;
-            _subscriber.Email.EmailAddress = EmailBox.Text;
+            UpdateSubscriber();
+            DialogResult = true;
+            Close();
+        }
+
+        private void UpdateSubscriber()
+        {
+            // Basic Info
+            _subscriber.FirstName = FirstNameBox.Text.Trim();
+            _subscriber.LastName = LastNameBox.Text.Trim();
+            _subscriber.Phone = PhoneNumberBox.Text.Trim();
+
+            // Address
+            _subscriber.Address.Street = StreetAddressBox.Text.Trim();
+            _subscriber.Address.City = CityBox.Text.Trim();
+            _subscriber.Address.Region = RegionBox.Text.Trim();
+            _subscriber.Address.PostalCode = PostalCodeBox.Text.Trim();
+            _subscriber.Address.Country = CountryBox.Text.Trim();
+
+            // Issues
+            //if (int.TryParse(IssuesLeftBox.Text, out int issuesLeft))
+            //{
+            //    _subscriber.IssuesLeft = issuesLeft;
+            //}
+
+            // Status Flags
             _subscriber.Active = ActiveCheckBox.IsChecked ?? false;
             _subscriber.Contest = ContestCheckBox.IsChecked ?? false;
             _subscriber.ManualMail = ManualMailCheckBox.IsChecked ?? false;
             _subscriber.Commercial = CommercialCheckBox.IsChecked ?? false;
-            DialogResult = true;
         }
     }
 }

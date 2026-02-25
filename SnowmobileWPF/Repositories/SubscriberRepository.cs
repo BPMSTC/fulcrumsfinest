@@ -18,14 +18,19 @@ namespace SnowmobileWPF.Repositories
         public List<Subscriber>? Search(SearchParams searchParams)
         {
             var query = _context.Subscribers.AsQueryable();
-            if (searchParams.VSCA.HasValue)
-                query = query.Where(s => s.VSCA == searchParams.VSCA.Value);
-            if (!string.IsNullOrEmpty(searchParams.FirstName))
-                query = query.Where(s => s.FirstName.Contains(searchParams.FirstName));
+
             if (!string.IsNullOrEmpty(searchParams.LastName))
                 query = query.Where(s => s.LastName.Contains(searchParams.LastName));
+
+            if (!string.IsNullOrEmpty(searchParams.FirstName))
+                query = query.Where(s => s.FirstName.Contains(searchParams.FirstName));
+
             if (!string.IsNullOrEmpty(searchParams.PhoneNumber))
                 query = query.Where(s => s.Phone.Contains(searchParams.PhoneNumber));
+
+            if (searchParams.VSCA.HasValue)
+                query = query.Where(s => s.VSCA == searchParams.VSCA.Value);
+
             return query.ToList();
         }
 

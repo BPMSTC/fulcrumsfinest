@@ -1,13 +1,13 @@
 ﻿using SnowmobileLibrary.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace SnowmobileWPF.Repositories
 {
     public class LocalSubscriberRepository : ISubscriberRepository
     {
-        private List<Subscriber> subscribers = new List<Subscriber>();
+        private readonly List<Subscriber> subscribers = new();
 
         public LocalSubscriberRepository()
         {
@@ -44,63 +44,76 @@ namespace SnowmobileWPF.Repositories
                     EmailAddress = "jdoe@example.com"
                 }
             };
+
             subscribers.Add(subscriber);
         }
 
         public List<Subscriber>? Search(SearchParams searchParams)
         {
             IEnumerable<Subscriber> results = subscribers;
+
             if (searchParams.VSCA != null)
             {
                 results = results.Where(s => s.VSCA == searchParams.VSCA);
             }
+
             if (!string.IsNullOrEmpty(searchParams.FirstName))
             {
-                results = results.Where(s => s.FirstName.Contains(searchParams.FirstName, StringComparison.OrdinalIgnoreCase));
+                results = results.Where(s =>
+                    s.FirstName.Contains(searchParams.FirstName, StringComparison.OrdinalIgnoreCase));
             }
+
             if (!string.IsNullOrEmpty(searchParams.LastName))
             {
-                results = results.Where(s => s.LastName.Contains(searchParams.LastName, StringComparison.OrdinalIgnoreCase));
+                results = results.Where(s =>
+                    s.LastName.Contains(searchParams.LastName, StringComparison.OrdinalIgnoreCase));
             }
+
             if (!string.IsNullOrEmpty(searchParams.PhoneNumber))
             {
-                results = results.Where(s => s.Phone.Contains(searchParams.PhoneNumber));
+                results = results.Where(s =>
+                    s.Phone.Contains(searchParams.PhoneNumber));
             }
-            return results.ToList();
+
+            return results
+                .OrderByDescending(s => s.VSCA)
+                .ToList();
         }
 
         public List<Subscriber> Retrieve(int max)
         {
+            IEnumerable<Subscriber> results = subscribers
+                .OrderByDescending(s => s.VSCA);
+
             if (max > 0)
             {
-                return subscribers.Take(max).ToList();
+                results = results.Take(max);
             }
-            return subscribers;
+
+            return results.ToList();
         }
 
         public void Create(Subscriber subscriber, bool forceCreation = false)
         {
-            SearchParams searchParams = new SearchParams
+            SearchParams searchParams = new()
             {
                 FirstName = subscriber.FirstName,
                 LastName = subscriber.LastName
             };
 
-            // search for potential duplicates. If forceCreation is true, create anyways.
+            // Prevent duplicates unless forced
             if (Search(searchParams)?.Count > 0 && !forceCreation)
             {
                 throw new Exception("Subscriber already exists");
-            } 
-            else
-            {
-                subscribers.Add(subscriber);
             }
+
+            subscribers.Add(subscriber);
         }
 
         public void Update(Subscriber subscriber)
         {
             Delete(subscriber);
-            Create(subscriber);
+            Create(subscriber, true);
         }
 
         public void Delete(Subscriber subscriber)
