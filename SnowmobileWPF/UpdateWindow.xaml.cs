@@ -37,7 +37,7 @@ namespace SnowmobileWPF
             CountryBox.Text = _subscriber.Address.Country;
 
             // Issues
-            //IssuesLeftBox.Text = _subscriber.IssuesLeft.ToString(CultureInfo.InvariantCulture);
+            //EmailBox.Text = _subscriber.IssuesLeft.ToString(CultureInfo.InvariantCulture);
 
             // Status Flags
             ActiveCheckBox.IsChecked = _subscriber.Active;
@@ -65,6 +65,7 @@ namespace SnowmobileWPF
             _subscriber.FirstName = FirstNameBox.Text.Trim();
             _subscriber.LastName = LastNameBox.Text.Trim();
             _subscriber.Phone = PhoneNumberBox.Text.Trim();
+            //_subscriber.Email = EmailBox.Text.Trim();
 
             // Address
             _subscriber.Address.Street = StreetAddressBox.Text.Trim();
@@ -72,12 +73,6 @@ namespace SnowmobileWPF
             _subscriber.Address.Region = RegionBox.Text.Trim();
             _subscriber.Address.PostalCode = PostalCodeBox.Text.Trim();
             _subscriber.Address.Country = CountryBox.Text.Trim();
-
-            // Issues
-            //if (int.TryParse(IssuesLeftBox.Text, out int issuesLeft))
-            //{
-            //    _subscriber.IssuesLeft = issuesLeft;
-            //}
 
             // Status Flags
             _subscriber.Active = ActiveCheckBox.IsChecked ?? false;

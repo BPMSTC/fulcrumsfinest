@@ -68,23 +68,40 @@ namespace SnowmobileWPF
             UpdateSubscriberList();
         }
 
-        private void UpdateSubscriberList()
+        private void UpdateSubscriberList(int vscaToSelect = -1)
         {
+            // Clear and reload the list
             SubscriberList.ItemsSource = null;
-            SubscriberList.ItemsSource = _subscriberRepository.Retrieve(-1);
+            var subscribers = _subscriberRepository.Retrieve(-1);
+            SubscriberList.ItemsSource = subscribers;
+
+            // If we have an ID to look for, find it and select it
+            if (vscaToSelect != -1 && subscribers != null)
+            {
+                var itemToSelect = subscribers.FirstOrDefault(s => s.VSCA == vscaToSelect);
+                if (itemToSelect != null)
+                {
+                    SubscriberList.SelectedItem = itemToSelect;
+                    SubscriberList.ScrollIntoView(itemToSelect);
+                }
+            }
         }
 
         private void SubscriberList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
             {
+                // Remember who we are editing
+                int currentVsca = selectedSubscriber.VSCA;
+
                 UpdateWindow updateWindow = new UpdateWindow(selectedSubscriber);
                 updateWindow.Owner = this;
                 updateWindow.ShowDialog();
 
                 if (updateWindow.DialogResult == true)
                 {
-                    UpdateSubscriberList();
+                    // Pass the ID to keep the selection active after the refresh
+                    UpdateSubscriberList(currentVsca);
                 }
             }
         }
@@ -102,6 +119,7 @@ namespace SnowmobileWPF
                 if (result == MessageBoxResult.Yes)
                 {
                     _subscriberRepository.Delete(selectedSubscriber);
+                    SubscriberList.SelectedItem = null;
                     UpdateSubscriberList();
                 }
             }
@@ -124,7 +142,7 @@ namespace SnowmobileWPF
         {
             if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
             {
-                ViewingTitleLabel.Content =
+                ViewingTitleLabel.Text =
                     $"Viewing {selectedSubscriber.FirstName} {selectedSubscriber.LastName} (VSCA: {selectedSubscriber.VSCA})";
 
                 DetailsPanel.Visibility = Visibility.Visible;
@@ -174,7 +192,7 @@ namespace SnowmobileWPF
             }
             else
             {
-                ViewingTitleLabel.Content = "Select a subscriber...";
+                ViewingTitleLabel.Text = "Select a subscriber...";
                 DetailsPanel.Visibility = Visibility.Collapsed;
 
                 AddressLabel.Text = string.Empty;

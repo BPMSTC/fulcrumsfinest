@@ -6,145 +6,138 @@
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
         Title="Update Subscriber"
-        Height="650"
-        Width="520"
+        Height="690" 
+        Width="560"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource BackgroundBrush}"
         Loaded="Window_Loaded">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="25">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- Header -->
-            <TextBlock Name="HeaderLabel"
-                       Text="Editing Subscriber"
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}">
+            <TextBlock x:Name="HeaderLabel" 
+                       Text="Editing Subscriber" 
                        Style="{StaticResource HeaderText}"
-                       TextAlignment="Center"/>
+                       VerticalAlignment="Center"
+                       Margin="30,0"/>
+        </Border>
 
-            <!-- Name Fields -->
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Border Background="{StaticResource CardBackgroundBrush}" 
+                        Margin="25,15" 
+                        Padding="30" 
+                        CornerRadius="12" 
+                        BorderBrush="{StaticResource BorderBrush}" 
+                        BorderThickness="1"
+                        Effect="{StaticResource CardShadow}">
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="First Name"/>
-                    <TextBox Name="FirstNameBox"/>
-                </StackPanel>
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="Last Name"/>
-                    <TextBox Name="LastNameBox"/>
-                </StackPanel>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="FIRST NAME" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="FirstNameBox"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="LAST NAME" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="LastNameBox"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="PHONE NUMBER" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="PhoneNumberBox"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="EMAIL ADDRESS" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="EmailBox"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="STREET ADDRESS" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Name="StreetAddressBox"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="CITY" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="CityBox"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="STATE" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="RegionBox"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="COUNTRY" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="CountryBox"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="POSTAL CODE" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Name="PostalCodeBox"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,5,0,20"/>
+
+                        <TextBlock Text="SUBSCRIBER STATUS" Style="{StaticResource FieldLabel}"/>
+                        <WrapPanel Margin="0,5,0,20">
+                            <CheckBox Name="ActiveCheckBox" Content="Active"/>
+                            <CheckBox Name="ContestCheckBox" Content="Contest"/>
+                            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail"/>
+                            <CheckBox Name="CommercialCheckBox" Content="Commercial"/>
+                        </WrapPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button Name="CancelButton"
+                                    Content="Cancel"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Margin="0,0,12,0"
+                                    Click="CancelButton_Click"/>
+
+                            <Button Name="UpdateButton"
+                                    Content="Save Changes"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Width="160"
+                                    Click="UpdateButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
             </Grid>
-
-            <!-- Street Address -->
-            <StackPanel Grid.Row="3" Margin="0,15,0,0">
-                <TextBlock Text="Street Address"/>
-                <TextBox Name="StreetAddressBox"/>
-            </StackPanel>
-
-            <!-- City / Region -->
-            <Grid Grid.Row="4" Margin="0,15,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="City"/>
-                    <TextBox Name="CityBox"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="Region / State"/>
-                    <TextBox Name="RegionBox"/>
-                </StackPanel>
-            </Grid>
-
-            <!-- Postal / Country -->
-            <Grid Grid.Row="5" Margin="0,15,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Postal Code"/>
-                    <TextBox Name="PostalCodeBox"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="Country"/>
-                    <TextBox Name="CountryBox"/>
-                </StackPanel>
-            </Grid>
-
-            <!-- Phone / Issues -->
-            <Grid Grid.Row="6" Margin="0,15,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Phone Number"/>
-                    <TextBox Name="PhoneNumberBox"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="Issues Left"/>
-                    <TextBox Name="IssuesLeftBox"/>
-                </StackPanel>
-            </Grid>
-
-            <!-- Status Checkboxes -->
-            <StackPanel Grid.Row="7" Margin="0,20,0,0">
-                <TextBlock Text="Subscriber Status"
-                           FontWeight="SemiBold"
-                           Margin="0,0,0,10"/>
-
-                <WrapPanel>
-                    <CheckBox Name="ActiveCheckBox" Content="Active" Margin="0,0,20,10"/>
-                    <CheckBox Name="ContestCheckBox" Content="Contest" Margin="0,0,20,10"/>
-                    <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" Margin="0,0,20,10"/>
-                    <CheckBox Name="CommercialCheckBox" Content="Commercial" Margin="0,0,20,10"/>
-                </WrapPanel>
-            </StackPanel>
-
-            <!-- Action Buttons -->
-            <StackPanel Grid.Row="9"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Margin="0,25,0,0">
-                <Button Name="CancelButton"
-                        Content="Cancel"
-                        Style="{StaticResource SecondaryButton}"
-                        Margin="0,0,10,0"
-                        Click="CancelButton_Click"/>
-                <Button Name="UpdateButton"
-                        Content="Update"
-                        Style="{StaticResource PrimaryButton}"
-                        Click="UpdateButton_Click"/>
-            </StackPanel>
-
-        </Grid>
-    </ScrollViewer>
+        </ScrollViewer>
+    </Grid>
 </Window>
