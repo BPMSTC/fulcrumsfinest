@@ -33,8 +33,14 @@ namespace SnowmobileWPF
             {
                 SearchParams searchParams = searchWindow.SearchParams;
                 List<Subscriber>? results = _subscriberRepository.Search(searchParams);
+
                 ClearSearchButton.Visibility = Visibility.Visible;
                 SubscriberList.ItemsSource = results;
+
+                // Toggle the "No results found" message based on the count
+                NoResultsMessage.Visibility = (results == null || results.Count == 0)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
         }
 
@@ -70,12 +76,17 @@ namespace SnowmobileWPF
 
         private void UpdateSubscriberList(int vscaToSelect = -1)
         {
-            // Clear and reload the list
+            // 1. Refresh the source
             SubscriberList.ItemsSource = null;
             var subscribers = _subscriberRepository.Retrieve(-1);
             SubscriberList.ItemsSource = subscribers;
 
-            // If we have an ID to look for, find it and select it
+            // 2. Handle the "No results" visibility for the full list refresh
+            NoResultsMessage.Visibility = (subscribers == null || subscribers.Count == 0)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            // 3. Re-selection logic: find the subscriber by ID and highlight them
             if (vscaToSelect != -1 && subscribers != null)
             {
                 var itemToSelect = subscribers.FirstOrDefault(s => s.VSCA == vscaToSelect);
@@ -91,7 +102,7 @@ namespace SnowmobileWPF
         {
             if (SubscriberList.SelectedItem is Subscriber selectedSubscriber)
             {
-                // Remember who we are editing
+                // Capture the VSCA ID so we can re-find this person after the list refreshes
                 int currentVsca = selectedSubscriber.VSCA;
 
                 UpdateWindow updateWindow = new UpdateWindow(selectedSubscriber);
@@ -100,7 +111,7 @@ namespace SnowmobileWPF
 
                 if (updateWindow.DialogResult == true)
                 {
-                    // Pass the ID to keep the selection active after the refresh
+                    // Pass the ID back to maintain selection
                     UpdateSubscriberList(currentVsca);
                 }
             }
@@ -262,6 +273,30 @@ namespace SnowmobileWPF
             EditNotesButton.Visibility = Visibility.Visible;
             SaveNotesButton.Visibility = Visibility.Collapsed;
             CancelNotesButton.Visibility = Visibility.Collapsed;
+        }
+
+        // De-selects selected customer when pressing escape
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
+
+            if (e.Key == Key.Escape)
+            {
+                // If we are currently editing notes, let's just exit edit mode first
+                if (NotesTextBox.Visibility == Visibility.Visible)
+                {
+                    ExitNotesEditMode();
+                    e.Handled = true;
+                    return;
+                }
+
+                // Otherwise, deselect the subscriber
+                if (SubscriberList.SelectedItem != null)
+                {
+                    SubscriberList.SelectedItem = null;
+                    e.Handled = true;
+                }
+            }
         }
     }
 }

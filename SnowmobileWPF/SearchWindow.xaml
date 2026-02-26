@@ -55,13 +55,15 @@
                             Grid.Column="0"
                             Content="Cancel" 
                             Style="{StaticResource SecondaryButton}" 
-                            Click="CancelButton_Click"/>
+                            Click="CancelButton_Click"
+                            IsCancel="True"/>
 
                     <Button Name="SearchButton" 
                             Grid.Column="2"
                             Content="Run Search" 
                             Style="{StaticResource PrimaryButton}" 
-                            Click="SearchButton_Click"/>
+                            Click="SearchButton_Click"
+                            IsDefault="True"/>
                 </Grid>
             </StackPanel>
         </Border>

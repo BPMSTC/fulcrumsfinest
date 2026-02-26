@@ -52,7 +52,8 @@
                         Content="Login" 
                         Style="{StaticResource PrimaryButton}" 
                         Height="38"
-                        HorizontalAlignment="Stretch"/>
+                        HorizontalAlignment="Stretch"
+                        IsDefault="True"/>
 
                 <TextBlock Text="Contact Admin for access" 
                            HorizontalAlignment="Center" 
