@@ -24,5 +24,5 @@ public class Subscription
     public int IssuesRemaining { get; set; }
 
     [Required(ErrorMessage = "Please select a subscription source.")]
-    public SubscriptionSource Source { get; set; }
+    public SubscriptionSource? Source { get; set; }
 }

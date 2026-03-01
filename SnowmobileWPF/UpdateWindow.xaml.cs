@@ -5,6 +5,15 @@ using System.Collections.Generic;
 
 namespace SnowmobileWPF
 {
+    internal enum UpdateMode
+    {
+        Create,
+        Edit
+    }
+
+    /// <summary>
+    /// Interaction logic for UpdateWindow.xaml
+    /// </summary>
     public partial class UpdateWindow : Window
     {
         public UpdateWindow()

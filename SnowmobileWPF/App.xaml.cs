@@ -29,7 +29,6 @@ namespace SnowmobileWPF
                     services.AddDbContext<SnowmobileContext>(options =>
                         options.UseSqlServer(connectionString), ServiceLifetime.Singleton);
 
-                    // Keep this so you can inject your custom ILogger if needed
                     services.AddSingleton<SnowmobileLibrary.Services.ILogger, FileLogger>();
 
                     services.AddSingleton<ISubscriberRepository, LocalSubscriberRepository>();
