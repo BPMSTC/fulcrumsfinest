@@ -3,14 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SnowmobileWPF"
+        xmlns:viewmodels="clr-namespace:SnowmobileWPF.ViewModels"
         mc:Ignorable="d"
-        Title="Update Subscriber"
-        Height="690" 
-        Width="560"
+        d:DataContext="{d:DesignInstance Type=viewmodels:UpdateViewModel}"
+        Title="Update Subscriber" Height="740" Width="560"
         WindowStartupLocation="CenterOwner"
-        Background="{StaticResource BackgroundBrush}"
-        Loaded="Window_Loaded">
+        Background="{StaticResource BackgroundBrush}">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -19,127 +17,113 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}">
-            <TextBlock x:Name="HeaderLabel" 
-                       Text="Editing Subscriber" 
+            <TextBlock Text="{Binding DisplayHeader}" 
                        Style="{StaticResource HeaderText}"
-                       VerticalAlignment="Center"
-                       Margin="30,0"/>
+                       VerticalAlignment="Center" Margin="30,0"/>
         </Border>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <Grid>
-                <Border Background="{StaticResource CardBackgroundBrush}" 
-                        Margin="25,15" 
-                        Padding="30" 
-                        CornerRadius="12" 
-                        BorderBrush="{StaticResource BorderBrush}" 
-                        BorderThickness="1"
-                        Effect="{StaticResource CardShadow}">
+            <Border Background="{StaticResource CardBackgroundBrush}" Margin="25,15" Padding="30" 
+                    CornerRadius="12" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Effect="{StaticResource CardShadow}">
 
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
 
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="FIRST NAME" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="FirstNameBox"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="LAST NAME" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="LastNameBox"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="PHONE NUMBER" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="PhoneNumberBox"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="EMAIL ADDRESS" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="EmailBox"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <TextBlock Text="STREET ADDRESS" Style="{StaticResource FieldLabel}"/>
-                        <TextBox Name="StreetAddressBox"/>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="CITY" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="CityBox"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="STATE" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="RegionBox"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="COUNTRY" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="CountryBox"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="POSTAL CODE" Style="{StaticResource FieldLabel}"/>
-                                <TextBox Name="PostalCodeBox"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,5,0,20"/>
-
-                        <TextBlock Text="SUBSCRIBER STATUS" Style="{StaticResource FieldLabel}"/>
-                        <WrapPanel Margin="0,5,0,20">
-                            <CheckBox Name="ActiveCheckBox" Content="Active"/>
-                            <CheckBox Name="ContestCheckBox" Content="Contest"/>
-                            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail"/>
-                            <CheckBox Name="CommercialCheckBox" Content="Commercial"/>
-                        </WrapPanel>
-
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                            <Button Name="CancelButton"
-                                    Content="Cancel"
-                                    Style="{StaticResource SecondaryButton}"
-                                    Margin="0,0,12,0"
-                                    Click="CancelButton_Click"
-                                    IsCancel="True"/>
-
-                            <Button Name="UpdateButton"
-                                    Content="Save Changes"
-                                    Style="{StaticResource PrimaryButton}"
-                                    Width="160"
-                                    Click="UpdateButton_Click"
-                                    IsDefault="True"/>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="FIRST NAME" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Subscriber.FirstName, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="LAST NAME" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Subscriber.LastName, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="PHONE NUMBER" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Subscriber.Phone, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="EMAIL ADDRESS" Style="{StaticResource FieldLabel}"/>
+                            <TextBox/>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="STREET ADDRESS" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Text="{Binding Subscriber.Address.Street, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="CITY" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Subscriber.Address.City, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="STATE" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Subscriber.Address.Region, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="COUNTRY" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Subscriber.Address.Country, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="POSTAL CODE" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Subscriber.Address.PostalCode, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,5,0,20"/>
+
+                    <TextBlock Text="SUBSCRIBER STATUS" Style="{StaticResource FieldLabel}"/>
+                    <Border Background="#F8FAFC" Padding="15" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,5,0,20">
+                        <UniformGrid Columns="2" Rows="2">
+                            <CheckBox Content="Active" 
+                                      IsChecked="{Binding Subscriber.Active, UpdateSourceTrigger=PropertyChanged}" 
+                                      Margin="5"/>
+                            <CheckBox Content="Contest" 
+                                      IsChecked="{Binding Subscriber.Contest, UpdateSourceTrigger=PropertyChanged}" 
+                                      Margin="5"/>
+                            <CheckBox Content="Manual Mail" 
+                                      IsChecked="{Binding Subscriber.ManualMail, UpdateSourceTrigger=PropertyChanged}" 
+                                      Margin="5"/>
+                            <CheckBox Content="Commercial" 
+                                      IsChecked="{Binding Subscriber.Commercial, UpdateSourceTrigger=PropertyChanged}" 
+                                      Margin="5"/>
+                        </UniformGrid>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Margin="0,0,12,0" 
+                                Click="CancelButton_Click" IsCancel="True"/>
+                        <Button Content="Save Changes" Style="{StaticResource PrimaryButton}" Width="160" 
+                                Click="UpdateButton_Click" IsDefault="True"/>
                     </StackPanel>
-                </Border>
-            </Grid>
+                </StackPanel>
+            </Border>
         </ScrollViewer>
     </Grid>
 </Window>

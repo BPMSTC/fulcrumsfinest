@@ -1,4 +1,5 @@
 ﻿using SnowmobileLibrary.Models;
+using SnowmobileWPF.Models;
 using SnowmobileWPF.Repositories;
 using System.Collections.ObjectModel;
 using System.Windows;

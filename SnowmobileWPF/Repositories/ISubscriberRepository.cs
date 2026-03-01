@@ -1,7 +1,5 @@
 ﻿using SnowmobileLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SnowmobileWPF.Models;
 
 namespace SnowmobileWPF.Repositories
 {

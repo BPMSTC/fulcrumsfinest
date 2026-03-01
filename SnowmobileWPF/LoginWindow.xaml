@@ -1,9 +1,12 @@
 ﻿<Window x:Class="SnowmobileWPF.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Login" 
-        Height="400" 
-        Width="350"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="clr-namespace:SnowmobileWPF.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+        Title="Login" Height="400" Width="350"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="{StaticResource BackgroundBrush}">
@@ -16,50 +19,30 @@
 
         <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}">
             <StackPanel VerticalAlignment="Center" Margin="0,0,0,15">
-                <TextBlock Text="VSCA" 
-                           Style="{StaticResource HeaderText}" 
-                           FontSize="20" 
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="Management System" 
-                           Foreground="White" 
-                           Opacity="0.7" 
-                           FontSize="10" 
-                           HorizontalAlignment="Center"/>
+                <TextBlock Text="VSCA" Style="{StaticResource HeaderText}" FontSize="20" HorizontalAlignment="Center"/>
+                <TextBlock Text="Management System" Foreground="White" Opacity="0.7" FontSize="10" HorizontalAlignment="Center"/>
             </StackPanel>
         </Border>
 
-        <Border Grid.Row="1" 
-                Background="{StaticResource CardBackgroundBrush}" 
-                VerticalAlignment="Top"
-                Margin="30,-25,30,0" 
-                Padding="25,20" 
-                CornerRadius="10" 
-                BorderBrush="{StaticResource BorderBrush}" 
-                BorderThickness="1"
-                Effect="{StaticResource CardShadow}">
+        <Border Grid.Row="1" Background="{StaticResource CardBackgroundBrush}" VerticalAlignment="Top"
+                Margin="30,-25,30,0" Padding="25,20" CornerRadius="10" 
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Effect="{StaticResource CardShadow}">
 
             <StackPanel>
                 <TextBlock Text="SERVER IP" Style="{StaticResource FieldLabel}"/>
-                <TextBox Name="IPBox" Text="127.0.0.1:1433" Margin="0,0,0,10"/>
+                <TextBox Text="{Binding ServerIp, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="USERNAME" Style="{StaticResource FieldLabel}"/>
-                <TextBox Name="UsernameBox" Margin="0,0,0,10"/>
+                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="PASSWORD" Style="{StaticResource FieldLabel}"/>
-                <PasswordBox Name="PasswordBox" Height="34" Margin="0,0,0,20" VerticalContentAlignment="Center"/>
+                <PasswordBox x:Name="UserPasswordBox" Height="34" Margin="0,0,0,20" VerticalContentAlignment="Center"/>
 
-                <Button Name="LoginButton" 
-                        Content="Login" 
-                        Style="{StaticResource PrimaryButton}" 
-                        Height="38"
-                        HorizontalAlignment="Stretch"
-                        IsDefault="True"/>
+                <Button Content="Login" Style="{StaticResource PrimaryButton}" Height="38" 
+                        HorizontalAlignment="Stretch" IsDefault="True" Click="LoginButton_Click"/>
 
-                <TextBlock Text="Contact Admin for access" 
-                           HorizontalAlignment="Center" 
-                           Margin="0,15,0,0" 
-                           FontSize="10" 
-                           Foreground="{StaticResource MutedTextBrush}"/>
+                <TextBlock Text="Contact Admin for access" HorizontalAlignment="Center" Margin="0,15,0,0" 
+                           FontSize="10" Foreground="{StaticResource MutedTextBrush}"/>
             </StackPanel>
         </Border>
     </Grid>
