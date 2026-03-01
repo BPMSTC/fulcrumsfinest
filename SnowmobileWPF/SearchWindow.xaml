@@ -3,57 +3,56 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SnowmobileWPF"
+        xmlns:viewmodels="clr-namespace:SnowmobileWPF.ViewModels"
         mc:Ignorable="d"
-        Title="Search"
-        Height="480"
-        Width="360"
-        Background="{StaticResource BackgroundBrush}"
-        WindowStartupLocation="CenterOwner">
+        d:DataContext="{d:DesignInstance Type=viewmodels:SearchViewModel}"
+        Title="Search Subscribers"
+        Height="480" Width="380"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundBrush}">
 
-    <Grid Margin="25">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <TextBlock Text="Search Subscribers"
-                   Style="{StaticResource HeaderText}"
-                   TextAlignment="Center"/>
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}">
+            <TextBlock Text="Search Filters" Style="{StaticResource HeaderText}" VerticalAlignment="Center" Margin="30,0,0,15"/>
+        </Border>
 
-        <!-- Form Fields -->
-        <StackPanel Grid.Row="2" Margin="0,10,0,0">
-            <TextBlock Text="Last Name"/>
-            <TextBox Name="LastNameTextBox"/>
+        <Border Grid.Row="1" Background="{StaticResource CardBackgroundBrush}" VerticalAlignment="Top"
+                Margin="25,-20,25,0" Padding="25" CornerRadius="12" BorderBrush="{StaticResource BorderBrush}" 
+                BorderThickness="1" Effect="{StaticResource CardShadow}">
 
-            <TextBlock Text="First Name"/>
-            <TextBox Name="FirstNameTextBox"/>
+            <StackPanel>
+                <TextBlock Text="LAST NAME" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <TextBlock Text="Phone Number"/>
-            <TextBox Name="PhoneNumberTextBox"/>
+                <TextBlock Text="FIRST NAME" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <TextBlock Text="VSCA"/>
-            <TextBox Name="VSCATextBox"/>
-        </StackPanel>
+                <TextBlock Text="PHONE NUMBER" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <!-- Buttons -->
-        <StackPanel Grid.Row="3"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,0">
-            <Button Name="CancelButton"
-                    Content="Cancel"
-                    Style="{StaticResource SecondaryButton}"
-                    Margin="0,0,10,0"
-                    Click="CancelButton_Click"/>
+                <TextBlock Text="VSCA" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding VSCAText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20"/>
 
-            <Button Name="SearchButton"
-                    Content="Search"
-                    Style="{StaticResource PrimaryButton}"
-                    Click="SearchButton_Click"/>
-        </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Content="Cancel" Grid.Column="0" Style="{StaticResource SecondaryButton}" 
+                            Click="CancelButton_Click" IsCancel="True"/>
+
+                    <Button Content="Run Search" Grid.Column="2" Style="{StaticResource PrimaryButton}" 
+                            Click="SearchButton_Click" IsDefault="True"/>
+                </Grid>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

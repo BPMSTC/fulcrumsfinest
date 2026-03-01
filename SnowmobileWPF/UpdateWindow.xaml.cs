@@ -1,5 +1,7 @@
-﻿using SnowmobileLibrary.Models;
-using System.Windows;
+﻿using System.Windows;
+using SnowmobileWPF.ViewModels;
+using System.Text;
+using System.Collections.Generic;
 
 namespace SnowmobileWPF
 {
@@ -14,83 +16,70 @@ namespace SnowmobileWPF
     /// </summary>
     public partial class UpdateWindow : Window
     {
-        private readonly Subscriber _subscriber;
-
-        public UpdateWindow(Subscriber subscriber)
+        public UpdateWindow()
         {
             InitializeComponent();
-            _subscriber = subscriber;
-            mode = subscriber == null ? UpdateMode.Create : UpdateMode.Edit;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (_subscriber == null)
-                return;
-
-            // Header
-            HeaderLabel.Text = $"Editing {_subscriber.ToString()}";
-
-            // Basic Info
-            FirstNameBox.Text = _subscriber.FirstName;
-            LastNameBox.Text = _subscriber.LastName;
-            PhoneNumberBox.Text = _subscriber.Phone;
-
-            // Address
-            StreetAddressBox.Text = _subscriber.Address.Street;
-            CityBox.Text = _subscriber.Address.City;
-            RegionBox.Text = _subscriber.Address.Region;
-            PostalCodeBox.Text = _subscriber.Address.PostalCode;
-            CountryBox.Text = _subscriber.Address.Country;
-
-            // Issues
-            //IssuesLeftBox.Text = _subscriber.IssuesLeft.ToString(CultureInfo.InvariantCulture);
-
-            // Status Flags
-            ActiveCheckBox.IsChecked = _subscriber.Active;
-            ContestCheckBox.IsChecked = _subscriber.Contest;
-            ManualMailCheckBox.IsChecked = _subscriber.ManualMail;
-            CommercialCheckBox.IsChecked = _subscriber.Commercial;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
-            Close();
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            UpdateSubscriber();
-            DialogResult = true;
-            Close();
-        }
+            if (DataContext is UpdateViewModel vm)
+            {
+                string[] propertiesToValidate =
+                {
+                    nameof(vm.FirstName),
+                    nameof(vm.LastName),
+                    nameof(vm.Phone),
+                    //nameof(vm.Email),
+                    nameof(vm.Street),
+                    nameof(vm.City),
+                    nameof(vm.Region),
+                    nameof(vm.PostalCode),
+                    nameof(vm.Country)
+                };
 
-        private void UpdateSubscriber()
-        {
-            // Basic Info
-            _subscriber.FirstName = FirstNameBox.Text.Trim();
-            _subscriber.LastName = LastNameBox.Text.Trim();
-            _subscriber.Phone = PhoneNumberBox.Text.Trim();
+                List<string> errorList = new List<string>();
 
-            // Address
-            _subscriber.Address.Street = StreetAddressBox.Text.Trim();
-            _subscriber.Address.City = CityBox.Text.Trim();
-            _subscriber.Address.Region = RegionBox.Text.Trim();
-            _subscriber.Address.PostalCode = PostalCodeBox.Text.Trim();
-            _subscriber.Address.Country = CountryBox.Text.Trim();
+                // Collect every error that exists
+                foreach (string property in propertiesToValidate)
+                {
+                    string error = vm[property];
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        errorList.Add(error);
+                    }
+                }
 
-            // Issues
-            //if (int.TryParse(IssuesLeftBox.Text, out int issuesLeft))
-            //{
-            //    _subscriber.IssuesLeft = issuesLeft;
-            //}
+                // If any errors were found, display them all in one go
+                if (errorList.Count > 0)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("Please correct the following errors before saving:");
+                    sb.AppendLine();
 
-            // Status Flags
-            _subscriber.Active = ActiveCheckBox.IsChecked ?? false;
-            _subscriber.Contest = ContestCheckBox.IsChecked ?? false;
-            _subscriber.ManualMail = ManualMailCheckBox.IsChecked ?? false;
-            _subscriber.Commercial = CommercialCheckBox.IsChecked ?? false;
+                    foreach (var error in errorList)
+                    {
+                        sb.AppendLine($"• {error}");
+                    }
+
+                    MessageBox.Show(
+                        sb.ToString(),
+                        "Validation Errors",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return;
+                }
+
+                // If we got here, no errors were found
+                vm.SaveChanges();
+                DialogResult = true;
+            }
         }
     }
 }

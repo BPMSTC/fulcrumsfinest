@@ -4,182 +4,226 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
+        xmlns:viewmodels="clr-namespace:SnowmobileWPF.ViewModels"
         mc:Ignorable="d"
-        Title="Subscribers" Height="520" Width="820"
+        Title="VSCA Subscriber Manager" Height="600" Width="900"
         Background="{StaticResource BackgroundBrush}"
         WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="20">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Top Action Buttons -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,20">
-            <Button Name="SearchButton"
-                    Content="Search"
-                    Style="{StaticResource SecondaryButton}"
-                    Width="120"
-                    Click="SearchButton_Click"
-                    Margin="0,0,10,0"/>
-            <Button Name="CreateDummyButton"
-                    Content="Create Dummy"
-                    Style="{StaticResource SecondaryButton}"
-                    Width="120"
-                    Click="CreateDummyButton_Click"
-                    Margin="0,0,10,0"/>
-            <Button Name="DeleteButton"
-                    Content="Delete"
-                    Style="{StaticResource SecondaryButton}"
-                    Width="120"
-                    Click="DeleteButton_Click"/>
-        </StackPanel>
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Padding="20,15">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <TextBlock Text="VSCA Subscriber Manager" Style="{StaticResource HeaderText}" VerticalAlignment="Center" Margin="0,0,25,0"/>
 
-        <!-- Main Content -->
-        <Grid Grid.Row="1">
+                    <Button Name="SearchButton" 
+                            Content="Search"
+                            Style="{StaticResource ToolbarButton}"
+                            Width="100" Margin="0,0,10,0"
+                            Click="SearchButton_Click"
+                            IsDefault="True"/>
+
+                    <Button Name="CreateDummyButton" 
+                            Content="Create Dummy"
+                            Style="{StaticResource ToolbarButton}"
+                            Width="120" Margin="0,0,10,0"
+                            Command="{Binding CreateDummyCommand}"/>
+                </StackPanel>
+
+                <Button Name="DeleteButton" Content="Delete"
+                        Style="{StaticResource PrimaryButton}"
+                        HorizontalAlignment="Right"
+                        Width="100" Height="32"
+                        Command="{Binding DeleteCommand}"/>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="20">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Subscriber List -->
-            <Border BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="1" CornerRadius="5" Background="White" Padding="5" Margin="0,0,15,0">
-                <ListBox Name="SubscriberList"
-                         MouseDoubleClick="SubscriberList_MouseDoubleClick"
-                         SelectionChanged="SubscriberList_SelectionChanged"
-                         Background="White"
-                         BorderThickness="0"
-                         Foreground="{StaticResource PrimaryBrush}">
-                </ListBox>
+            <Border Grid.Column="0" 
+                    Background="{StaticResource CardBackgroundBrush}" 
+                    BorderBrush="{StaticResource BorderBrush}" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Padding="5" 
+                    Margin="0,0,15,0"
+                    Effect="{StaticResource CardShadow}">
+                <Grid>
+                    <ListBox Name="SubscriberList"
+                             ItemsSource="{Binding Subscribers}"
+                             SelectedItem="{Binding SelectedSubscriber}"
+                             MouseDoubleClick="SubscriberList_MouseDoubleClick"
+                             Background="Transparent"
+                             BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel VerticalAlignment="Center" 
+                                HorizontalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Subscribers.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="No results found" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="{StaticResource MutedTextBrush}"/>
+                        <TextBlock Text="Try a different search" HorizontalAlignment="Center" FontSize="11" Foreground="{StaticResource MutedTextBrush}"/>
+                    </StackPanel>
+                </Grid>
             </Border>
 
-            <!-- Details Panel -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Centered Title and Clear Search -->
-                <DockPanel Margin="0,0,0,15">
-                    <Label Name="ViewingTitleLabel"
-                           Content="Select a subscriber..."
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Foreground="{StaticResource PrimaryBrush}"
-                           HorizontalAlignment="Center"
-                           DockPanel.Dock="Left"/>
+                <DockPanel Margin="0,0,0,15" LastChildFill="False">
+                    <TextBlock Text="{Binding ViewingTitle}"
+                               FontSize="20" FontWeight="SemiBold"
+                               Foreground="{StaticResource PrimaryBrush}"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"/>
+
                     <Button Name="ClearSearchButton"
                             Content="Clear Search"
                             Style="{StaticResource SecondaryButton}"
-                            Width="120"
-                            Visibility="Hidden"
+                            Width="110" Height="30"
+                            Visibility="Collapsed"
                             DockPanel.Dock="Right"
                             Click="ClearSearchButton_Click"/>
                 </DockPanel>
 
-                <!-- Details Panel -->
-                <Border Name="DetailsPanel"
-                        Grid.Row="1"
-                        Background="White"
-                        CornerRadius="5"
-                        BorderBrush="{StaticResource PrimaryBrush}"
+                <Border Grid.Row="1"
+                        Background="{StaticResource CardBackgroundBrush}"
+                        CornerRadius="8"
+                        BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1"
-                        Padding="15"
-                        Visibility="Collapsed">
-                    <Grid>
-                        <TabControl Background="White">
-                            <!-- Personal Details Tab -->
-                            <TabItem Header="Personal Details">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="10">
-                                    <StackPanel>
-                                        <!-- Address -->
-                                        <TextBlock Text="Address" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,0,0,5"/>
-                                        <TextBlock Name="AddressLabel" Text="" Margin="10,0,0,0"/>
-                                        <TextBlock Name="CSPLabel" Text="" Margin="10,0,0,0"/>
-                                        <TextBlock Name="CountryLabel" Text="" Margin="10,0,0,10"/>
+                        Padding="16" 
+                        Visibility="{Binding IsDetailsVisible, Converter={StaticResource BoolToVis}}"
+                        Effect="{StaticResource CardShadow}">
 
-                                        <!-- Contact -->
-                                        <TextBlock Text="Contact" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,10,0,5"/>
-                                        <TextBlock Name="PhoneLabel" Text="" Margin="10,0,0,10"/>
+                    <TabControl Background="Transparent" BorderThickness="0">
+                        <TabItem Header="Personal Details">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,15,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="ADDRESS" Style="{StaticResource AccentFieldLabel}"/>
+                                    <Border Background="#F8FAFC" Padding="12" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,0,0,20">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding SelectedSubscriber.Address.Street}" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource PrimaryBrush}"/>
+                                            <TextBlock Foreground="{StaticResource MutedTextBrush}">
+                                                <Run Text="{Binding SelectedSubscriber.Address.City}"/><Run Text=","/>
+                                                <Run Text="{Binding SelectedSubscriber.Address.Region}"/>
+                                                <Run Text="{Binding SelectedSubscriber.Address.PostalCode}"/>
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding SelectedSubscriber.Address.Country}" Foreground="{StaticResource MutedTextBrush}"/>
+                                        </StackPanel>
+                                    </Border>
 
-                                        <!-- Status -->
-                                        <TextBlock Text="Subscriber Status" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,10,0,5"/>
-                                        <UniformGrid Columns="2" Rows="2" Margin="10,0,0,0">
-                                            <CheckBox Name="ActiveCheckBox" Content="Active" IsEnabled="False" Margin="0,0,20,10"/>
-                                            <CheckBox Name="ContestCheckBox" Content="Contest" IsEnabled="False" Margin="0,0,20,10"/>
-                                            <CheckBox Name="ManualMailCheckBox" Content="Manual Mail" IsEnabled="False" Margin="0,0,20,10"/>
-                                            <CheckBox Name="CommercialCheckBox" Content="Commercial" IsEnabled="False" Margin="0,0,20,10"/>
-                                        </UniformGrid>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </TabItem>
+                                    <TextBlock Text="CONTACT" Style="{StaticResource AccentFieldLabel}"/>
+                                    <TextBlock Text="{Binding SelectedSubscriber.Phone}" Margin="5,0,0,20" FontWeight="Medium" FontSize="14"/>
 
-                            <!-- Subscription Tab -->
-                            <TabItem Header="Subscription">
-                                <StackPanel Margin="10">
-                                    <TextBlock Name="ExpirationLabel" Text="" Margin="0,0,0,5"/>
-                                    <TextBlock Name="RenewalLabel" Text="" Margin="0,0,0,5"/>
-                                    <TextBlock Name="SourceLabel" Text=""/>
+                                    <TextBlock Text="STATUS" Style="{StaticResource AccentFieldLabel}"/>
+                                    <UniformGrid Columns="2" Margin="5,5,0,0">
+                                        <CheckBox Content="Active" IsChecked="{Binding SelectedSubscriber.Active}" IsEnabled="False"/>
+                                        <CheckBox Content="Contest" IsChecked="{Binding SelectedSubscriber.Contest}" IsEnabled="False"/>
+                                        <CheckBox Content="Manual Mail" IsChecked="{Binding SelectedSubscriber.ManualMail}" IsEnabled="False"/>
+                                        <CheckBox Content="Commercial" IsChecked="{Binding SelectedSubscriber.Commercial}" IsEnabled="False"/>
+                                    </UniformGrid>
                                 </StackPanel>
-                            </TabItem>
+                            </ScrollViewer>
+                        </TabItem>
 
-                            <!-- Notes Tab -->
-                            <TabItem Header="Notes">
-                                <Grid Margin="10">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
+                        <TabItem Header="Subscription">
+                            <StackPanel Margin="0,15,0,0">
+                                <TextBlock Text="EXPIRATION DATE" Style="{StaticResource AccentFieldLabel}"/>
+                                <TextBlock Text="{Binding SelectedSubscriber.Subscription.ExpDate, StringFormat='Expires on \{0:d\}'}" Margin="5,0,0,20" FontSize="15" FontWeight="Medium"/>
 
-                                    <!-- Action Buttons -->
-                                    <StackPanel Orientation="Horizontal"
-                                                HorizontalAlignment="Right"
-                                                Margin="0,0,0,10">
-                                        <Button Name="EditNotesButton"
-                                                Content="Edit"
-                                                Style="{StaticResource SecondaryButton}"
-                                                Width="80"
-                                                Margin="0,0,10,0"
-                                                Click="EditNotesButton_Click"/>
+                                <TextBlock Text="RENEWAL STATUS" Style="{StaticResource AccentFieldLabel}"/>
+                                <TextBlock Text="{Binding SelectedSubscriber.Subscription.DateRenewed, StringFormat='Last renewed on \{0:d\}'}" Margin="5,0,0,20" FontSize="15" FontWeight="Medium"/>
 
-                                        <Button Name="SaveNotesButton"
-                                                Content="Save"
-                                                Style="{StaticResource SecondaryButton}"
-                                                Width="80"
-                                                Margin="0,0,10,0"
-                                                Visibility="Collapsed"
-                                                Click="SaveNotesButton_Click"/>
+                                <TextBlock Text="ACQUISITION SOURCE" Style="{StaticResource AccentFieldLabel}"/>
+                                <TextBlock Text="{Binding SelectedSubscriber.Subscription.Source, StringFormat='Source: \{0\}'}" Margin="5,0,0,0" FontSize="15" FontWeight="Medium"/>
+                            </StackPanel>
+                        </TabItem>
 
-                                        <Button Name="CancelNotesButton"
-                                                Content="Cancel"
-                                                Style="{StaticResource SecondaryButton}"
-                                                Width="80"
-                                                Visibility="Collapsed"
-                                                Click="CancelNotesButton_Click"/>
-                                    </StackPanel>
+                        <TabItem Header="Notes">
+                            <Grid Margin="0,15,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
 
-                                    <!-- Read-only view -->
-                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                                        <TextBlock Name="NotesLabel"
-                                                   Text=""
-                                                   TextWrapping="Wrap"
-                                                   Height="Auto"/>
-                                    </ScrollViewer>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,12">
+                                    <Button Content="Edit" Command="{Binding EditNotesCommand}" Click="EditNotesButton_Click" Width="70" Margin="0,0,5,0">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsEditingNotes}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
 
-                                    <!-- Edit view -->
-                                    <TextBox Name="NotesTextBox"
-                                             Grid.Row="1"
-                                             AcceptsReturn="True"
-                                             TextWrapping="Wrap"
-                                             VerticalScrollBarVisibility="Auto"
-                                             Visibility="Collapsed"
-                                             Height="Auto"/>
-                                </Grid>
-                            </TabItem>
-                        </TabControl>
-                    </Grid>
+                                    <Button Content="Save" Style="{StaticResource PrimaryButton}" Height="30" Width="70" Margin="0,0,5,0" 
+                                            Command="{Binding SaveNotesCommand}"
+                                            Visibility="{Binding IsEditingNotes, Converter={StaticResource BoolToVis}}"/>
+
+                                    <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Height="30" Width="70" 
+                                            Command="{Binding CancelNotesCommand}"
+                                            Visibility="{Binding IsEditingNotes, Converter={StaticResource BoolToVis}}"/>
+                                </StackPanel>
+
+                                <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Padding="12">
+                                    <Grid>
+                                        <TextBlock Text="{Binding NotesText}" TextWrapping="Wrap">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource NotesLabelStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEditingNotes}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <TextBox x:Name="NotesTextBox"
+                                                 Text="{Binding NotesText, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Style="{StaticResource NotesEditStyle}"
+                                                 Visibility="{Binding IsEditingNotes, Converter={StaticResource BoolToVis}}" 
+                                                 AcceptsReturn="True" 
+                                                 TextWrapping="Wrap"
+                                                 VerticalAlignment="Stretch"
+                                                 MinHeight="200"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Border>
             </Grid>
         </Grid>
