@@ -38,7 +38,8 @@ namespace SnowmobileLibrary.Models
         [MaxLength(500)]
         public string? Notes { get; set; }
 
-        public Address Address { get; set; }
+        public int? AddressId { get; set; }
+        public Address? Address { get; set; }
 
         public Subscription Subscription { get; set; }
 
@@ -47,12 +48,6 @@ namespace SnowmobileLibrary.Models
         public override string ToString()
         {
             return $"{FirstName} {LastName} (VSCA: {VSCA})";
-        }
-        public Subscriber()
-        {
-            Address = new Address();
-            Subscription = new Subscription();
-            Email = new Email();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace SnowmobileWPF.Services
         public string Phone { get; set; } = "";
 
         [Index(9)]
-        public DateTime DateJoined { get; set; } = DateTime.UnixEpoch;
+        public DateOnly? DateJoined { get; set; }
 
         [Index(10)]
         public bool Active { get; set; } = false;
@@ -59,7 +59,7 @@ namespace SnowmobileWPF.Services
         public bool? Contest { get; set; } = false;
 
         [Index(15)]
-        public DateTime DateRenewed { get; set; } = DateTime.UnixEpoch;
+        public DateOnly? DateRenewed { get; set; } = DateOnly.FromDateTime(DateTime.UnixEpoch);
 
         [Index(16)]
         public bool? ManualMail { get; set; } = false;
@@ -97,7 +97,7 @@ namespace SnowmobileWPF.Services
         {
             return new Subscriber
             {
-                VSCA = this.VSCA,
+                //VSCA = this.VSCA,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
                 Phone = this.Phone,
@@ -105,7 +105,7 @@ namespace SnowmobileWPF.Services
                 Contest = this.Contest ?? false,
                 ManualMail = this.ManualMail ?? false,
                 Commercial = this.Commercial ?? false,
-                DateJoined = DateOnly.FromDateTime(this.DateJoined),
+                DateJoined = this.DateJoined ?? DateOnly.FromDateTime(DateTime.UnixEpoch),
                 Notes = this.Notes,
                 Address = new Address
                 {
@@ -113,15 +113,13 @@ namespace SnowmobileWPF.Services
                     City = this.City,
                     Region = this.Region,
                     PostalCode = this.PostalCode,
-                    Country = this.Country,
-                    VSCA = this.VSCA
+                    Country = this.Country
                 },
                 Subscription = new Subscription
                 {
-                    VSCA = this.VSCA,
                     ExpDate = DateOnly.FromDateTime(this.ExpDate),
                     IssuesRemaining = this.IssuesLeft,
-                    DateRenewed = DateOnly.FromDateTime(this.DateRenewed),
+                    DateRenewed = this.DateRenewed ?? DateOnly.FromDateTime(DateTime.UnixEpoch),
                     Source = SourceToEnum(this.Source)
                 },
             };
@@ -145,19 +143,29 @@ namespace SnowmobileWPF.Services
             StreamReader reader = new StreamReader(filePath);
             using (CsvReader csv = new CsvReader(reader, config))
             {
-                // configure CsvReader to recognize "NULL"
-                var options = new TypeConverterOptions { NullValues = { "NULL" } };
+                // configure CsvReader to recognize "NULL" and other null placeholders
+                var options = new TypeConverterOptions { NullValues = { "NULL", String.Empty, "0:00.0" } };
                 csv.Context.TypeConverterOptionsCache.AddOptions<int>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<int?>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<bool>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<bool?>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(options);
+                csv.Context.TypeConverterOptionsCache.AddOptions<DateOnly>(options);
+                csv.Context.TypeConverterOptionsCache.AddOptions<DateOnly?>(options);
+
 
                 while (csv.Read())
                 {
                     var record = csv.GetRecord<SubscriberCSV>();
-                    _subscriberRepository.Create(record.ToSubscriber());
+                    try
+                    {
+                        _subscriberRepository.Create(record.ToSubscriber());
+                    } catch (Exception ex)
+                    {
+                        // Log the error and continue with the next record
+                        Console.WriteLine($"Error importing record with VSCA {record.VSCA}: {ex.Message}");
+                    }
                 }
             }
         }

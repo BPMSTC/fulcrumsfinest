@@ -1,4 +1,5 @@
-﻿using SnowmobileLibrary.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SnowmobileLibrary.Data;
 using SnowmobileLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,11 @@ namespace SnowmobileWPF.Repositories
 
         public List<Subscriber>? Search(SearchParams searchParams)
         {
-            var query = _context.Subscribers.AsQueryable();
+            var query = _context.Subscribers
+                .Include(s => s.Address)
+                .Include(s => s.Subscription)
+                .Include(s => s.Email)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchParams.LastName))
                 query = query.Where(s => s.LastName.Contains(searchParams.LastName));
@@ -31,18 +36,29 @@ namespace SnowmobileWPF.Repositories
             if (searchParams.VSCA.HasValue)
                 query = query.Where(s => s.VSCA == searchParams.VSCA.Value);
 
-            return query.ToList();
+            return query
+                .OrderByDescending(s => s.VSCA)
+                .ToList();
         }
 
         public List<Subscriber> Retrieve(int max)
         {
-            return _context.Subscribers.Take(max).ToList();
+            var subscribers = _context.Subscribers
+                .Include(s => s.Address)
+                .Include(s => s.Subscription)
+                .Include(s => s.Email)
+                .AsQueryable();
+            if (max > 0)
+            {
+                subscribers = (Microsoft.EntityFrameworkCore.DbSet<Subscriber>)subscribers.Take(max);
+            }
+            return subscribers.ToList();
         }
 
         public void Create(Subscriber subscriber, bool forceCreation = false)
         {
             // todo: check for existing subscriber if forceCreation is false
-            _context.Subscribers.Add(subscriber);
+            _context.Add(subscriber);
             _context.SaveChanges();
         }
 

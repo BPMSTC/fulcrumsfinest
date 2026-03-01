@@ -6,30 +6,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SnowmobileLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class HopefullyTheLastTime : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Subscribers",
+                name: "Subscriptions",
                 columns: table => new
                 {
-                    VSCA = table.Column<int>(type: "int", nullable: false)
+                    SubscriptionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false),
-                    Contest = table.Column<bool>(type: "bit", nullable: false),
-                    ManualMail = table.Column<bool>(type: "bit", nullable: false),
-                    Commercial = table.Column<bool>(type: "bit", nullable: false),
-                    DateJoined = table.Column<DateOnly>(type: "date", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    VSCA = table.Column<int>(type: "int", nullable: false),
+                    ExpDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    DateRenewed = table.Column<DateOnly>(type: "date", nullable: false),
+                    IssuesRemaining = table.Column<int>(type: "int", nullable: false),
+                    Source = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subscribers", x => x.VSCA);
+                    table.PrimaryKey("PK_Subscriptions", x => x.SubscriptionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,12 +45,6 @@ namespace SnowmobileLibrary.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.AddressId);
-                    table.ForeignKey(
-                        name: "FK_Addresses_Subscribers_VSCA",
-                        column: x => x.VSCA,
-                        principalTable: "Subscribers",
-                        principalColumn: "VSCA",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,41 +60,46 @@ namespace SnowmobileLibrary.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Emails", x => x.EmailId);
-                    table.ForeignKey(
-                        name: "FK_Emails_Subscribers_VSCA",
-                        column: x => x.VSCA,
-                        principalTable: "Subscribers",
-                        principalColumn: "VSCA",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subscriptions",
+                name: "Subscribers",
                 columns: table => new
                 {
-                    SubscriptionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     VSCA = table.Column<int>(type: "int", nullable: false),
-                    ExpDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    DateRenewed = table.Column<DateOnly>(type: "date", nullable: false),
-                    IssuesRemaining = table.Column<int>(type: "int", nullable: false),
-                    Source = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: false),
+                    Contest = table.Column<bool>(type: "bit", nullable: false),
+                    ManualMail = table.Column<bool>(type: "bit", nullable: false),
+                    Commercial = table.Column<bool>(type: "bit", nullable: false),
+                    DateJoined = table.Column<DateOnly>(type: "date", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    AddressId = table.Column<int>(type: "int", nullable: true),
+                    EmailId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subscriptions", x => x.SubscriptionId);
+                    table.PrimaryKey("PK_Subscribers", x => x.VSCA);
                     table.ForeignKey(
-                        name: "FK_Subscriptions_Subscribers_VSCA",
+                        name: "FK_Subscribers_Emails_EmailId",
+                        column: x => x.EmailId,
+                        principalTable: "Emails",
+                        principalColumn: "EmailId");
+                    table.ForeignKey(
+                        name: "FK_Subscribers_Subscriptions_VSCA",
                         column: x => x.VSCA,
-                        principalTable: "Subscribers",
-                        principalColumn: "VSCA",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Subscriptions",
+                        principalColumn: "SubscriptionId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_VSCA",
                 table: "Addresses",
-                column: "VSCA");
+                column: "VSCA",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Emails_VSCA",
@@ -112,25 +107,45 @@ namespace SnowmobileLibrary.Migrations
                 column: "VSCA");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subscriptions_VSCA",
-                table: "Subscriptions",
-                column: "VSCA");
+                name: "IX_Subscribers_EmailId",
+                table: "Subscribers",
+                column: "EmailId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Addresses_Subscribers_VSCA",
+                table: "Addresses",
+                column: "VSCA",
+                principalTable: "Subscribers",
+                principalColumn: "VSCA",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Emails_Subscribers_VSCA",
+                table: "Emails",
+                column: "VSCA",
+                principalTable: "Subscribers",
+                principalColumn: "VSCA",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Emails_Subscribers_VSCA",
+                table: "Emails");
+
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Subscribers");
 
             migrationBuilder.DropTable(
                 name: "Emails");
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
-
-            migrationBuilder.DropTable(
-                name: "Subscribers");
         }
     }
 }

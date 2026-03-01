@@ -23,7 +23,6 @@ namespace SnowmobileLibrary.Models
         [Range(0, 4, ErrorMessage = "Issues remaining must be between 0 and 4.")]
         public int IssuesRemaining { get; set; }
 
-        [Required]
-        public SubscriptionSource Source { get; set; } // Source of subscription
+        public SubscriptionSource? Source { get; set; } // Source of subscription
     }
 }
