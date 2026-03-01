@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Data;
 using SnowmobileWPF.Repositories;
+using SnowmobileWPF.ViewModels;
+using System;
 using System.Windows;
 
 namespace SnowmobileWPF
@@ -18,24 +20,28 @@ namespace SnowmobileWPF
             AppHost = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    // Load appsettings.json for local DB connection
                     config.AddJsonFile("appsettings.json", optional: false);
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    // Get connection string from configuration
-                    var connectionString = context.Configuration
-                        .GetConnectionString("DefaultConnection");
+                    var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
 
                     services.AddDbContext<SnowmobileContext>(options =>
-                        options.UseSqlServer(connectionString));
-                    services.AddScoped<ISubscriberRepository, LocalSubscriberRepository>();
-                    services.AddTransient<MainWindow>();
+                        options.UseSqlServer(connectionString), ServiceLifetime.Singleton);
+
+                    services.AddSingleton<ISubscriberRepository, LocalSubscriberRepository>();
+
+                    services.AddSingleton<MainViewModel>();
+
+                    services.AddSingleton<MainWindow>(s => new MainWindow
+                    {
+                        DataContext = s.GetRequiredService<MainViewModel>()
+                    });
                 })
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
-                    logging.AddConsole(); // For development; can add file or other providers later
+                    logging.AddConsole();
                 })
                 .Build();
         }
@@ -51,14 +57,13 @@ namespace SnowmobileWPF
             }
             catch (Exception ex)
             {
-                // Log exception and show user-friendly message
                 var logger = AppHost.Services.GetRequiredService<ILogger<App>>();
                 logger.LogError(ex, "An error occurred while starting the application.");
 
-                MessageBox.Show("An unexpected error occurred during startup. Please see the logs.",
+                MessageBox.Show($"An unexpected error occurred during startup: {ex.Message}",
                                 "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                Shutdown(); // Stop the application if startup fails
+                Shutdown();
             }
             finally
             {
