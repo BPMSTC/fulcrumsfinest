@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Models;
 using SnowmobileWPF.Repositories;
+using SnowmobileWPF.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -35,6 +37,7 @@ namespace SnowmobileWPF.ViewModels
             // Initialize Commands
             DeleteCommand = new RelayCommand(ExecuteDelete, CanExecuteOnSelected);
             CreateDummyCommand = new RelayCommand(_ => ExecuteCreateDummy());
+            ImportCommand = new RelayCommand(_ => ExecuteImport());
             EditNotesCommand = new RelayCommand(_ => ExecuteEditNotes(), CanExecuteOnSelected);
             SaveNotesCommand = new RelayCommand(_ => ExecuteSaveNotes());
             CancelNotesCommand = new RelayCommand(_ => ExecuteCancelNotes());
@@ -93,6 +96,7 @@ namespace SnowmobileWPF.ViewModels
 
         public ICommand DeleteCommand { get; }
         public ICommand CreateDummyCommand { get; }
+        public ICommand ImportCommand { get; }
         public ICommand EditNotesCommand { get; }
         public ICommand SaveNotesCommand { get; }
         public ICommand CancelNotesCommand { get; }
@@ -233,6 +237,19 @@ namespace SnowmobileWPF.ViewModels
             _logger.LogDebug("Cancelled notes edit for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
             IsEditingNotes = false;
             UpdateNotesDisplay();
+        }
+
+        private void ExecuteImport()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            if (fileDialog.ShowDialog() == true)
+            {
+                _logger.LogInformation($"Starting import from {fileDialog.FileName}");
+                CSVImportService importService = new CSVImportService(_repository);
+                importService.ImportCSV(fileDialog.FileName);
+                _logger.LogInformation($"Import complete.");
+                LoadSubscribers();
+            }
         }
 
         #endregion

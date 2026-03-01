@@ -97,7 +97,7 @@ namespace SnowmobileWPF.Services
         {
             return new Subscriber
             {
-                //VSCA = this.VSCA,
+                VSCA = this.VSCA,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
                 Phone = this.Phone,
@@ -147,6 +147,8 @@ namespace SnowmobileWPF.Services
                 var options = new TypeConverterOptions { NullValues = { "NULL", String.Empty, "0:00.0" } };
                 csv.Context.TypeConverterOptionsCache.AddOptions<int>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<int?>(options);
+                //csv.Context.TypeConverterOptionsCache.AddOptions<string>(options);
+                //csv.Context.TypeConverterOptionsCache.AddOptions<string?>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<bool>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<bool?>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);

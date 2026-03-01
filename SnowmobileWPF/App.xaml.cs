@@ -31,7 +31,7 @@ namespace SnowmobileWPF
 
                     services.AddSingleton<SnowmobileLibrary.Services.ILogger, FileLogger>();
 
-                    services.AddSingleton<ISubscriberRepository, LocalSubscriberRepository>();
+                    services.AddSingleton<ISubscriberRepository, SubscriberRepository>();
                     services.AddSingleton<MainViewModel>();
                     services.AddSingleton<MainWindow>(s => new MainWindow
                     {
@@ -45,6 +45,8 @@ namespace SnowmobileWPF
                     logging.AddDebug();
 
                     logging.AddProvider(new FileLoggerProvider());
+
+                    logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
                 })
                 .Build();
         }

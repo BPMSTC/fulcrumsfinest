@@ -46,13 +46,10 @@ namespace SnowmobileLibrary.Models
         public int? AddressId { get; set; }
         public Address? Address { get; set; }
 
-        public override string ToString() => $"{FirstName} {LastName} (VSCA: {VSCA})";
+        public Subscription Subscription { get; set; }
 
         public Email? Email { get; set; }
 
-        public override string ToString()
-        {
-            return $"{FirstName} {LastName} (VSCA: {VSCA})";
-        }
+        public override string ToString() => $"{FirstName} {LastName} (VSCA: {VSCA})";
     }
 }

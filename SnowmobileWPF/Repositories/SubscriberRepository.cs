@@ -50,7 +50,7 @@ namespace SnowmobileWPF.Repositories
             {
                 subscribers = (Microsoft.EntityFrameworkCore.DbSet<Subscriber>)subscribers.Take(max);
             }
-            return subscribers.ToList();
+            return subscribers.OrderDescending().ToList();
         }
 
         public void Create(Subscriber subscriber, bool forceCreation = false)
@@ -68,7 +68,7 @@ namespace SnowmobileWPF.Repositories
 
         public void Update(Subscriber subscriber)
         {
-            _context.Subscribers.Update(subscriber);
+            _context.Update(subscriber);
             _context.SaveChanges();
         }
     }

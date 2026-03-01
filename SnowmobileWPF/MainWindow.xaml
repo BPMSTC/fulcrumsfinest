@@ -37,6 +37,12 @@
                             Style="{StaticResource ToolbarButton}"
                             Width="120" Margin="0,0,10,0"
                             Command="{Binding CreateDummyCommand}"/>
+                    
+                    <Button Name="ImportButton" 
+                        Content="Import"
+                        Style="{StaticResource ToolbarButton}"
+                        Width="120" Margin="0,0,10,0"
+                        Command="{Binding ImportCommand}"/>
                 </StackPanel>
 
                 <Button Name="DeleteButton" Content="Delete"
