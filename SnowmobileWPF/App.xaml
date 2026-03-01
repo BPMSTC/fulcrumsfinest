@@ -67,9 +67,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border Name="Border" CornerRadius="6" 
-                                Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}">
                             <ScrollViewer x:Name="PART_ContentHost" Margin="2,0"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -79,6 +79,9 @@
                             </Trigger>
                             <Trigger Property="Validation.HasError" Value="True">
                                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
+                                <Setter Property="ToolTip" 
+                                Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

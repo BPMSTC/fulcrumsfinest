@@ -21,5 +21,9 @@ namespace SnowmobileWPF.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        public virtual string Error => string.Empty;
+
+        public virtual string this[string columnName] => string.Empty;
     }
 }

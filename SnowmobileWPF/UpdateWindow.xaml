@@ -36,12 +36,12 @@
 
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="FIRST NAME" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Subscriber.FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="LAST NAME" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Subscriber.LastName, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                     </Grid>
 
@@ -53,16 +53,16 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="PHONE NUMBER" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Subscriber.Phone, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="EMAIL ADDRESS" Style="{StaticResource FieldLabel}"/>
-                            <TextBox/>
+                            <TextBox Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                     </Grid>
 
                     <TextBlock Text="STREET ADDRESS" Style="{StaticResource FieldLabel}"/>
-                    <TextBox Text="{Binding Subscriber.Address.Street, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Text="{Binding Street, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -72,11 +72,11 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="CITY" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Subscriber.Address.City, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Text="{Binding City, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="STATE" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Subscriber.Address.Region, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Text="{Binding Region, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                     </Grid>
 
@@ -88,11 +88,11 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="COUNTRY" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Subscriber.Address.Country, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Text="{Binding Country, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="POSTAL CODE" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Subscriber.Address.PostalCode, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Text="{Binding PostalCode, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                     </Grid>
 
