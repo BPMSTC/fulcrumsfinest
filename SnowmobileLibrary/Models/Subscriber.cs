@@ -38,7 +38,12 @@ namespace SnowmobileLibrary.Models
         [MaxLength(500)]
         public string? Notes { get; set; }
 
-        public Address Address { get; set; }
+        public int? AddressId { get; set; }
+        public Address? Address { get; set; }
+
+        public Subscription Subscription { get; set; }
+
+        public Email? Email { get; set; }
 
         public override string ToString()
         {

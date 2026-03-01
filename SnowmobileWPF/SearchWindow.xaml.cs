@@ -14,6 +14,9 @@ using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
+    /// <summary>
+    /// A set of parameters to be used for searching subscribers. All fields are optional, and the search will match any subscriber that matches all non-null fields.
+    /// </summary>
     public class SearchParams
     {
         public int? VSCA { get; set; }
@@ -24,6 +27,7 @@ namespace SnowmobileWPF
 
         public string? PhoneNumber { get; set; }
     }
+
     /// <summary>
     /// Interaction logic for SearchWindow.xaml
     /// </summary>
@@ -45,10 +49,10 @@ namespace SnowmobileWPF
         {
             SearchParams = new SearchParams
             {
-                VSCA = int.TryParse(VSCATextBox.Text, out int vsca) ? vsca : null,
-                FirstName = FirstNameTextBox.Text,
                 LastName = LastNameTextBox.Text,
-                PhoneNumber = PhoneNumberTextBox.Text
+                FirstName = FirstNameTextBox.Text,
+                PhoneNumber = PhoneNumberTextBox.Text,
+                VSCA = int.TryParse(VSCATextBox.Text, out int vsca) ? vsca : null
             };
             DialogResult = true;
         }

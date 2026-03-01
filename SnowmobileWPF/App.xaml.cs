@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Data;
+using SnowmobileWPF.Repositories;
 using System.Windows;
 
 namespace SnowmobileWPF
@@ -27,8 +28,9 @@ namespace SnowmobileWPF
                         .GetConnectionString("DefaultConnection");
 
                     services.AddDbContext<SnowmobileContext>(options =>
-                        options.UseSqlServer(connectionString));
-
+                        options.UseSqlServer(connectionString)
+                        .EnableSensitiveDataLogging());
+                    services.AddScoped<ISubscriberRepository, SubscriberRepository>();
                     services.AddTransient<MainWindow>();
                 })
                 .ConfigureLogging(logging =>
@@ -54,7 +56,7 @@ namespace SnowmobileWPF
                 var logger = AppHost.Services.GetRequiredService<ILogger<App>>();
                 logger.LogError(ex, "An error occurred while starting the application.");
 
-                MessageBox.Show("An unexpected error occurred during startup. Please see the logs.",
+                MessageBox.Show($"An unexpected error occurred during startup. {ex}",
                                 "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 Shutdown(); // Stop the application if startup fails

@@ -11,7 +11,7 @@ namespace SnowmobileLibrary.Models
         [ForeignKey(nameof(Subscriber))]
         public int VSCA { get; set; }
 
-        public Subscriber Subscriber { get; set; } = null!;
+        public Subscriber SubscriberObject { get; set; } = null!;
 
         [Required]
         [MaxLength(100)]

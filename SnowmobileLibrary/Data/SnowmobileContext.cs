@@ -23,26 +23,27 @@ namespace SnowmobileLibrary.Data
             modelBuilder.Entity<Subscriber>()
                 .HasKey(s => s.VSCA);
 
-            // Address to Subscriber (1-many)
-            modelBuilder.Entity<Address>()
-                .HasOne(a => a.Subscriber)
-                .WithMany()
-                .HasForeignKey(a => a.VSCA)
+            // Subscriber to Address (1-1)
+            modelBuilder.Entity<Subscriber>()
+                .HasOne(s => s.Address)
+                .WithOne(a => a.SubscriberObject)
+                .HasForeignKey<Address>(a => a.VSCA)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Subscription to Subscriber (1-many)
+            // Subscription to Subscriber (1-1)
             modelBuilder.Entity<Subscription>()
                 .HasOne(s => s.Subscriber)
-                .WithMany()
-                .HasForeignKey(s => s.VSCA)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(s => s.Subscription)
+                .HasForeignKey<Subscriber>(s => s.VSCA)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Email to Subscriber (1-many)
             modelBuilder.Entity<Email>()
                 .HasOne(e => e.Subscriber)
                 .WithMany()
                 .HasForeignKey(e => e.VSCA)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Enum stored as string (more readable, safer long-term)
             modelBuilder.Entity<Subscription>()

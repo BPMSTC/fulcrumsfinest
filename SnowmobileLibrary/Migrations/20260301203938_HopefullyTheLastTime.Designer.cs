@@ -12,15 +12,15 @@ using SnowmobileLibrary.Data;
 namespace SnowmobileLibrary.Migrations
 {
     [DbContext(typeof(SnowmobileContext))]
-    [Migration("20260212004352_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260301203938_HopefullyTheLastTime")]
+    partial class HopefullyTheLastTime
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.24")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -66,7 +66,8 @@ namespace SnowmobileLibrary.Migrations
 
                     b.HasKey("AddressId");
 
-                    b.HasIndex("VSCA");
+                    b.HasIndex("VSCA")
+                        .IsUnique();
 
                     b.ToTable("Addresses");
                 });
@@ -100,13 +101,13 @@ namespace SnowmobileLibrary.Migrations
             modelBuilder.Entity("SnowmobileLibrary.Models.Subscriber", b =>
                 {
                     b.Property<int>("VSCA")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VSCA"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Commercial")
                         .HasColumnType("bit");
@@ -116,6 +117,9 @@ namespace SnowmobileLibrary.Migrations
 
                     b.Property<DateOnly>("DateJoined")
                         .HasColumnType("date");
+
+                    b.Property<int?>("EmailId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -141,6 +145,8 @@ namespace SnowmobileLibrary.Migrations
 
                     b.HasKey("VSCA");
 
+                    b.HasIndex("EmailId");
+
                     b.ToTable("Subscribers");
                 });
 
@@ -162,7 +168,6 @@ namespace SnowmobileLibrary.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Source")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -171,20 +176,17 @@ namespace SnowmobileLibrary.Migrations
 
                     b.HasKey("SubscriptionId");
 
-                    b.HasIndex("VSCA");
-
                     b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("SnowmobileLibrary.Models.Address", b =>
                 {
-                    b.HasOne("SnowmobileLibrary.Models.Subscriber", "Subscriber")
-                        .WithMany()
-                        .HasForeignKey("VSCA")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("SnowmobileLibrary.Models.Subscriber", "SubscriberObject")
+                        .WithOne("Address")
+                        .HasForeignKey("SnowmobileLibrary.Models.Address", "VSCA")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("Subscriber");
+                    b.Navigation("SubscriberObject");
                 });
 
             modelBuilder.Entity("SnowmobileLibrary.Models.Email", b =>
@@ -192,21 +194,38 @@ namespace SnowmobileLibrary.Migrations
                     b.HasOne("SnowmobileLibrary.Models.Subscriber", "Subscriber")
                         .WithMany()
                         .HasForeignKey("VSCA")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Subscriber");
                 });
 
-            modelBuilder.Entity("SnowmobileLibrary.Models.Subscription", b =>
+            modelBuilder.Entity("SnowmobileLibrary.Models.Subscriber", b =>
                 {
-                    b.HasOne("SnowmobileLibrary.Models.Subscriber", "Subscriber")
+                    b.HasOne("SnowmobileLibrary.Models.Email", "Email")
                         .WithMany()
-                        .HasForeignKey("VSCA")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("EmailId");
+
+                    b.HasOne("SnowmobileLibrary.Models.Subscription", "Subscription")
+                        .WithOne("Subscriber")
+                        .HasForeignKey("SnowmobileLibrary.Models.Subscriber", "VSCA")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Subscriber");
+                    b.Navigation("Email");
+
+                    b.Navigation("Subscription");
+                });
+
+            modelBuilder.Entity("SnowmobileLibrary.Models.Subscriber", b =>
+                {
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("SnowmobileLibrary.Models.Subscription", b =>
+                {
+                    b.Navigation("Subscriber")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
