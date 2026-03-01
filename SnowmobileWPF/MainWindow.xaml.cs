@@ -40,30 +40,17 @@ namespace SnowmobileWPF
         {
             if (DataContext is MainViewModel vm && vm.SelectedSubscriber != null)
             {
-                UpdateWindow updateWindow = new UpdateWindow(vm.SelectedSubscriber);
-                updateWindow.Owner = this;
-
-                if (updateWindow.ShowDialog() == true)
-                {
-                    SubscriberList.Items.Refresh();
-                    vm.RefreshDisplay();
-                }
+                vm.UpdateCommand.Execute(null);
             }
         }
 
-        /// <summary>
-        /// Handles the focus logic when the user enters Edit mode for notes.
-        /// </summary>
         private void EditNotesButton_Click(object sender, RoutedEventArgs e)
         {
-            // We use the Dispatcher to wait until the UI thread has updated the 
-            // TextBox visibility before trying to set focus.
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (NotesTextBox != null)
                 {
                     NotesTextBox.Focus();
-                    // Moves the cursor to the end of the text
                     NotesTextBox.CaretIndex = NotesTextBox.Text.Length;
                 }
             }), System.Windows.Threading.DispatcherPriority.Input);

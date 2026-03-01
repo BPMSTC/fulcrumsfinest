@@ -1,4 +1,5 @@
-﻿using SnowmobileLibrary.Models; // Updated to your library namespace
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SnowmobileWPF.Models;
 using SnowmobileWPF.ViewModels;
 using System.Windows;
@@ -12,7 +13,9 @@ namespace SnowmobileWPF
         public SearchWindow()
         {
             InitializeComponent();
-            DataContext = new SearchViewModel();
+
+            var logger = App.AppHost.Services.GetRequiredService<ILogger<SearchViewModel>>();
+            DataContext = new SearchViewModel(logger);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -24,7 +27,6 @@ namespace SnowmobileWPF
         {
             if (DataContext is SearchViewModel vm)
             {
-                // Extract the packaged parameters from the VM
                 SearchParams = vm.GetParameters();
                 DialogResult = true;
             }

@@ -1,15 +1,13 @@
 ﻿using System.Windows;
-using SnowmobileLibrary.Models;
 using SnowmobileWPF.ViewModels;
 
 namespace SnowmobileWPF
 {
     public partial class UpdateWindow : Window
     {
-        public UpdateWindow(Subscriber subscriber)
+        public UpdateWindow()
         {
             InitializeComponent();
-            DataContext = new UpdateViewModel(subscriber);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

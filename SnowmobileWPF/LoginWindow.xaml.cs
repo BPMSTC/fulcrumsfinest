@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SnowmobileWPF.ViewModels;
 
 namespace SnowmobileWPF
@@ -8,19 +10,20 @@ namespace SnowmobileWPF
         public LoginWindow()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
+
+            var logger = App.AppHost.Services.GetRequiredService<ILogger<LoginViewModel>>();
+            DataContext = new LoginViewModel(logger);
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is LoginViewModel vm)
             {
-                // Pull the password safely from the PasswordBox
                 string password = UserPasswordBox.Password;
 
                 if (vm.Authenticate(password))
                 {
-                    DialogResult = true; // Signals successful login
+                    DialogResult = true;
                 }
                 else
                 {
