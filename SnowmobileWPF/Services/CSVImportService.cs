@@ -93,6 +93,19 @@ namespace SnowmobileWPF.Services
             }
         }
 
+        private string HandleEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return string.Empty;
+            }
+
+            // Split by common email separators (comma, semicolon, space) and return the first email
+            var emails = email.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            
+            return emails.Length > 0 ? emails[0] : string.Empty;
+        }
+
         public Subscriber ToSubscriber()
         {
             return new Subscriber
@@ -107,6 +120,7 @@ namespace SnowmobileWPF.Services
                 Commercial = this.Commercial ?? false,
                 DateJoined = this.DateJoined ?? DateOnly.FromDateTime(DateTime.UnixEpoch),
                 Notes = this.Notes,
+                Email = HandleEmail(this.Email),
                 Address = new Address
                 {
                     Street = this.Address,

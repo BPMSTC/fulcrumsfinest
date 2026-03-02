@@ -48,7 +48,11 @@ namespace SnowmobileLibrary.Models
 
         public Subscription Subscription { get; set; }
 
-        public Email? Email { get; set; }
+        [Required(ErrorMessage = "Email address is required.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        [MaxLength(320)]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
+        public string Email { get; set; } = string.Empty;
 
         public override string ToString() => $"{FirstName} {LastName} (VSCA: {VSCA})";
     }

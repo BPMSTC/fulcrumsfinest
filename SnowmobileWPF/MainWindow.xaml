@@ -32,11 +32,11 @@
                             Click="SearchButton_Click"
                             IsDefault="True"/>
 
-                    <Button Name="CreateDummyButton" 
-                            Content="Create Dummy"
+                    <Button Name="CreateButton" 
+                            Content="Create New"
                             Style="{StaticResource ToolbarButton}"
                             Width="120" Margin="0,0,10,0"
-                            Command="{Binding CreateDummyCommand}"/>
+                            Command="{Binding CreateCommand}"/>
                     
                     <Button Name="ImportButton" 
                         Content="Import"
@@ -148,7 +148,8 @@
                                     </Border>
 
                                     <TextBlock Text="CONTACT" Style="{StaticResource AccentFieldLabel}"/>
-                                    <TextBlock Text="{Binding SelectedSubscriber.Phone}" Margin="5,0,0,20" FontWeight="Medium" FontSize="14"/>
+                                    <TextBlock Text="{Binding SelectedSubscriber.Phone}" Margin="5,0,0,0" FontWeight="Medium" FontSize="14"/>
+                                    <TextBlock Text="{Binding SelectedSubscriber.Email}" Margin="5,0,0,20" FontWeight="Medium" FontSize="14"/>
 
                                     <TextBlock Text="STATUS" Style="{StaticResource AccentFieldLabel}"/>
                                     <UniformGrid Columns="2" Margin="5,5,0,0">
@@ -163,14 +164,45 @@
 
                         <TabItem Header="Subscription">
                             <StackPanel Margin="0,15,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
+                                        <Button Content="Edit" Command="{Binding EditSubscriptionCommand}" Width="70" Margin="0,0,5,0">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEditingSubscription}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <Button Content="Save" Style="{StaticResource PrimaryButton}" Height="30" Width="70" Margin="0,0,5,0" 
+                                            Command="{Binding SaveSubscriptionCommand}"
+                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"/>
+
+                                        <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Height="30" Width="70" 
+                                            Command="{Binding CancelSubscriptionCommand}"
+                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"/>
+                                    </StackPanel>
+                                    
+                                </Grid>
                                 <TextBlock Text="EXPIRATION DATE" Style="{StaticResource AccentFieldLabel}"/>
-                                <TextBlock Text="{Binding SelectedSubscriber.Subscription.ExpDate, StringFormat='Expires on \{0:d\}'}" Margin="5,0,0,20" FontSize="15" FontWeight="Medium"/>
+                                <DatePicker Name="ExpDatePicker" SelectedDate="{Binding ExpDate}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Width="150" HorizontalAlignment="Left"/>
+                                <TextBlock Name="ExpDateTextBlock" Text="{Binding ExpDate, StringFormat='Expires on \{0:d\}'}" Margin="5,0,0,20" FontSize="15" FontWeight="Medium"/>
 
                                 <TextBlock Text="RENEWAL STATUS" Style="{StaticResource AccentFieldLabel}"/>
-                                <TextBlock Text="{Binding SelectedSubscriber.Subscription.DateRenewed, StringFormat='Last renewed on \{0:d\}'}" Margin="5,0,0,20" FontSize="15" FontWeight="Medium"/>
+                                <DatePicker Name="RenewDatePicker" SelectedDate="{Binding RenewDate}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Width="150" HorizontalAlignment="Left"/>
+                                <TextBlock Name="RenewDateTextBlock" Text="{Binding RenewDate, StringFormat='Last renewed on \{0:d\}'}" Margin="5,0,0,20" FontSize="15" FontWeight="Medium"/>
 
                                 <TextBlock Text="ACQUISITION SOURCE" Style="{StaticResource AccentFieldLabel}"/>
-                                <TextBlock Text="{Binding SelectedSubscriber.Subscription.Source, StringFormat='Source: \{0\}'}" Margin="5,0,0,0" FontSize="15" FontWeight="Medium"/>
+                                <ComboBox Name="SourceComboBox" Width="150" SelectedItem="{Binding Source}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding Source, StringFormat='Source: \{0\}'}" Margin="5,0,0,0" FontSize="15" FontWeight="Medium"/>
                             </StackPanel>
                         </TabItem>
 
