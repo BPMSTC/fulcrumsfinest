@@ -163,15 +163,18 @@ namespace SnowmobileWPF.ViewModels
 
         private void UpdateSubscriptionDisplay()
         {
-            try
+            var sub = SelectedSubscriber?.Subscription;
+            if (sub == null)
             {
-                RenewDate = SelectedSubscriber.Subscription.DateRenewed.ToDateTime(new TimeOnly(0));
-                ExpDate = SelectedSubscriber.Subscription.ExpDate.ToDateTime(new TimeOnly(0));
-                Source = SelectedSubscriber?.Subscription.Source;
-            } catch
-            {
+                RenewDate = DateTime.Today;
+                ExpDate = DateTime.Today;
+                Source = null;
                 return;
             }
+
+            RenewDate = sub.DateRenewed.ToDateTime(new TimeOnly(0));
+            ExpDate = sub.ExpDate.ToDateTime(new TimeOnly(0));
+            Source = sub.Source;
         }
 
         public void LoadSubscribers()
