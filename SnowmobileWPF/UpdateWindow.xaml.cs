@@ -35,7 +35,7 @@ namespace SnowmobileWPF
                     nameof(vm.FirstName),
                     nameof(vm.LastName),
                     nameof(vm.Phone),
-                    //nameof(vm.Email),
+                    nameof(vm.Email),
                     nameof(vm.Street),
                     nameof(vm.City),
                     nameof(vm.Region),

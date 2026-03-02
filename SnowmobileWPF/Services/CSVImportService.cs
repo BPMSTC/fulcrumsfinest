@@ -93,11 +93,24 @@ namespace SnowmobileWPF.Services
             }
         }
 
+        private string HandleEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return string.Empty;
+            }
+
+            // Split by common email separators (comma, semicolon, space) and return the first email
+            var emails = email.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            
+            return emails.Length > 0 ? emails[0] : string.Empty;
+        }
+
         public Subscriber ToSubscriber()
         {
             return new Subscriber
             {
-                //VSCA = this.VSCA,
+                VSCA = this.VSCA,
                 FirstName = this.FirstName,
                 LastName = this.LastName,
                 Phone = this.Phone,
@@ -107,6 +120,7 @@ namespace SnowmobileWPF.Services
                 Commercial = this.Commercial ?? false,
                 DateJoined = this.DateJoined ?? DateOnly.FromDateTime(DateTime.UnixEpoch),
                 Notes = this.Notes,
+                Email = HandleEmail(this.Email),
                 Address = new Address
                 {
                     Street = this.Address,
@@ -147,6 +161,8 @@ namespace SnowmobileWPF.Services
                 var options = new TypeConverterOptions { NullValues = { "NULL", String.Empty, "0:00.0" } };
                 csv.Context.TypeConverterOptionsCache.AddOptions<int>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<int?>(options);
+                //csv.Context.TypeConverterOptionsCache.AddOptions<string>(options);
+                //csv.Context.TypeConverterOptionsCache.AddOptions<string?>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<bool>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<bool?>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);

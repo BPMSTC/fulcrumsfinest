@@ -57,7 +57,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="EMAIL ADDRESS" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                            <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                     </Grid>
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using SnowmobileLibrary.Enums;
 using SnowmobileWPF.ViewModels;
 
 namespace SnowmobileWPF
@@ -10,6 +12,7 @@ namespace SnowmobileWPF
         public MainWindow()
         {
             InitializeComponent();
+            SourceComboBox.ItemsSource = Enum.GetValues(typeof(SubscriptionSource));
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)

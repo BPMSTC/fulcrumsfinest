@@ -13,7 +13,6 @@ namespace SnowmobileLibrary.Data
         public DbSet<Subscriber> Subscribers => Set<Subscriber>();
         public DbSet<Address> Addresses => Set<Address>();
         public DbSet<Subscription> Subscriptions => Set<Subscription>();
-        public DbSet<Email> Emails => Set<Email>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,13 +35,6 @@ namespace SnowmobileLibrary.Data
                 .HasOne(s => s.Subscriber)
                 .WithOne(s => s.Subscription)
                 .HasForeignKey<Subscriber>(s => s.VSCA)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Email to Subscriber (1-many)
-            modelBuilder.Entity<Email>()
-                .HasOne(e => e.Subscriber)
-                .WithMany()
-                .HasForeignKey(e => e.VSCA)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Enum stored as string (more readable, safer long-term)

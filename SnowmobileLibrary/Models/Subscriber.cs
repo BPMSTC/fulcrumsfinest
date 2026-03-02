@@ -46,13 +46,14 @@ namespace SnowmobileLibrary.Models
         public int? AddressId { get; set; }
         public Address? Address { get; set; }
 
+        public Subscription Subscription { get; set; }
+
+        [Required(ErrorMessage = "Email address is required.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        [MaxLength(320)]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
+        public string Email { get; set; } = string.Empty;
+
         public override string ToString() => $"{FirstName} {LastName} (VSCA: {VSCA})";
-
-        public Email? Email { get; set; }
-
-        public override string ToString()
-        {
-            return $"{FirstName} {LastName} (VSCA: {VSCA})";
-        }
     }
 }

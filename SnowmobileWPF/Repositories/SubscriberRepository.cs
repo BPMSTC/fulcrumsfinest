@@ -19,7 +19,6 @@ namespace SnowmobileWPF.Repositories
             var query = _context.Subscribers
                 .Include(s => s.Address)
                 .Include(s => s.Subscription)
-                .Include(s => s.Email)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchParams.LastName))
@@ -44,18 +43,26 @@ namespace SnowmobileWPF.Repositories
             var subscribers = _context.Subscribers
                 .Include(s => s.Address)
                 .Include(s => s.Subscription)
-                .Include(s => s.Email)
                 .AsQueryable();
             if (max > 0)
             {
                 subscribers = (Microsoft.EntityFrameworkCore.DbSet<Subscriber>)subscribers.Take(max);
             }
-            return subscribers.ToList();
+            return subscribers.OrderDescending().ToList();
         }
 
         public void Create(Subscriber subscriber, bool forceCreation = false)
         {
-            // todo: check for existing subscriber if forceCreation is false
+            SearchParams searchParams = new SearchParams
+            {
+                FirstName = subscriber.FirstName,
+                LastName = subscriber.LastName
+            };
+            var existingSubscribers = Search(searchParams);
+            if (existingSubscribers.Count != 0 && !forceCreation)
+            {
+                throw new ArgumentException($"A subscriber with the name {subscriber.FirstName} {subscriber.LastName} already exists. Use forceCreation to override this check.");
+            }
             _context.Add(subscriber);
             _context.SaveChanges();
         }
@@ -68,7 +75,7 @@ namespace SnowmobileWPF.Repositories
 
         public void Update(Subscriber subscriber)
         {
-            _context.Subscribers.Update(subscriber);
+            _context.Update(subscriber);
             _context.SaveChanges();
         }
     }

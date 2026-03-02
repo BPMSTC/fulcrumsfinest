@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SnowmobileLibrary.Data;
 
@@ -11,9 +12,11 @@ using SnowmobileLibrary.Data;
 namespace SnowmobileLibrary.Migrations
 {
     [DbContext(typeof(SnowmobileContext))]
-    partial class SnowmobileContextModelSnapshot : ModelSnapshot
+    [Migration("20260301222609_NullableSubscriptionSource")]
+    partial class NullableSubscriptionSource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,32 @@ namespace SnowmobileLibrary.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Email", b =>
+                {
+                    b.Property<int>("EmailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmailId"));
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("VSCA")
+                        .HasColumnType("int");
+
+                    b.HasKey("EmailId");
+
+                    b.HasIndex("VSCA");
+
+                    b.ToTable("Emails");
+                });
 
             modelBuilder.Entity("SnowmobileLibrary.Models.Address", b =>
                 {
@@ -89,10 +118,8 @@ namespace SnowmobileLibrary.Migrations
                     b.Property<DateOnly>("DateJoined")
                         .HasColumnType("date");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(320)
-                        .HasColumnType("nvarchar(320)");
+                    b.Property<int?>("EmailId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -117,6 +144,8 @@ namespace SnowmobileLibrary.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("VSCA");
+
+                    b.HasIndex("EmailId");
 
                     b.ToTable("Subscribers");
                 });
@@ -150,6 +179,17 @@ namespace SnowmobileLibrary.Migrations
                     b.ToTable("Subscriptions");
                 });
 
+            modelBuilder.Entity("Email", b =>
+                {
+                    b.HasOne("SnowmobileLibrary.Models.Subscriber", "Subscriber")
+                        .WithMany()
+                        .HasForeignKey("VSCA")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Subscriber");
+                });
+
             modelBuilder.Entity("SnowmobileLibrary.Models.Address", b =>
                 {
                     b.HasOne("SnowmobileLibrary.Models.Subscriber", "SubscriberObject")
@@ -162,11 +202,17 @@ namespace SnowmobileLibrary.Migrations
 
             modelBuilder.Entity("SnowmobileLibrary.Models.Subscriber", b =>
                 {
+                    b.HasOne("Email", "Email")
+                        .WithMany()
+                        .HasForeignKey("EmailId");
+
                     b.HasOne("Subscription", "Subscription")
                         .WithOne("Subscriber")
                         .HasForeignKey("SnowmobileLibrary.Models.Subscriber", "VSCA")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Email");
 
                     b.Navigation("Subscription");
                 });

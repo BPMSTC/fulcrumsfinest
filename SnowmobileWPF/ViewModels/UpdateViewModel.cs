@@ -46,18 +46,18 @@ namespace SnowmobileWPF.ViewModels
             set { Subscriber.Phone = value; OnPropertyChanged(); }
         }
 
-        //public string EmailAddress
-        //{
-        //    get => Subscriber.Email?.EmailAddress ?? string.Empty;
-        //    set
-        //    {
-        //        if (Subscriber.Email != null)
-        //        {
-        //            Subscriber.Email.EmailAddress = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
+        public string Email
+        {
+            get => Subscriber.Email ?? string.Empty;
+            set
+            {
+                if (Subscriber.Email != null)
+                {
+                    Subscriber.Email = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public string Street
         {
@@ -148,7 +148,7 @@ namespace SnowmobileWPF.ViewModels
             FirstName = FirstName?.Trim() ?? string.Empty;
             LastName = LastName?.Trim() ?? string.Empty;
             Phone = Phone?.Trim() ?? string.Empty;
-            //EmailAddress = EmailAddress?.Trim() ?? string.Empty;
+            Email = Email?.Trim() ?? string.Empty;
             Street = Street?.Trim() ?? string.Empty;
             City = City?.Trim() ?? string.Empty;
             Region = Region?.Trim() ?? string.Empty;

@@ -23,6 +23,7 @@ namespace SnowmobileWPF.Repositories
                 Phone = "715-867-5309",
                 Active = true,
                 DateJoined = new DateOnly(2020, 1, 1),
+                Email = "jdoe@example.com",
                 Address = new Address
                 {
                     AddressId = 1,
@@ -39,10 +40,6 @@ namespace SnowmobileWPF.Repositories
                     DateRenewed = new DateOnly(2020, 1, 1),
                     ExpDate = new DateOnly(2021, 1, 1),
                     Source = SnowmobileLibrary.Enums.SubscriptionSource.Internet
-                },
-                Email = new Email
-                {
-                    EmailAddress = "jdoe@example.com"
                 }
             });
         }
