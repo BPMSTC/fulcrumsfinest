@@ -93,6 +93,7 @@ namespace SnowmobileWPF.Services
             }
         }
 
+        // some customer records have multiple emails in a field. we'll take the first email and disregard the rest.
         private string HandleEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -148,12 +149,14 @@ namespace SnowmobileWPF.Services
             _subscriberRepository = subscriberRepository;
         }
 
-        public void ImportCSV(string filePath)
+        public async Task ImportCSV(string filePath, IProgress<int> progress)
         {
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = true
             };
+
+            // opens the file and provides a way to read it
             StreamReader reader = new StreamReader(filePath);
             using (CsvReader csv = new CsvReader(reader, config))
             {
@@ -174,14 +177,21 @@ namespace SnowmobileWPF.Services
                 while (csv.Read())
                 {
                     var record = csv.GetRecord<SubscriberCSV>();
-                    try
+                    await Task.Run(() =>
                     {
-                        _subscriberRepository.Create(record.ToSubscriber());
-                    } catch (Exception ex)
-                    {
-                        // Log the error and continue with the next record
-                        Console.WriteLine($"Error importing record with VSCA {record.VSCA}: {ex.Message}");
-                    }
+                        try
+                        {
+                            _subscriberRepository.Create(record.ToSubscriber());
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log the error and continue with the next record
+                            Console.WriteLine($"Error importing record with VSCA {record.VSCA}: {ex.Message}");
+                        }
+                    });
+
+                    // report import progress as a percentage
+                    progress?.Report((int)((double)reader.BaseStream.Position / reader.BaseStream.Length * 100));
                 }
             }
         }

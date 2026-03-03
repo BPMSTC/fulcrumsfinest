@@ -373,14 +373,17 @@ namespace SnowmobileWPF.ViewModels
             UpdateNotesDisplay();
         }
 
-        private void ExecuteImport()
+        private async void ExecuteImport()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             if (fileDialog.ShowDialog() == true)
             {
                 _logger.LogInformation($"Starting import from {fileDialog.FileName}");
                 CSVImportService importService = new CSVImportService(_repository);
-                importService.ImportCSV(fileDialog.FileName);
+                LoadingWindow loadingWindow = new LoadingWindow();
+                loadingWindow.Show();
+                await importService.ImportCSV(fileDialog.FileName, loadingWindow.progress);
+                loadingWindow.Close();
                 _logger.LogInformation($"Import complete.");
                 LoadSubscribers();
             }
