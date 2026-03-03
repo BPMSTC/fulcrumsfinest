@@ -167,7 +167,7 @@ namespace SnowmobileWPF.ViewModels
             if (sub == null)
             {
                 RenewDate = DateTime.Today;
-                ExpDate = DateTime.Today;
+                ExpDate = DateTime.Today.AddYears(1);
                 Source = null;
                 return;
             }
