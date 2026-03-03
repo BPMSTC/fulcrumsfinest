@@ -94,7 +94,7 @@ namespace SnowmobileWPF.Repositories
             if (Search(searchParams)?.Count > 0 && !forceCreation)
             {
                 _logger.LogWarning("Create failed: Subscriber {FirstName} {LastName} already exists.", subscriber.FirstName, subscriber.LastName);
-                throw new Exception("Subscriber already exists");
+                throw new ArgumentException("Subscriber already exists");
             }
 
             subscribers.Add(subscriber);
