@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="VSCA Subscriber Manager" Height="666" Width="950"
+        Title="VSCA Subscriber Manager" Height="666" Width="1111"
         Background="{StaticResource BackgroundBrush}"
         WindowStartupLocation="CenterScreen">
 
@@ -95,9 +95,9 @@
 
                                     <Grid Margin="0,0,0,25">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1.4*"/>
+                                            <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="20"/>
-                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel Grid.Column="0">
@@ -206,11 +206,17 @@
                                     <Separator Background="#F1F5F9" Margin="0,0,0,20"/>
 
                                     <TextBlock Text="ACCOUNT FLAGS" Style="{StaticResource AccentFieldLabel}"/>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,20">
-                                        <CheckBox Content="Contest" IsChecked="{Binding SelectedSubscriber.Contest}" IsEnabled="False" Margin="15,0"/>
-                                        <CheckBox Content="Manual Mail" IsChecked="{Binding SelectedSubscriber.ManualMail}" IsEnabled="False" Margin="15,0"/>
-                                        <CheckBox Content="Commercial" IsChecked="{Binding SelectedSubscriber.Commercial}" IsEnabled="False" Margin="15,0"/>
-                                    </StackPanel>
+                                    <UniformGrid Columns="3" Margin="0,10,0,20">
+                                        <CheckBox Content="Contest"
+                                                  IsChecked="{Binding SelectedSubscriber.Contest}"
+                                                  IsEnabled="False"/>
+                                        <CheckBox Content="Manual Mail"
+                                                  IsChecked="{Binding SelectedSubscriber.ManualMail}"
+                                                  IsEnabled="False"/>
+                                        <CheckBox Content="Commercial"
+                                                  IsChecked="{Binding SelectedSubscriber.Commercial}"
+                                                  IsEnabled="False"/>
+                                    </UniformGrid>
 
                                 </StackPanel>
                             </ScrollViewer>
