@@ -1,6 +1,7 @@
 ﻿<Application x:Class="SnowmobileWPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:SnowmobileWPF.Converters">
 
     <Application.Resources>
         <Color x:Key="PrimaryColor">#0D395A</Color>
@@ -9,13 +10,17 @@
         <Color x:Key="AccentColor">#D63634</Color>
         <Color x:Key="MutedTextColor">#64748B</Color>
         <Color x:Key="BorderColor">#CBD5E1</Color>
-
+        <Color x:Key="SuccessColor">#10B981</Color>
         <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
         <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" />
         <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}" />
         <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}" />
         <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
         <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+
+        <converters:NotEmptyConverter x:Key="NotEmptyConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
         <DropShadowEffect x:Key="CardShadow" 
                           BlurRadius="15" 
@@ -25,11 +30,15 @@
                           Color="Black"/>
 
         <ControlTemplate x:Key="ErrorTemplate">
-            <DockPanel>
-                <Border BorderBrush="{StaticResource AccentBrush}" BorderThickness="2" CornerRadius="6">
-                    <AdornedElementPlaceholder x:Name="ErrorAdorner"/>
-                </Border>
-            </DockPanel>
+            <StackPanel>
+                <AdornedElementPlaceholder x:Name="ErrorAdorner"/>
+
+                <TextBlock Text="{Binding ElementName=ErrorAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                   Foreground="{StaticResource AccentBrush}"
+                   FontSize="10" 
+                   FontWeight="Bold" 
+                   Margin="2,4,0,0"/>
+            </StackPanel>
         </ControlTemplate>
 
         <Style TargetType="Window">
@@ -58,11 +67,13 @@
         <Style TargetType="TextBox">
             <Setter Property="Height" Value="36"/>
             <Setter Property="Padding" Value="10,5"/>
-            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Margin" Value="0,0,0,25"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1"/>
+
             <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate}"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -73,15 +84,24 @@
                             <ScrollViewer x:Name="PART_ContentHost" Margin="2,0"/>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.HasError)}" Value="False"/>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={StaticResource NotEmptyConverter}}" Value="True"/>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocusWithin}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SuccessBrush}"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="1.5"/>
+                            </MultiDataTrigger>
+
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
                                 <Setter TargetName="Border" Property="BorderThickness" Value="1.5"/>
                             </Trigger>
+
                             <Trigger Property="Validation.HasError" Value="True">
                                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                                 <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
-                                <Setter Property="ToolTip" 
-                                Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -123,6 +143,12 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#B02A28"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#CBD5E1"/>
+                    <Setter Property="BorderBrush" Value="#CBD5E1"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Opacity" Value="0.6"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
