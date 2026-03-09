@@ -51,7 +51,7 @@ namespace SnowmobileWPF.ViewModels
             CancelSubscriptionCommand = new RelayCommand(_ => ExecuteCancelSubscription(), CanExecuteOnSelected);
             UpdateCommand = new RelayCommand(_ => ExecuteUpdate(), CanExecuteOnSelected);
             CreateCommand = new RelayCommand(_ => ExecuteCreate());
-
+            ContestCommand = new RelayCommand(_ => ExecuteContest());
             // Initial load
             LoadSubscribers();
         }
@@ -139,6 +139,7 @@ namespace SnowmobileWPF.ViewModels
         public ICommand CancelSubscriptionCommand { get; }
         public ICommand UpdateCommand { get; }
         public ICommand CreateCommand { get; }
+        public ICommand ContestCommand { get; }
 
         #endregion
 
@@ -371,6 +372,16 @@ namespace SnowmobileWPF.ViewModels
             _logger.LogDebug("Cancelled notes edit for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
             IsEditingNotes = false;
             UpdateNotesDisplay();
+        }
+
+        private void ExecuteContest()
+        {
+            _logger.LogDebug("Opening contest window");
+            var contestRepo = _serviceProvider.GetRequiredService<IContestRepository>();
+            ContestWindow contestWindow = new ContestWindow(
+                _serviceProvider.GetRequiredService<ContestViewModel>()
+                );
+            contestWindow.Show();
         }
 
         private async void ExecuteImport()

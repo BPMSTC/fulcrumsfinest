@@ -13,6 +13,7 @@ namespace SnowmobileLibrary.Data
         public DbSet<Subscriber> Subscribers => Set<Subscriber>();
         public DbSet<Address> Addresses => Set<Address>();
         public DbSet<Subscription> Subscriptions => Set<Subscription>();
+        public DbSet<Contest> Contests => Set<Contest>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

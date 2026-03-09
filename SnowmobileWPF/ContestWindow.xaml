@@ -1,0 +1,59 @@
+﻿<Window x:Class="SnowmobileWPF.ContestWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="clr-namespace:SnowmobileWPF.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:ContestViewModel}"
+        Title="Contest Settings"
+        Height="328" Width="380"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundBrush}">
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Grid.ColumnSpan="2">
+            <TextBlock Text="Contest Settings" Style="{StaticResource HeaderText}" VerticalAlignment="Center" Margin="30,0,0,15"/>
+        </Border>
+
+        <Border Background="{StaticResource CardBackgroundBrush}" VerticalAlignment="Top"
+                Margin="25,60,25,0" Padding="25" CornerRadius="12" BorderBrush="{StaticResource BorderBrush}" 
+                BorderThickness="1" Effect="{StaticResource CardShadow}" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="209">
+
+            <StackPanel>
+                <TextBlock Text="CONTEST STATUS" Style="{StaticResource FieldLabel}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                    <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,10,0" />
+                    <TextBlock Name="StopTextBlock" Text="Stop" FontSize="14" TextDecorations="Underline" Foreground="{StaticResource AccentBrush}" Cursor="Arrow" Visibility="{Binding CurrentlyInContest, Converter={StaticResource BoolToVis}}" PreviewMouseDown="StopTextBlock_PreviewMouseDown" />
+                </StackPanel>
+                <TextBlock Text="END DATE" Style="{StaticResource FieldLabel}"/>
+                <DatePicker Name="EndDatePicker" SelectedDate="{Binding EndDate}" Margin="0,0,0,10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Content="Cancel" Grid.Column="0" Style="{StaticResource SecondaryButton}" IsCancel="True"/>
+
+                    <Button Content="Save" Grid.Column="2" Style="{StaticResource PrimaryButton}" IsDefault="True" Command="{Binding SaveCommand}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

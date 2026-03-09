@@ -35,14 +35,19 @@
                     <Button Name="CreateButton" 
                             Content="Create New"
                             Style="{StaticResource ToolbarButton}"
-                            Width="120" Margin="0,0,10,0"
+                            Width="100" Margin="0,0,10,0"
                             Command="{Binding CreateCommand}"/>
                     
                     <Button Name="ImportButton" 
                         Content="Import"
                         Style="{StaticResource ToolbarButton}"
-                        Width="120" Margin="0,0,10,0"
+                        Width="100" Margin="0,0,10,0"
                         Command="{Binding ImportCommand}"/>
+                    <Button Name="ContestButton" 
+                        Content="Contest"
+                        Style="{StaticResource ToolbarButton}"
+                        Width="100" Margin="0,0,10,0"
+                        Command="{Binding ContestCommand}"/>
                 </StackPanel>
 
                 <Button Name="DeleteButton" Content="Delete"

@@ -32,7 +32,10 @@ namespace SnowmobileWPF
                     services.AddSingleton<SnowmobileLibrary.Services.ILogger, FileLogger>();
 
                     services.AddSingleton<ISubscriberRepository, SubscriberRepository>();
+                    services.AddSingleton<IContestRepository, LocalContestRepository>();
                     services.AddSingleton<MainViewModel>();
+                    services.AddSingleton<ContestViewModel>();
+                    services.AddSingleton<ContestWindow>();
                     services.AddSingleton<MainWindow>(s => new MainWindow
                     {
                         DataContext = s.GetRequiredService<MainViewModel>()
