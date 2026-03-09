@@ -37,7 +37,7 @@
                             Style="{StaticResource ToolbarButton}"
                             Width="100" Margin="0,0,10,0"
                             Command="{Binding CreateCommand}"/>
-                    
+
                     <Button Name="ImportButton" 
                         Content="Import"
                         Style="{StaticResource ToolbarButton}"
@@ -195,8 +195,9 @@
                                             Command="{Binding CancelSubscriptionCommand}"
                                             Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"/>
                                     </StackPanel>
-                                    
+
                                 </Grid>
+                                <Button Content="Renew" Style="{StaticResource SecondaryButton}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Width="139" Margin="0,0,0,20" HorizontalAlignment="Left" Command="{Binding RenewCommand}" Height="30"/>
                                 <TextBlock Text="EXPIRATION DATE" Style="{StaticResource AccentFieldLabel}"/>
                                 <DatePicker Name="ExpDatePicker" SelectedDate="{Binding ExpDate}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Width="150" HorizontalAlignment="Left"/>
                                 <TextBlock Name="ExpDateTextBlock" Text="{Binding ExpDate, StringFormat='Expires on \{0:d\}'}" Margin="5,0,0,20" FontSize="15" FontWeight="Medium"/>

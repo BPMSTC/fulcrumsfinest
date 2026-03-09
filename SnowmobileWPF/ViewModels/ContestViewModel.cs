@@ -90,9 +90,13 @@ namespace SnowmobileWPF.ViewModels
         {
             if (_contestRepository.CurrentlyInContest)
             {
-                _contestRepository.End();
-                UpdateStatus();
-                MessageBox.Show("Contest ended.", "Contest Ended", MessageBoxButton.OK, MessageBoxImage.Information);
+                var confirmResult = MessageBox.Show("Are you sure you want to end the current contest?", "Confirm End Contest", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (confirmResult == MessageBoxResult.Yes)
+                {
+                    _contestRepository.End();
+                    UpdateStatus();
+                    MessageBox.Show("Contest ended.", "Contest Ended", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             else
             {

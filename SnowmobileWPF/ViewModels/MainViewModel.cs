@@ -52,6 +52,7 @@ namespace SnowmobileWPF.ViewModels
             UpdateCommand = new RelayCommand(_ => ExecuteUpdate(), CanExecuteOnSelected);
             CreateCommand = new RelayCommand(_ => ExecuteCreate());
             ContestCommand = new RelayCommand(_ => ExecuteContest());
+            RenewCommand = new RelayCommand(_ => ExecuteRenew(), CanExecuteOnSelected);
             // Initial load
             LoadSubscribers();
         }
@@ -140,6 +141,7 @@ namespace SnowmobileWPF.ViewModels
         public ICommand UpdateCommand { get; }
         public ICommand CreateCommand { get; }
         public ICommand ContestCommand { get; }
+        public ICommand RenewCommand { get; }
 
         #endregion
 
@@ -382,6 +384,25 @@ namespace SnowmobileWPF.ViewModels
                 _serviceProvider.GetRequiredService<ContestViewModel>()
                 );
             contestWindow.Show();
+        }
+
+        private void ExecuteRenew()
+        {
+            _logger.LogDebug("Opening renew window");
+            RenewWindow renewWindow = new RenewWindow(
+                _serviceProvider.GetRequiredService<RenewViewModel>(),
+                SelectedSubscriber
+                );
+            renewWindow.ShowDialog();
+            if (renewWindow.DialogResult == true)
+            {
+                _logger.LogInformation("Renewal completed for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
+                UpdateSubscriptionDisplay();
+            }
+            else
+            {
+                _logger.LogInformation("Renewal cancelled for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
+            }
         }
 
         private async void ExecuteImport()

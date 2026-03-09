@@ -8,6 +8,9 @@
     <Compile Update="LoginWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="RenewWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="SearchWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

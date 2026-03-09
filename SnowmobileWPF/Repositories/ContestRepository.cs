@@ -36,7 +36,7 @@ namespace SnowmobileWPF.Repositories
             {
                 throw new Exception("A contest is already running.");
             }
-            var newContest = new SnowmobileLibrary.Models.Contest
+            var newContest = new Contest
             {
                 StartDate = DateTime.Now,
                 EndDate = endDate
@@ -52,6 +52,7 @@ namespace SnowmobileWPF.Repositories
                 throw new Exception("A contest is already running.");
             }
             _context.Contests.Remove(GetCurrentContest());
+            _context.SaveChanges();
 
         }
 
