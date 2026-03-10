@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Models;
+using SnowmobileWPF.Models;
+using SnowmobileWPF.Repositories;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -8,18 +10,23 @@ namespace SnowmobileWPF.ViewModels
     public partial class UpdateViewModel : ObservableValidator
     {
         private readonly ILogger<UpdateViewModel> _logger;
+        private readonly ISubscriberRepository _repository;
         private readonly string _originalSubscriberName;
 
         public Subscriber Subscriber { get; }
-
         public string DisplayHeader => $"Editing {_originalSubscriberName}";
 
-        public UpdateViewModel(Subscriber subscriber, ILogger<UpdateViewModel> logger)
+        public UpdateViewModel(Subscriber subscriber, ISubscriberRepository repository, ILogger<UpdateViewModel> logger)
         {
             _logger = logger;
+            _repository = repository;
             Subscriber = subscriber;
 
-            // Capture name for header
+            if (string.IsNullOrWhiteSpace(subscriber.FirstName) && string.IsNullOrWhiteSpace(subscriber.LastName))
+            {
+                Subscriber.Active = true;
+            }
+
             _originalSubscriberName = $"{subscriber.FirstName} {subscriber.LastName}".Trim();
             if (string.IsNullOrWhiteSpace(_originalSubscriberName))
                 _originalSubscriberName = "New Subscriber";
@@ -27,11 +34,11 @@ namespace SnowmobileWPF.ViewModels
             _logger.LogInformation("UpdateViewModel initialized for VSCA: {VSCA}", Subscriber.VSCA);
         }
 
-        #region Wrapper Properties (Matched to Model Constraints)
+        #region Wrapper Properties
 
         [Required(ErrorMessage = "First name is required.")]
         [MinLength(2, ErrorMessage = "First name is too short.")]
-        [MaxLength(50, ErrorMessage = "First name is too long (maximum 50 characters).")]
+        [MaxLength(50, ErrorMessage = "First name is too long.")]
         [RegularExpression(@"^[\p{L}\s\-\']+$", ErrorMessage = "First name contains invalid characters.")]
         public string FirstName
         {
@@ -48,29 +55,33 @@ namespace SnowmobileWPF.ViewModels
             set { SetProperty(Subscriber.LastName, value, Subscriber, (u, n) => u.LastName = n, true); }
         }
 
-        [Required(ErrorMessage = "Phone number is required.")]
-        [Phone(ErrorMessage = "Invalid phone number format.")]
-        [StringLength(20, MinimumLength = 7, ErrorMessage = "Phone number is too short.")]
-        [RegularExpression(@"^[\+\d\s\.\(\)\-]+$", ErrorMessage = "Phone number contains invalid characters.")]
+        [RegularExpression(@"^$|^[\+\d\s\.\(\)\-]+$", ErrorMessage = "Phone number contains invalid characters.")]
+        [MaxLength(20, ErrorMessage = "Phone number is too long.")]
         public string Phone
         {
-            get => Subscriber.Phone;
-            set { SetProperty(Subscriber.Phone, value, Subscriber, (u, n) => u.Phone = n, true); }
+            get => Subscriber.Phone ?? string.Empty;
+            set
+            {
+                var val = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
+                SetProperty(Subscriber.Phone, val, Subscriber, (u, n) => u.Phone = n, true);
+            }
         }
 
-        [Required(ErrorMessage = "Email address is required.")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         [MaxLength(320)]
-        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
+        [RegularExpression(@"^$|^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
         public string Email
         {
             get => Subscriber.Email ?? string.Empty;
-            set { SetProperty(Subscriber.Email, value, Subscriber, (u, n) => u.Email = n, true); }
+            set
+            {
+                var val = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
+                SetProperty(Subscriber.Email, val, Subscriber, (u, n) => u.Email = n, true);
+            }
         }
 
         [Required(ErrorMessage = "Street address is required.")]
-        [MinLength(5, ErrorMessage = "Please enter a full street address (minimum 5 characters).")]
-        [MaxLength(100, ErrorMessage = "Street address is too long (maximum 100 characters).")]
+        [MinLength(5, ErrorMessage = "Street address too short.")]
+        [MaxLength(100, ErrorMessage = "Street address too long.")]
         [RegularExpression(@"^[\p{L}\d\s\.\,\#\-\/]+$", ErrorMessage = "Street address contains invalid characters.")]
         public string Street
         {
@@ -87,9 +98,9 @@ namespace SnowmobileWPF.ViewModels
             set { SetProperty(Subscriber.Address.City, value, Subscriber.Address, (u, n) => u.City = n, true); }
         }
 
-        [Required(ErrorMessage = "State/Province is required.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "State/Province is too short.")]
-        [RegularExpression(@"^[\p{L}\s\-\']+$", ErrorMessage = "State/Province contains invalid characters.")]
+        [Required(ErrorMessage = "State/Region is required.")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "State/Region is too short.")]
+        [RegularExpression(@"^[\p{L}\s\-\']+$", ErrorMessage = "State/Region contains invalid characters.")]
         public string Region
         {
             get => Subscriber.Address.Region;
@@ -130,11 +141,23 @@ namespace SnowmobileWPF.ViewModels
             OnPropertyChanged(nameof(HasErrors));
         }
 
+        // Checks if a subscriber with the same name already exists in the database.
+        public bool CheckForDuplicate()
+        {
+            var results = _repository.Search(new SearchParams
+            {
+                FirstName = FirstName.Trim(),
+                LastName = LastName.Trim()
+            });
+
+            // If we are editing (VSCA > 0), we exclude the current record from duplicate matches
+            return results != null && results.Any(s => s.VSCA != Subscriber.VSCA);
+        }
+
         public void SaveChanges()
         {
             _logger.LogInformation("Preparing final save for VSCA: {VSCA}", Subscriber.VSCA);
 
-            // 1. Final Sanitization
             Subscriber.FirstName = FirstName?.Trim() ?? string.Empty;
             Subscriber.LastName = LastName?.Trim() ?? string.Empty;
             Subscriber.Phone = Phone?.Trim() ?? string.Empty;
@@ -145,9 +168,9 @@ namespace SnowmobileWPF.ViewModels
             Subscriber.Address.PostalCode = PostalCode?.Trim() ?? string.Empty;
             Subscriber.Address.Country = Country?.Trim() ?? string.Empty;
 
-            // 2. Hard Validation Check (Safety Net)
             var context = new ValidationContext(Subscriber);
             var results = new List<ValidationResult>();
+
             if (!Validator.TryValidateObject(Subscriber, context, results, true))
             {
                 var error = results.First().ErrorMessage;
@@ -155,7 +178,7 @@ namespace SnowmobileWPF.ViewModels
                 throw new ValidationException(error);
             }
 
-            _logger.LogInformation("Changes validated and ready for persistence for VSCA: {VSCA}", Subscriber.VSCA);
+            _logger.LogInformation("Changes validated for VSCA: {VSCA}", Subscriber.VSCA);
         }
     }
 }

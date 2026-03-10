@@ -22,11 +22,13 @@ namespace SnowmobileWPF.ViewModels
         private Subscriber? _selectedSubscriber;
         private bool _isEditingNotes;
         private bool _isEditingSubscription;
+        private bool _isFiltered;
         private string _notesText = string.Empty;
         private string _originalNotes = string.Empty;
         private DateTime _oldRenewDate;
         private DateTime _oldExpDate;
         private SubscriptionSource? _oldSource;
+        private int? _oldIssuesRemaining;
 
         public MainViewModel(
             ISubscriberRepository repository,
@@ -41,16 +43,17 @@ namespace SnowmobileWPF.ViewModels
 
             // Initialize Commands
             DeleteCommand = new RelayCommand(ExecuteDelete, CanExecuteOnSelected);
-            CreateDummyCommand = new RelayCommand(_ => ExecuteCreateDummy());
             ImportCommand = new RelayCommand(_ => ExecuteImport());
             EditNotesCommand = new RelayCommand(_ => ExecuteEditNotes(), CanExecuteOnSelected);
             SaveNotesCommand = new RelayCommand(_ => ExecuteSaveNotes());
             CancelNotesCommand = new RelayCommand(_ => ExecuteCancelNotes());
+            ClearSearchCommand = new RelayCommand(_ => ExecuteClearSearch());
             EditSubscriptionCommand = new RelayCommand(_ => ExecuteEditSubscription(), CanExecuteOnSelected);
             SaveSubscriptionCommand = new RelayCommand(_ => ExecuteSaveSubscription(), CanExecuteOnSelected);
             CancelSubscriptionCommand = new RelayCommand(_ => ExecuteCancelSubscription(), CanExecuteOnSelected);
             UpdateCommand = new RelayCommand(_ => ExecuteUpdate(), CanExecuteOnSelected);
             CreateCommand = new RelayCommand(_ => ExecuteCreate());
+            EscapeCommand = new RelayCommand(_ => ExecuteEscape());
 
             // Initial load
             LoadSubscribers();
@@ -84,6 +87,8 @@ namespace SnowmobileWPF.ViewModels
 
         public bool IsDetailsVisible => SelectedSubscriber != null;
 
+        public bool IsListEmpty => Subscribers == null || Subscribers.Count == 0;
+
         public string ViewingTitle => SelectedSubscriber != null
             ? $"Viewing {SelectedSubscriber.FirstName} {SelectedSubscriber.LastName} (VSCA: {SelectedSubscriber.VSCA})"
             : "Select a subscriber...";
@@ -98,6 +103,12 @@ namespace SnowmobileWPF.ViewModels
         {
             get => _isEditingSubscription;
             set => SetProperty(ref _isEditingSubscription, value);
+        }
+
+        public bool IsFiltered
+        {
+            get => _isFiltered;
+            set => SetProperty(ref _isFiltered, value);
         }
 
         public string NotesText
@@ -124,21 +135,28 @@ namespace SnowmobileWPF.ViewModels
             set => SetProperty(ref _oldSource, value);
         }
 
+        public int? IssuesRemaining
+        {
+            get => _oldIssuesRemaining;
+            set => SetProperty(ref _oldIssuesRemaining, value);
+        }
+
         #endregion
 
         #region Commands
 
         public ICommand DeleteCommand { get; }
-        public ICommand CreateDummyCommand { get; }
         public ICommand ImportCommand { get; }
         public ICommand EditNotesCommand { get; }
         public ICommand SaveNotesCommand { get; }
         public ICommand CancelNotesCommand { get; }
+        public ICommand ClearSearchCommand { get; }
         public ICommand EditSubscriptionCommand { get; }
         public ICommand SaveSubscriptionCommand { get; }
         public ICommand CancelSubscriptionCommand { get; }
         public ICommand UpdateCommand { get; }
         public ICommand CreateCommand { get; }
+        public ICommand EscapeCommand { get; }
 
         #endregion
 
@@ -169,12 +187,14 @@ namespace SnowmobileWPF.ViewModels
                 RenewDate = DateTime.Today;
                 ExpDate = DateTime.Today.AddYears(1);
                 Source = null;
+                IssuesRemaining = 0;
                 return;
             }
 
             RenewDate = sub.DateRenewed.ToDateTime(new TimeOnly(0));
             ExpDate = sub.ExpDate.ToDateTime(new TimeOnly(0));
             Source = sub.Source;
+            IssuesRemaining = sub.IssuesRemaining;
         }
 
         public void LoadSubscribers()
@@ -182,6 +202,9 @@ namespace SnowmobileWPF.ViewModels
             _logger.LogInformation("Loading subscribers from repository.");
             var results = _repository.Retrieve(-1);
             Subscribers = new ObservableCollection<Subscriber>(results);
+
+            IsFiltered = false;
+            OnPropertyChanged(nameof(IsListEmpty));
         }
 
         public List<Subscriber> LoadSearchResults(SearchParams searchParameters)
@@ -189,6 +212,10 @@ namespace SnowmobileWPF.ViewModels
             _logger.LogInformation("Loading search results into UI.");
             var results = _repository.Search(searchParameters) ?? new List<Subscriber>();
             Subscribers = new ObservableCollection<Subscriber>(results);
+
+            IsFiltered = true;
+            OnPropertyChanged(nameof(IsListEmpty));
+
             return results;
         }
 
@@ -207,43 +234,25 @@ namespace SnowmobileWPF.ViewModels
                     DateRenewed = DateOnly.FromDateTime(DateTime.Today)
                 }
             };
-            // Get a logger for the CreateViewModel
+
             var createLogger = _serviceProvider.GetRequiredService<ILogger<UpdateViewModel>>();
-            // Create the ViewModel for a new subscriber
-            var vm = new UpdateViewModel(newSubscriber, createLogger);
-            // Create and show the window
+
+            var vm = new UpdateViewModel(newSubscriber, _repository, createLogger);
+
             var createWin = new UpdateWindow
             {
                 Owner = Application.Current.MainWindow,
                 DataContext = vm
             };
+
             if (createWin.ShowDialog() == true)
             {
                 _logger.LogInformation("Create Window saved new subscriber");
-                try
-                {
-                    _repository.Create(newSubscriber);
-                } catch (ArgumentException ex)
-                {
-                    _logger.LogError(ex, "Failed to create subscriber: {Message}", ex.Message);
-                    var warningBox = MessageBox.Show($"A subscriber named {newSubscriber.FirstName} {newSubscriber.LastName} already exists. Create anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (warningBox == MessageBoxResult.Yes)
-                    {
-                        _repository.Create(newSubscriber, true);
-                        _logger.LogInformation("Subscriber created with duplicate name after user confirmation.");
-                    }
-                    else
-                    {
-                        _logger.LogInformation("User cancelled creation of subscriber with duplicate name.");
-                        return;
-                    }
-                }
+
+                _repository.Create(newSubscriber, true);
+
                 LoadSubscribers();
                 SelectedSubscriber = newSubscriber;
-            }
-            else
-            {
-                _logger.LogInformation("Create Window cancelled.");
             }
         }
 
@@ -257,7 +266,7 @@ namespace SnowmobileWPF.ViewModels
             var updateLogger = _serviceProvider.GetRequiredService<ILogger<UpdateViewModel>>();
 
             // Create the ViewModel with the selected data
-            var vm = new UpdateViewModel(SelectedSubscriber, updateLogger);
+            var vm = new UpdateViewModel(SelectedSubscriber, _repository, updateLogger);
 
             // Create and show the window
             var updateWin = new UpdateWindow
@@ -301,42 +310,31 @@ namespace SnowmobileWPF.ViewModels
             }
         }
 
-        private void ExecuteCreateDummy()
-        {
-            _logger.LogInformation("Creating dummy subscriber.");
-            var dummy = new Subscriber
-            {
-                VSCA = new Random().Next(1, 100000),
-                FirstName = "John",
-                LastName = "Doe",
-                Phone = "715-555-0199",
-                Active = true,
-                DateJoined = DateOnly.FromDateTime(DateTime.Now),
-                Address = new Address { Street = "123 MVVM Way", City = "Pattern", Region = "WI", Country = "USA", PostalCode = "16823" }
-            };
-
-            _repository.Create(dummy, true);
-            LoadSubscribers();
-        }
-
         private void ExecuteEditSubscription()
         {
             _logger.LogInformation("Edit Subscription command executed for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
+
             RenewDate = SelectedSubscriber.Subscription.DateRenewed.ToDateTime(new TimeOnly(0));
             ExpDate = SelectedSubscriber.Subscription.ExpDate.ToDateTime(new TimeOnly(0));
             Source = SelectedSubscriber?.Subscription.Source;
+            IssuesRemaining = SelectedSubscriber.Subscription.IssuesRemaining;
+
             IsEditingSubscription = true;
         }
 
         private void ExecuteSaveSubscription()
         {
             if (SelectedSubscriber == null) return;
+
             _logger.LogInformation("Saving updated subscription for VSCA: {VSCA}", SelectedSubscriber.VSCA);
+
             SelectedSubscriber.Subscription.ExpDate = DateOnly.FromDateTime(ExpDate);
             SelectedSubscriber.Subscription.DateRenewed = DateOnly.FromDateTime(RenewDate);
             SelectedSubscriber.Subscription.Source = Source;
-            // Log old vs new subscription details here if needed
+            SelectedSubscriber.Subscription.IssuesRemaining = IssuesRemaining ?? 0;
+
             _repository.Update(SelectedSubscriber);
+
             IsEditingSubscription = false;
             UpdateSubscriptionDisplay();
         }
@@ -390,6 +388,34 @@ namespace SnowmobileWPF.ViewModels
                 _logger.LogInformation($"Import complete.");
                 LoadSubscribers();
             }
+        }
+
+        private void ExecuteEscape()
+        {
+            // If editing subscription, cancel that first
+            if (IsEditingSubscription)
+            {
+                ExecuteCancelSubscription();
+                return;
+            }
+
+            // If editing notes, cancel that
+            if (IsEditingNotes)
+            {
+                ExecuteCancelNotes();
+                return;
+            }
+
+            // If not editing anything, deselect the subscriber (close the "tab")
+            if (SelectedSubscriber != null)
+            {
+                SelectedSubscriber = null;
+            }
+        }
+
+        private void ExecuteClearSearch()
+        {
+            LoadSubscribers();
         }
 
         #endregion

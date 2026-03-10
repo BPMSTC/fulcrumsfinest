@@ -17,11 +17,9 @@ namespace SnowmobileLibrary.Models
         [RegularExpression(@"^[\p{L}\s\-\']+$", ErrorMessage = "Last name contains invalid characters.")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Phone number is required.")]
-        [Phone(ErrorMessage = "Invalid phone number format.")]
-        [StringLength(20, MinimumLength = 7, ErrorMessage = "Phone number is too short.")]
-        [RegularExpression(@"^[\+\d\s\.\(\)\-]+$", ErrorMessage = "Phone number contains invalid characters.")]
-        public string Phone { get; set; } = string.Empty;
+        [RegularExpression(@"^$|^[\+\d\s\.\(\)\-]+$", ErrorMessage = "Phone number contains invalid characters.")]
+        [StringLength(20, ErrorMessage = "Phone number is too long.")]
+        public string? Phone { get; set; } = string.Empty;
 
         [Required]
         public bool Active { get; set; }
@@ -45,12 +43,12 @@ namespace SnowmobileLibrary.Models
         public Address? Address { get; set; }
         public Subscription Subscription { get; set; }
 
-        [Required(ErrorMessage = "Email address is required.")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         [MaxLength(320)]
-        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
-        public string Email { get; set; } = string.Empty;
+        [RegularExpression(@"^$|^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
+        public string? Email { get; set; } = string.Empty;
 
         public override string ToString() => $"{FirstName} {LastName} (VSCA: {VSCA})";
+        public string PhoneDisplay => string.IsNullOrWhiteSpace(Phone) ? "No Phone Number Provided" : Phone;
+        public string EmailDisplay => string.IsNullOrWhiteSpace(Email) ? "No Email Provided" : Email;
     }
 }

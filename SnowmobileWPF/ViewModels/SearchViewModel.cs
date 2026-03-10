@@ -16,30 +16,56 @@ namespace SnowmobileWPF.ViewModels
             _logger = logger;
         }
 
+        // Logic to determine if the Search button should be enabled.
+        // Returns true if at least one field contains non-whitespace text.
+        public bool CanSearch =>
+            !string.IsNullOrWhiteSpace(LastName) ||
+            !string.IsNullOrWhiteSpace(FirstName) ||
+            !string.IsNullOrWhiteSpace(PhoneNumber) ||
+            !string.IsNullOrWhiteSpace(VSCAText);
+
         public string? LastName
         {
             get => _lastName;
-            set => SetProperty(ref _lastName, value);
+            set
+            {
+                if (SetProperty(ref _lastName, value))
+                    OnPropertyChanged(nameof(CanSearch));
+            }
         }
 
         public string? FirstName
         {
             get => _firstName;
-            set => SetProperty(ref _firstName, value);
+            set
+            {
+                if (SetProperty(ref _firstName, value))
+                    OnPropertyChanged(nameof(CanSearch));
+            }
         }
 
         public string? PhoneNumber
         {
             get => _phoneNumber;
-            set => SetProperty(ref _phoneNumber, value);
+            set
+            {
+                if (SetProperty(ref _phoneNumber, value))
+                    OnPropertyChanged(nameof(CanSearch));
+            }
         }
 
         public string? VSCAText
         {
             get => _vscaText;
-            set => SetProperty(ref _vscaText, value);
+            set
+            {
+                if (SetProperty(ref _vscaText, value))
+                    OnPropertyChanged(nameof(CanSearch));
+            }
         }
 
+        // Gathers the UI input and packages it into a SearchParams object.
+        // Converts empty strings to null for cleaner database queries.
         public SearchParams GetParameters()
         {
             _logger.LogDebug("Constructing SearchParams from UI input.");
@@ -53,7 +79,9 @@ namespace SnowmobileWPF.ViewModels
             };
 
             _logger.LogInformation("Search Parameters Built: Last={Last}, First={First}, VSCA={VSCA}",
-                parameters.LastName ?? "Any", parameters.FirstName ?? "Any", parameters.VSCA?.ToString() ?? "Any");
+                parameters.LastName ?? "Any",
+                parameters.FirstName ?? "Any",
+                parameters.VSCA?.ToString() ?? "Any");
 
             return parameters;
         }

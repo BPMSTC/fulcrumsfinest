@@ -4,15 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SnowmobileWPF
 {
-    internal enum UpdateMode
-    {
-        Create,
-        Edit
-    }
-
-    /// <summary>
-    /// Interaction logic for UpdateWindow.xaml
-    /// </summary>
     public partial class UpdateWindow : Window
     {
         public UpdateWindow()
@@ -29,12 +20,26 @@ namespace SnowmobileWPF
         {
             if (DataContext is UpdateViewModel vm)
             {
-                // Forces viewmodel to check all of the properties
+                // Force validation of all UI fields
                 vm.ValidateAllProperties();
 
-                // Check UI/Viewmodel layer status
                 if (!vm.HasErrors)
                 {
+                    // Check for duplicate names in the database
+                    if (vm.CheckForDuplicate())
+                    {
+                        var result = MessageBox.Show(
+                            $"A subscriber named {vm.FirstName} {vm.LastName} already exists. Do you want to save this anyway?",
+                            "Duplicate Detected",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Warning);
+
+                        if (result == MessageBoxResult.No)
+                        {
+                            return;
+                        }
+                    }
+
                     try
                     {
                         vm.SaveChanges();
@@ -42,7 +47,6 @@ namespace SnowmobileWPF
                     }
                     catch (ValidationException ex)
                     {
-                        // This catches any data integrity issues that bypassed the UI
                         MessageBox.Show(
                             $"A data integrity error occurred:\n\n{ex.Message}",
                             "Critical Validation Error",
@@ -52,7 +56,6 @@ namespace SnowmobileWPF
                 }
                 else
                 {
-                    // Safety fallback if the user manages to click Save while the button is disabled
                     MessageBox.Show(
                         "Please correct the highlighted errors before saving.",
                         "Validation Errors",

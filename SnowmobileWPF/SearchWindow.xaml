@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:SearchViewModel}"
         Title="Search Subscribers"
-        Height="480" Width="380"
+        Height="510" Width="400"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="{StaticResource BackgroundBrush}">
@@ -49,8 +49,13 @@
                     <Button Content="Cancel" Grid.Column="0" Style="{StaticResource SecondaryButton}" 
                             Click="CancelButton_Click" IsCancel="True"/>
 
-                    <Button Content="Run Search" Grid.Column="2" Style="{StaticResource PrimaryButton}" 
-                            Click="SearchButton_Click" IsDefault="True"/>
+                    <Button Grid.Column="2" 
+                            Style="{StaticResource SearchButton}" 
+                            Click="SearchButton_Click" 
+                            IsDefault="True"
+                            IsEnabled="{Binding CanSearch}">
+                        <TextBlock Text="Search" Foreground="White"/>
+                    </Button>
                 </Grid>
             </StackPanel>
         </Border>
