@@ -5,13 +5,21 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SnowmobileWPF.ViewModels
 {
+    // ViewModel used for editing an existing Subscriber.
+    // Inherits ObservableValidator to provide property change notification
+    // and automatic DataAnnotations validation support for WPF bindings.
     public partial class UpdateViewModel : ObservableValidator
     {
         private readonly ILogger<UpdateViewModel> _logger;
+
+        // Stores the original name so the UI header does not change
+        // if the user edits FirstName/LastName while the screen is open.
         private readonly string _originalSubscriberName;
 
+        // Underlying model being edited.
         public Subscriber Subscriber { get; }
 
+        // UI header displayed on the edit screen.
         public string DisplayHeader => $"Editing {_originalSubscriberName}";
 
         public UpdateViewModel(Subscriber subscriber, ILogger<UpdateViewModel> logger)
@@ -19,15 +27,24 @@ namespace SnowmobileWPF.ViewModels
             _logger = logger;
             Subscriber = subscriber;
 
-            // Capture name for header
+            if (string.IsNullOrWhiteSpace(subscriber.FirstName) && string.IsNullOrWhiteSpace(subscriber.LastName))
+            {
+                Subscriber.Active = true;
+            }
+
+            // Capture name once so the header stays stable during editing.
             _originalSubscriberName = $"{subscriber.FirstName} {subscriber.LastName}".Trim();
             if (string.IsNullOrWhiteSpace(_originalSubscriberName))
                 _originalSubscriberName = "New Subscriber";
 
+            // Trace which subscriber instance is being edited.
             _logger.LogInformation("UpdateViewModel initialized for VSCA: {VSCA}", Subscriber.VSCA);
         }
 
-        #region Wrapper Properties (Matched to Model Constraints)
+        #region Wrapper Properties
+
+        // Wrapper properties expose model values to the UI while allowing
+        // DataAnnotations validation and change notification through SetProperty.
 
         [Required(ErrorMessage = "First name is required.")]
         [MinLength(2, ErrorMessage = "First name is too short.")]
@@ -36,6 +53,9 @@ namespace SnowmobileWPF.ViewModels
         public string FirstName
         {
             get => Subscriber.FirstName;
+
+            // SetProperty updates the underlying model property, raises
+            // PropertyChanged, and triggers validation because validate=true.
             set { SetProperty(Subscriber.FirstName, value, Subscriber, (u, n) => u.FirstName = n, true); }
         }
 
@@ -48,20 +68,19 @@ namespace SnowmobileWPF.ViewModels
             set { SetProperty(Subscriber.LastName, value, Subscriber, (u, n) => u.LastName = n, true); }
         }
 
-        [Required(ErrorMessage = "Phone number is required.")]
         [Phone(ErrorMessage = "Invalid phone number format.")]
-        [StringLength(20, MinimumLength = 7, ErrorMessage = "Phone number is too short.")]
-        [RegularExpression(@"^[\+\d\s\.\(\)\-]+$", ErrorMessage = "Phone number contains invalid characters.")]
+        [RegularExpression(@"^$|^[\+\d\s\.\(\)\-]+$", ErrorMessage = "Phone number contains invalid characters.")]
+        [MaxLength(20, ErrorMessage = "Phone number is too long.")]
         public string Phone
         {
-            get => Subscriber.Phone;
+            // Null-safe access for UI binding.
+            get => Subscriber.Phone ?? string.Empty;
             set { SetProperty(Subscriber.Phone, value, Subscriber, (u, n) => u.Phone = n, true); }
         }
 
-        [Required(ErrorMessage = "Email address is required.")]
         [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         [MaxLength(320)]
-        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
+        [RegularExpression(@"^$|^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email must follow format: user@domain.com")]
         public string Email
         {
             get => Subscriber.Email ?? string.Empty;
@@ -75,6 +94,8 @@ namespace SnowmobileWPF.ViewModels
         public string Street
         {
             get => Subscriber.Address.Street;
+
+            // Note: This property writes to a nested object (Subscriber.Address).
             set { SetProperty(Subscriber.Address.Street, value, Subscriber.Address, (u, n) => u.Street = n, true); }
         }
 
@@ -87,9 +108,9 @@ namespace SnowmobileWPF.ViewModels
             set { SetProperty(Subscriber.Address.City, value, Subscriber.Address, (u, n) => u.City = n, true); }
         }
 
-        [Required(ErrorMessage = "State/Province is required.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "State/Province is too short.")]
-        [RegularExpression(@"^[\p{L}\s\-\']+$", ErrorMessage = "State/Province contains invalid characters.")]
+        [Required(ErrorMessage = "State/Region is required.")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "State/Region is too short.")]
+        [RegularExpression(@"^[\p{L}\s\-\']+$", ErrorMessage = "State/Region contains invalid characters.")]
         public string Region
         {
             get => Subscriber.Address.Region;
@@ -124,6 +145,7 @@ namespace SnowmobileWPF.ViewModels
 
         #endregion
 
+        // Forces validation across all bound properties.
         public void ValidateAllProperties()
         {
             base.ValidateAllProperties();
@@ -134,7 +156,8 @@ namespace SnowmobileWPF.ViewModels
         {
             _logger.LogInformation("Preparing final save for VSCA: {VSCA}", Subscriber.VSCA);
 
-            // 1. Final Sanitization
+            // Final normalization step to remove leading/trailing whitespace
+            // before persistence.
             Subscriber.FirstName = FirstName?.Trim() ?? string.Empty;
             Subscriber.LastName = LastName?.Trim() ?? string.Empty;
             Subscriber.Phone = Phone?.Trim() ?? string.Empty;
@@ -145,16 +168,24 @@ namespace SnowmobileWPF.ViewModels
             Subscriber.Address.PostalCode = PostalCode?.Trim() ?? string.Empty;
             Subscriber.Address.Country = Country?.Trim() ?? string.Empty;
 
-            // 2. Hard Validation Check (Safety Net)
+            // Safety-net validation: re-run full DataAnnotations validation against the
+            // entire Subscriber model before saving. This ensures that even if UI-level
+            // validation was bypassed or missed, the model still satisfies all validation rules.
             var context = new ValidationContext(Subscriber);
             var results = new List<ValidationResult>();
+
+            // TryValidateObject checks every property decorated with DataAnnotations
+            // and populates the results list with any validation failures.
             if (!Validator.TryValidateObject(Subscriber, context, results, true))
             {
+                // If validation fails, log the first error and stop the save operation.
                 var error = results.First().ErrorMessage;
                 _logger.LogError("Hard validation failed on Save: {Error}", error);
+
                 throw new ValidationException(error);
             }
 
+            // At this point the model is fully validated and ready for the repository layer.
             _logger.LogInformation("Changes validated and ready for persistence for VSCA: {VSCA}", Subscriber.VSCA);
         }
     }

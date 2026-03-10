@@ -31,7 +31,7 @@ namespace SnowmobileLibrary.Models
         [Required(ErrorMessage = "Postal code is required.")]
         [StringLength(20, MinimumLength = 3, ErrorMessage = "Postal code must be between 3 and 20 characters.")]
         // Mandates at least one number, allows letters, spaces, and hyphens.
-        [RegularExpression(@"^(?=.*\d)[\p{L}\d\s\-]+$", ErrorMessage = "Invalid format. Postal codes must include at least one number.")]
+        [RegularExpression(@"^(?=.*\d)[\p{L}\d\s\-]+$", ErrorMessage = "Postal code must include at least one number.")]
         public string PostalCode { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Country is required.")]

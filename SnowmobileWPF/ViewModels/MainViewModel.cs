@@ -41,7 +41,6 @@ namespace SnowmobileWPF.ViewModels
 
             // Initialize Commands
             DeleteCommand = new RelayCommand(ExecuteDelete, CanExecuteOnSelected);
-            CreateDummyCommand = new RelayCommand(_ => ExecuteCreateDummy());
             ImportCommand = new RelayCommand(_ => ExecuteImport());
             EditNotesCommand = new RelayCommand(_ => ExecuteEditNotes(), CanExecuteOnSelected);
             SaveNotesCommand = new RelayCommand(_ => ExecuteSaveNotes());
@@ -129,7 +128,6 @@ namespace SnowmobileWPF.ViewModels
         #region Commands
 
         public ICommand DeleteCommand { get; }
-        public ICommand CreateDummyCommand { get; }
         public ICommand ImportCommand { get; }
         public ICommand EditNotesCommand { get; }
         public ICommand SaveNotesCommand { get; }
@@ -299,24 +297,6 @@ namespace SnowmobileWPF.ViewModels
             {
                 _logger.LogInformation("Delete operation cancelled for VSCA: {VSCA}", SelectedSubscriber.VSCA);
             }
-        }
-
-        private void ExecuteCreateDummy()
-        {
-            _logger.LogInformation("Creating dummy subscriber.");
-            var dummy = new Subscriber
-            {
-                VSCA = new Random().Next(1, 100000),
-                FirstName = "John",
-                LastName = "Doe",
-                Phone = "715-555-0199",
-                Active = true,
-                DateJoined = DateOnly.FromDateTime(DateTime.Now),
-                Address = new Address { Street = "123 MVVM Way", City = "Pattern", Region = "WI", Country = "USA", PostalCode = "16823" }
-            };
-
-            _repository.Create(dummy, true);
-            LoadSubscribers();
         }
 
         private void ExecuteEditSubscription()

@@ -5,6 +5,7 @@ using SnowmobileWPF.Models;
 
 namespace SnowmobileWPF.Repositories
 {
+    // Handles database operations for Subscriber entities.
     public class SubscriberRepository : ISubscriberRepository
     {
         private readonly SnowmobileContext _context;
@@ -16,6 +17,8 @@ namespace SnowmobileWPF.Repositories
 
         public List<Subscriber>? Search(SearchParams searchParams)
         {
+            // Base query with eager loading so Address and Subscription
+            // are retrieved with the Subscriber in one database call.
             var query = _context.Subscribers
                 .Include(s => s.Address)
                 .Include(s => s.Subscription)
@@ -33,6 +36,7 @@ namespace SnowmobileWPF.Repositories
             if (searchParams.VSCA.HasValue)
                 query = query.Where(s => s.VSCA == searchParams.VSCA.Value);
 
+            // Execute query
             return query
                 .OrderByDescending(s => s.VSCA)
                 .ToList();
@@ -44,25 +48,32 @@ namespace SnowmobileWPF.Repositories
                 .Include(s => s.Address)
                 .Include(s => s.Subscription)
                 .AsQueryable();
+
             if (max > 0)
             {
                 subscribers = (Microsoft.EntityFrameworkCore.DbSet<Subscriber>)subscribers.Take(max);
             }
+
             return subscribers.OrderDescending().ToList();
         }
 
         public void Create(Subscriber subscriber, bool forceCreation = false)
         {
+            // Check for existing subscribers with the same name
             SearchParams searchParams = new SearchParams
             {
                 FirstName = subscriber.FirstName,
                 LastName = subscriber.LastName
             };
+
             var existingSubscribers = Search(searchParams);
+
+            // Prevent accidental duplicates unless explicitly overridden
             if (existingSubscribers.Count != 0 && !forceCreation)
             {
                 throw new ArgumentException($"A subscriber with the name {subscriber.FirstName} {subscriber.LastName} already exists. Use forceCreation to override this check.");
             }
+
             _context.Add(subscriber);
             _context.SaveChanges();
         }
