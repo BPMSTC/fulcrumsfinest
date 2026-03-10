@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Win32;
 using SnowmobileLibrary.Enums;
 using SnowmobileWPF.ViewModels;
 
@@ -12,30 +11,23 @@ namespace SnowmobileWPF
         public MainWindow()
         {
             InitializeComponent();
+
             SourceComboBox.ItemsSource = Enum.GetValues(typeof(SubscriptionSource));
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            SearchWindow searchWindow = new SearchWindow();
-            searchWindow.Owner = this;
+            SearchWindow searchWindow = new SearchWindow
+            {
+                Owner = this
+            };
 
             if (searchWindow.ShowDialog() == true)
             {
                 if (DataContext is MainViewModel vm)
                 {
                     vm.LoadSearchResults(searchWindow.SearchParams);
-                    ClearSearchButton.Visibility = Visibility.Visible;
                 }
-            }
-        }
-
-        private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is MainViewModel vm)
-            {
-                vm.LoadSubscribers();
-                ClearSearchButton.Visibility = Visibility.Collapsed;
             }
         }
 
