@@ -80,5 +80,17 @@ namespace SnowmobileWPF
                 }
             }
         }
+
+        private void ContestButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                if (vm.CheckAcknowledged)
+                {
+                    ContestToolTip.PlacementTarget = ContestButton;
+                    ContestToolTip.IsOpen = true;
+                }
+            }
+        }
     }
 }

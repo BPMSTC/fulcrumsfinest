@@ -19,6 +19,7 @@ namespace SnowmobileWPF.Repositories
         {
             get
             {
+                // checks if a contest is currently running
                 if (GetCurrentContest() != null)
                 {
                     return true;
@@ -47,6 +48,7 @@ namespace SnowmobileWPF.Repositories
 
         public void End()
         {
+            // prevent running if there's no running contest
             if (!CurrentlyInContest)
             {
                 throw new Exception("A contest is already running.");
@@ -62,6 +64,23 @@ namespace SnowmobileWPF.Repositories
                     .Where(c => c.EndDate > DateTime.Now)
                     .Where(c => c.StartDate <= DateTime.Now)
                     .FirstOrDefault();
+        }
+
+        public bool IsLastContestAcknowledged()
+        {
+            var contest = _context.Contests
+                    .Where(c => c.Acknowledged == false)
+                    .Where(c => c.EndDate <= DateTime.Now)
+                    .FirstOrDefault();
+            if (contest != null)
+            {
+                contest.Acknowledged = true;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

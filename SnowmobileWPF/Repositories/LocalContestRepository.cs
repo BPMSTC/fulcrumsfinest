@@ -44,5 +44,10 @@ namespace SnowmobileWPF.Repositories
                 EndDate = DateTime.Now.AddDays(7)
             };
         }
+
+        public bool IsLastContestAcknowledged()
+        {
+            return false;
+        }
     }
 }

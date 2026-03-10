@@ -47,7 +47,11 @@
                         Content="Contest"
                         Style="{StaticResource ToolbarButton}"
                         Width="100" Margin="0,0,10,0"
-                        Command="{Binding ContestCommand}"/>
+                        Command="{Binding ContestCommand}" Loaded="ContestButton_Loaded">
+                        <Button.ToolTip>
+                            <ToolTip Name="ContestToolTip" Content="A contest has ended since last login." PlacementTarget="{Binding ElementName=ContestButton}" Placement="Top"></ToolTip>
+                        </Button.ToolTip>
+                    </Button>
                 </StackPanel>
 
                 <Button Name="DeleteButton" Content="Delete"

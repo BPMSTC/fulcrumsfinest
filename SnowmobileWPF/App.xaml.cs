@@ -36,8 +36,8 @@ namespace SnowmobileWPF
                     services.AddSingleton<MainViewModel>();
                     services.AddSingleton<ContestViewModel>();
                     services.AddSingleton<RenewViewModel>();
-                    services.AddSingleton<RenewWindow>();
-                    services.AddSingleton<ContestWindow>();
+                    //services.AddSingleton<RenewWindow>();
+                    //services.AddSingleton<ContestWindow>();
                     services.AddSingleton<MainWindow>(s => new MainWindow
                     {
                         DataContext = s.GetRequiredService<MainViewModel>()

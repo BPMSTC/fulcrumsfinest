@@ -43,6 +43,11 @@ namespace SnowmobileLibrary.Data
                 .Property(s => s.Source)
                 .HasConversion<string>()
                 .HasMaxLength(20);
+
+            // Contest Acknowledged default value
+            modelBuilder.Entity<Contest>()
+                .Property(c => c.Acknowledged)
+                .HasDefaultValue(false);
         }
     }
 }

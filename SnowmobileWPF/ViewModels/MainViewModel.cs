@@ -17,6 +17,7 @@ namespace SnowmobileWPF.ViewModels
         private readonly ISubscriberRepository _repository;
         private readonly ILogger<MainViewModel> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IContestRepository _contestRepository;
 
         private ObservableCollection<Subscriber> _subscribers = new();
         private Subscriber? _selectedSubscriber;
@@ -31,11 +32,12 @@ namespace SnowmobileWPF.ViewModels
         public MainViewModel(
             ISubscriberRepository repository,
             ILogger<MainViewModel> logger,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, IContestRepository contestRepository)
         {
             _repository = repository;
             _logger = logger;
             _serviceProvider = serviceProvider;
+            _contestRepository = contestRepository;
 
             _logger.LogInformation("MainViewModel initialized.");
 
@@ -146,6 +148,8 @@ namespace SnowmobileWPF.ViewModels
         #endregion
 
         #region Logic Methods
+
+        internal bool CheckAcknowledged => _contestRepository.IsLastContestAcknowledged();
 
         public void RefreshDisplay()
         {
@@ -392,12 +396,13 @@ namespace SnowmobileWPF.ViewModels
             RenewWindow renewWindow = new RenewWindow(
                 _serviceProvider.GetRequiredService<RenewViewModel>(),
                 SelectedSubscriber
-                );
+            );
             renewWindow.ShowDialog();
             if (renewWindow.DialogResult == true)
             {
                 _logger.LogInformation("Renewal completed for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
-                UpdateSubscriptionDisplay();
+                ExecuteCancelSubscription();
+                OnPropertyChanged(nameof(SelectedSubscriber));
             }
             else
             {
