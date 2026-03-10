@@ -9,6 +9,10 @@
         Background="{StaticResource BackgroundBrush}"
         WindowStartupLocation="CenterScreen">
 
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding EscapeCommand}" />
+    </Window.InputBindings>
+
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
@@ -175,24 +179,64 @@
                                     </Grid>
 
                                     <Border Background="#F8FAFC" Padding="15" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,0,10,25">
-                                        <UniformGrid Columns="3">
+                                        <UniformGrid Columns="4">
                                             <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="EXPIRATION" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"/>
-                                                <DatePicker SelectedDate="{Binding ExpDate}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Margin="0,0,0,5"/>
-                                                <TextBlock Text="{Binding ExpDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" 
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}"/>
+                                                <TextBlock Text="EXPIRES ON" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                                <DatePicker SelectedDate="{Binding ExpDate}" 
+                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                            Margin="0,0,0,5"/>
+
+                                                <TextBlock Text="{Binding ExpDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
+
                                             <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="RENEWAL" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"/>
-                                                <DatePicker SelectedDate="{Binding RenewDate}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Margin="0,0,0,5"/>
-                                                <TextBlock Text="{Binding RenewDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold"
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}"/>
+                                                <TextBlock Text="LAST RENEWED" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                                <DatePicker SelectedDate="{Binding RenewDate}" 
+                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                            Margin="0,0,0,5"/>
+
+                                                <TextBlock Text="{Binding RenewDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
+
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="ISSUES REMAINING" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                                <TextBox Text="{Binding IssuesRemaining, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}" 
+                                                         Height="26" 
+                                                         VerticalContentAlignment="Center" 
+                                                         Padding="5,0" 
+                                                         PreviewTextInput="NumberValidationTextBox"
+                                                         Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                         Margin="0,0,0,5"/>
+
+                                                <TextBlock Text="{Binding IssuesRemaining}" 
+                                                           FontSize="14" 
+                                                           FontWeight="SemiBold" 
+                                                           Foreground="{StaticResource PrimaryBrush}"
+                                                           Height="26" 
+                                                           VerticalAlignment="Center" 
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+                                            </StackPanel>
+
                                             <StackPanel>
-                                                <TextBlock Text="SOURCE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"/>
-                                                <ComboBox Name="SourceComboBox" SelectedItem="{Binding Source}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Margin="0,0,0,5"/>
-                                                <TextBlock Text="{Binding Source}" FontSize="14" FontWeight="SemiBold"
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}"/>
+                                                <TextBlock Text="SOURCE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                                <ComboBox Name="SourceComboBox" 
+                                                          SelectedItem="{Binding Source}" 
+                                                          Height="26"
+                                                          Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                          Margin="0,0,0,5"/>
+
+                                                <TextBlock Text="{Binding Source}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
+                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
                                         </UniformGrid>
                                     </Border>

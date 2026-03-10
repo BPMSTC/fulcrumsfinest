@@ -1,6 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using System.Text.RegularExpressions;
 using SnowmobileLibrary.Enums;
 using SnowmobileWPF.ViewModels;
 
@@ -13,6 +13,12 @@ namespace SnowmobileWPF
             InitializeComponent();
 
             SourceComboBox.ItemsSource = Enum.GetValues(typeof(SubscriptionSource));
+        }
+
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -49,28 +55,6 @@ namespace SnowmobileWPF
                     NotesTextBox.CaretIndex = NotesTextBox.Text.Length;
                 }
             }), System.Windows.Threading.DispatcherPriority.Input);
-        }
-
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
-        {
-            base.OnPreviewKeyDown(e);
-
-            if (e.Key == Key.Escape)
-            {
-                if (DataContext is MainViewModel vm)
-                {
-                    if (vm.IsEditingNotes)
-                    {
-                        vm.CancelNotesCommand.Execute(null);
-                        e.Handled = true;
-                    }
-                    else if (vm.SelectedSubscriber != null)
-                    {
-                        vm.SelectedSubscriber = null;
-                        e.Handled = true;
-                    }
-                }
-            }
         }
     }
 }

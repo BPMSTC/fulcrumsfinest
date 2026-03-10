@@ -28,6 +28,7 @@ namespace SnowmobileWPF.ViewModels
         private DateTime _oldRenewDate;
         private DateTime _oldExpDate;
         private SubscriptionSource? _oldSource;
+        private int? _oldIssuesRemaining;
 
         public MainViewModel(
             ISubscriberRepository repository,
@@ -52,6 +53,7 @@ namespace SnowmobileWPF.ViewModels
             CancelSubscriptionCommand = new RelayCommand(_ => ExecuteCancelSubscription(), CanExecuteOnSelected);
             UpdateCommand = new RelayCommand(_ => ExecuteUpdate(), CanExecuteOnSelected);
             CreateCommand = new RelayCommand(_ => ExecuteCreate());
+            EscapeCommand = new RelayCommand(_ => ExecuteEscape());
 
             // Initial load
             LoadSubscribers();
@@ -133,6 +135,12 @@ namespace SnowmobileWPF.ViewModels
             set => SetProperty(ref _oldSource, value);
         }
 
+        public int? IssuesRemaining
+        {
+            get => _oldIssuesRemaining;
+            set => SetProperty(ref _oldIssuesRemaining, value);
+        }
+
         #endregion
 
         #region Commands
@@ -148,6 +156,7 @@ namespace SnowmobileWPF.ViewModels
         public ICommand CancelSubscriptionCommand { get; }
         public ICommand UpdateCommand { get; }
         public ICommand CreateCommand { get; }
+        public ICommand EscapeCommand { get; }
 
         #endregion
 
@@ -178,12 +187,14 @@ namespace SnowmobileWPF.ViewModels
                 RenewDate = DateTime.Today;
                 ExpDate = DateTime.Today.AddYears(1);
                 Source = null;
+                IssuesRemaining = 0;
                 return;
             }
 
             RenewDate = sub.DateRenewed.ToDateTime(new TimeOnly(0));
             ExpDate = sub.ExpDate.ToDateTime(new TimeOnly(0));
             Source = sub.Source;
+            IssuesRemaining = sub.IssuesRemaining;
         }
 
         public void LoadSubscribers()
@@ -302,21 +313,28 @@ namespace SnowmobileWPF.ViewModels
         private void ExecuteEditSubscription()
         {
             _logger.LogInformation("Edit Subscription command executed for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
+
             RenewDate = SelectedSubscriber.Subscription.DateRenewed.ToDateTime(new TimeOnly(0));
             ExpDate = SelectedSubscriber.Subscription.ExpDate.ToDateTime(new TimeOnly(0));
             Source = SelectedSubscriber?.Subscription.Source;
+            IssuesRemaining = SelectedSubscriber.Subscription.IssuesRemaining;
+
             IsEditingSubscription = true;
         }
 
         private void ExecuteSaveSubscription()
         {
             if (SelectedSubscriber == null) return;
+
             _logger.LogInformation("Saving updated subscription for VSCA: {VSCA}", SelectedSubscriber.VSCA);
+
             SelectedSubscriber.Subscription.ExpDate = DateOnly.FromDateTime(ExpDate);
             SelectedSubscriber.Subscription.DateRenewed = DateOnly.FromDateTime(RenewDate);
             SelectedSubscriber.Subscription.Source = Source;
-            // Log old vs new subscription details here if needed
+            SelectedSubscriber.Subscription.IssuesRemaining = IssuesRemaining ?? 0;
+
             _repository.Update(SelectedSubscriber);
+
             IsEditingSubscription = false;
             UpdateSubscriptionDisplay();
         }
@@ -369,6 +387,29 @@ namespace SnowmobileWPF.ViewModels
                 loadingWindow.Close();
                 _logger.LogInformation($"Import complete.");
                 LoadSubscribers();
+            }
+        }
+
+        private void ExecuteEscape()
+        {
+            // If editing subscription, cancel that first
+            if (IsEditingSubscription)
+            {
+                ExecuteCancelSubscription();
+                return;
+            }
+
+            // If editing notes, cancel that
+            if (IsEditingNotes)
+            {
+                ExecuteCancelNotes();
+                return;
+            }
+
+            // If not editing anything, deselect the subscriber (close the "tab")
+            if (SelectedSubscriber != null)
+            {
+                SelectedSubscriber = null;
             }
         }
 
