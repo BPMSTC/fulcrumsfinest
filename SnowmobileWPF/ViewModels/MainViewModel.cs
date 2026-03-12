@@ -80,9 +80,8 @@ namespace SnowmobileWPF.ViewModels
                 {
                     _logger.LogDebug("SelectedSubscriber changed to VSCA: {VSCA}", value?.VSCA);
                     // Reset UI state when a new subscriber is selected
-                    IsEditingNotes = false;
-                    UpdateNotesDisplay();
-                    UpdateSubscriptionDisplay();
+                    ExecuteCancelNotes();
+                    ExecuteCancelSubscription();
                     OnPropertyChanged(nameof(IsDetailsVisible));
                     OnPropertyChanged(nameof(ViewingTitle));
                 }
@@ -356,7 +355,6 @@ namespace SnowmobileWPF.ViewModels
 
         private void ExecuteCancelSubscription()
         {
-            _logger.LogInformation("Cancelled subscription edit for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
             IsEditingSubscription = false;
             UpdateSubscriptionDisplay();
         }
@@ -384,7 +382,6 @@ namespace SnowmobileWPF.ViewModels
 
         private void ExecuteCancelNotes()
         {
-            _logger.LogDebug("Cancelled notes edit for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
             IsEditingNotes = false;
             UpdateNotesDisplay();
         }

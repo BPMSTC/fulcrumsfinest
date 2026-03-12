@@ -187,6 +187,30 @@
                                     <Border Background="#F8FAFC" Padding="15" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,0,10,25">
                                         <UniformGrid Columns="5">
                                             <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="SOURCE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
+                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                                <ComboBox Name="SourceComboBox" 
+                                                  SelectedItem="{Binding Source}" 
+                                                  Height="26"
+                                                  Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                  Margin="0,0,0,5"/>
+
+                                                <TextBlock Text="{Binding Source}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
+                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="LAST RENEWED" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
+                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                                <DatePicker SelectedDate="{Binding RenewDate}" 
+                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                    Margin="0,0,0,5"/>
+
+                                                <TextBlock Text="{Binding RenewDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
+                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,10,0">
                                                 <TextBlock Text="EXPIRES ON" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
 
@@ -197,19 +221,6 @@
                                                 <TextBlock Text="{Binding ExpDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
-
-                                            <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="LAST RENEWED" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
-
-                                                <DatePicker SelectedDate="{Binding RenewDate}" 
-                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
-                                                            Margin="0,0,0,5"/>
-
-                                                <TextBlock Text="{Binding RenewDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
-                                            </StackPanel>
-
                                             <StackPanel Margin="0,0,10,0">
                                                 <TextBlock Text="ISSUES REMAINING" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
@@ -228,20 +239,6 @@
                                                            Foreground="{StaticResource PrimaryBrush}"
                                                            Height="26" 
                                                            VerticalAlignment="Center" 
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
-                                            </StackPanel>
-
-                                            <StackPanel Margin="0, 0, 10, 0">
-                                                <TextBlock Text="SOURCE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
-
-                                                <ComboBox Name="SourceComboBox" 
-                                                          SelectedItem="{Binding Source}" 
-                                                          Height="26"
-                                                          Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
-                                                          Margin="0,0,0,5"/>
-
-                                                <TextBlock Text="{Binding Source}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
                                             <StackPanel>
