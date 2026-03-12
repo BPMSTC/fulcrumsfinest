@@ -36,6 +36,7 @@ namespace SnowmobileWPF.ViewModels
             {
                 CurrentSubscriber.Subscription.ExpDate = CurrentSubscriber.Subscription.ExpDate.AddYears(YearsToRenew);
                 CurrentSubscriber.Subscription.DateRenewed = DateOnly.FromDateTime(DateTime.Now);
+                CurrentSubscriber.Subscription.IssuesRemaining = 4 * YearsToRenew;
                 if (_contestRepository.CurrentlyInContest)
                 {
                     CurrentSubscriber.Contest = true;

@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Text.RegularExpressions;
 using SnowmobileLibrary.Enums;
 using SnowmobileWPF.ViewModels;
+using System.Windows.Controls;
 
 namespace SnowmobileWPF
 {
@@ -55,6 +56,24 @@ namespace SnowmobileWPF
                     NotesTextBox.CaretIndex = NotesTextBox.Text.Length;
                 }
             }), System.Windows.Threading.DispatcherPriority.Input);
+        }
+
+        private void ContestButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                if (vm.CheckAcknowledged)
+                {
+                    ToolTip contestToolTip = new ToolTip
+                    {
+                        Content = "A contest has ended since last login.",
+                        Placement = System.Windows.Controls.Primitives.PlacementMode.Top,
+                        PlacementTarget = ContestButton,
+                        StaysOpen = false
+                    };
+                    contestToolTip.IsOpen = true;
+                }
+            }
         }
     }
 }

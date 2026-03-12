@@ -30,7 +30,7 @@ namespace SnowmobileWPF.ViewModels
         private DateTime _oldExpDate;
         private SubscriptionSource? _oldSource;
         private int? _oldIssuesRemaining;
-
+        private string? _oldFinalIssue;
         public MainViewModel(
             ISubscriberRepository repository,
             ILogger<MainViewModel> logger,
@@ -145,6 +145,12 @@ namespace SnowmobileWPF.ViewModels
             set => SetProperty(ref _oldIssuesRemaining, value);
         }
 
+        public string? FinalIssue
+        {
+            get => _oldFinalIssue;
+            set => SetProperty(ref _oldFinalIssue, value);
+        }
+
         #endregion
 
         #region Commands
@@ -203,6 +209,7 @@ namespace SnowmobileWPF.ViewModels
             ExpDate = sub.ExpDate.ToDateTime(new TimeOnly(0));
             Source = sub.Source;
             IssuesRemaining = sub.IssuesRemaining;
+            FinalIssue = sub.FinalIssue;
         }
 
         public void LoadSubscribers()
