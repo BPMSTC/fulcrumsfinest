@@ -1,0 +1,54 @@
+﻿<Window x:Class="SnowmobileWPF.RenewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="clr-namespace:SnowmobileWPF.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:RenewViewModel}"
+        Title="Renew Subscription"
+        Height="293" Width="380"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundBrush}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Grid.ColumnSpan="2">
+            <TextBlock Text="Renew Subscription" Style="{StaticResource HeaderText}" VerticalAlignment="Center" Margin="30,0,0,15"/>
+        </Border>
+
+        <Border Background="{StaticResource CardBackgroundBrush}" VerticalAlignment="Top"
+                Margin="25,60,25,0" Padding="25" CornerRadius="12" BorderBrush="{StaticResource BorderBrush}" 
+                BorderThickness="1" Effect="{StaticResource CardShadow}" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="150">
+
+            <StackPanel>
+                <TextBlock Text="YEARS TO RENEW" Style="{StaticResource FieldLabel}"/>
+                <ComboBox Name="EndDatePicker" ItemsSource="{Binding YearsSource}" SelectedValue="{Binding YearsToRenew}" Margin="0,0,0,10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Content="Cancel" Grid.Column="0" Style="{StaticResource SecondaryButton}" IsCancel="True"/>
+
+                    <Button Content="Save" Grid.Column="2" Style="{StaticResource PrimaryButton}" IsDefault="True" Command="{Binding SaveCommand}" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

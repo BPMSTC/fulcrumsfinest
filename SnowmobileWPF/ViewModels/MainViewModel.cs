@@ -17,6 +17,7 @@ namespace SnowmobileWPF.ViewModels
         private readonly ISubscriberRepository _repository;
         private readonly ILogger<MainViewModel> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IContestRepository _contestRepository;
 
         private ObservableCollection<Subscriber> _subscribers = new();
         private Subscriber? _selectedSubscriber;
@@ -29,15 +30,16 @@ namespace SnowmobileWPF.ViewModels
         private DateTime _oldExpDate;
         private SubscriptionSource? _oldSource;
         private int? _oldIssuesRemaining;
-
+        private string? _oldFinalIssue;
         public MainViewModel(
             ISubscriberRepository repository,
             ILogger<MainViewModel> logger,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, IContestRepository contestRepository)
         {
             _repository = repository;
             _logger = logger;
             _serviceProvider = serviceProvider;
+            _contestRepository = contestRepository;
 
             _logger.LogInformation("MainViewModel initialized.");
 
@@ -53,6 +55,8 @@ namespace SnowmobileWPF.ViewModels
             CancelSubscriptionCommand = new RelayCommand(_ => ExecuteCancelSubscription(), CanExecuteOnSelected);
             UpdateCommand = new RelayCommand(_ => ExecuteUpdate(), CanExecuteOnSelected);
             CreateCommand = new RelayCommand(_ => ExecuteCreate());
+            ContestCommand = new RelayCommand(_ => ExecuteContest());
+            RenewCommand = new RelayCommand(_ => ExecuteRenew(), CanExecuteOnSelected);
             EscapeCommand = new RelayCommand(_ => ExecuteEscape());
 
             // Initial load
@@ -76,9 +80,8 @@ namespace SnowmobileWPF.ViewModels
                 {
                     _logger.LogDebug("SelectedSubscriber changed to VSCA: {VSCA}", value?.VSCA);
                     // Reset UI state when a new subscriber is selected
-                    IsEditingNotes = false;
-                    UpdateNotesDisplay();
-                    UpdateSubscriptionDisplay();
+                    ExecuteCancelNotes();
+                    ExecuteCancelSubscription();
                     OnPropertyChanged(nameof(IsDetailsVisible));
                     OnPropertyChanged(nameof(ViewingTitle));
                 }
@@ -141,6 +144,12 @@ namespace SnowmobileWPF.ViewModels
             set => SetProperty(ref _oldIssuesRemaining, value);
         }
 
+        public string? FinalIssue
+        {
+            get => _oldFinalIssue;
+            set => SetProperty(ref _oldFinalIssue, value);
+        }
+
         #endregion
 
         #region Commands
@@ -157,10 +166,14 @@ namespace SnowmobileWPF.ViewModels
         public ICommand UpdateCommand { get; }
         public ICommand CreateCommand { get; }
         public ICommand EscapeCommand { get; }
+        public ICommand ContestCommand { get; }
+        public ICommand RenewCommand { get; }
 
         #endregion
 
         #region Logic Methods
+
+        internal bool CheckAcknowledged => _contestRepository.IsLastContestAcknowledged();
 
         public void RefreshDisplay()
         {
@@ -195,6 +208,7 @@ namespace SnowmobileWPF.ViewModels
             ExpDate = sub.ExpDate.ToDateTime(new TimeOnly(0));
             Source = sub.Source;
             IssuesRemaining = sub.IssuesRemaining;
+            FinalIssue = sub.FinalIssue;
         }
 
         public void LoadSubscribers()
@@ -341,7 +355,6 @@ namespace SnowmobileWPF.ViewModels
 
         private void ExecuteCancelSubscription()
         {
-            _logger.LogInformation("Cancelled subscription edit for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
             IsEditingSubscription = false;
             UpdateSubscriptionDisplay();
         }
@@ -369,9 +382,38 @@ namespace SnowmobileWPF.ViewModels
 
         private void ExecuteCancelNotes()
         {
-            _logger.LogDebug("Cancelled notes edit for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
             IsEditingNotes = false;
             UpdateNotesDisplay();
+        }
+
+        private void ExecuteContest()
+        {
+            _logger.LogDebug("Opening contest window");
+            var contestRepo = _serviceProvider.GetRequiredService<IContestRepository>();
+            ContestWindow contestWindow = new ContestWindow(
+                _serviceProvider.GetRequiredService<ContestViewModel>()
+                );
+            contestWindow.Show();
+        }
+
+        private void ExecuteRenew()
+        {
+            _logger.LogDebug("Opening renew window");
+            RenewWindow renewWindow = new RenewWindow(
+                _serviceProvider.GetRequiredService<RenewViewModel>(),
+                SelectedSubscriber
+            );
+            renewWindow.ShowDialog();
+            if (renewWindow.DialogResult == true)
+            {
+                _logger.LogInformation("Renewal completed for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
+                ExecuteCancelSubscription();
+                OnPropertyChanged(nameof(SelectedSubscriber));
+            }
+            else
+            {
+                _logger.LogInformation("Renewal cancelled for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
+            }
         }
 
         private async void ExecuteImport()

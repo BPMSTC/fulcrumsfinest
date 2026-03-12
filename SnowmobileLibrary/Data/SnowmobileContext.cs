@@ -13,6 +13,7 @@ namespace SnowmobileLibrary.Data
         public DbSet<Subscriber> Subscribers => Set<Subscriber>();
         public DbSet<Address> Addresses => Set<Address>();
         public DbSet<Subscription> Subscriptions => Set<Subscription>();
+        public DbSet<Contest> Contests => Set<Contest>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +43,11 @@ namespace SnowmobileLibrary.Data
                 .Property(s => s.Source)
                 .HasConversion<string>()
                 .HasMaxLength(20);
+
+            // Contest Acknowledged default value
+            modelBuilder.Entity<Contest>()
+                .Property(c => c.Acknowledged)
+                .HasDefaultValue(false);
         }
     }
 }
