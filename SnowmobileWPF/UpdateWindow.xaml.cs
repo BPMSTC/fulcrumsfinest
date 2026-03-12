@@ -1,19 +1,9 @@
 ﻿using System.Windows;
 using SnowmobileWPF.ViewModels;
-using System.Text;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SnowmobileWPF
 {
-    internal enum UpdateMode
-    {
-        Create,
-        Edit
-    }
-
-    /// <summary>
-    /// Interaction logic for UpdateWindow.xaml
-    /// </summary>
     public partial class UpdateWindow : Window
     {
         public UpdateWindow()
@@ -30,55 +20,48 @@ namespace SnowmobileWPF
         {
             if (DataContext is UpdateViewModel vm)
             {
-                string[] propertiesToValidate =
-                {
-                    nameof(vm.FirstName),
-                    nameof(vm.LastName),
-                    nameof(vm.Phone),
-                    nameof(vm.Email),
-                    nameof(vm.Street),
-                    nameof(vm.City),
-                    nameof(vm.Region),
-                    nameof(vm.PostalCode),
-                    nameof(vm.Country)
-                };
+                // Force validation of all UI fields
+                vm.ValidateAllProperties();
 
-                List<string> errorList = new List<string>();
-
-                // Collect every error that exists
-                foreach (string property in propertiesToValidate)
+                if (!vm.HasErrors)
                 {
-                    string error = vm[property];
-                    if (!string.IsNullOrEmpty(error))
+                    // Check for duplicate names in the database
+                    if (vm.CheckForDuplicate())
                     {
-                        errorList.Add(error);
+                        var result = MessageBox.Show(
+                            $"A subscriber named {vm.FirstName} {vm.LastName} already exists. Do you want to save this anyway?",
+                            "Duplicate Detected",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Warning);
+
+                        if (result == MessageBoxResult.No)
+                        {
+                            return;
+                        }
+                    }
+
+                    try
+                    {
+                        vm.SaveChanges();
+                        DialogResult = true;
+                    }
+                    catch (ValidationException ex)
+                    {
+                        MessageBox.Show(
+                            $"A data integrity error occurred:\n\n{ex.Message}",
+                            "Critical Validation Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
                     }
                 }
-
-                // If any errors were found, display them all in one go
-                if (errorList.Count > 0)
+                else
                 {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Please correct the following errors before saving:");
-                    sb.AppendLine();
-
-                    foreach (var error in errorList)
-                    {
-                        sb.AppendLine($"• {error}");
-                    }
-
                     MessageBox.Show(
-                        sb.ToString(),
+                        "Please correct the highlighted errors before saving.",
                         "Validation Errors",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
-
-                    return;
                 }
-
-                // If we got here, no errors were found
-                vm.SaveChanges();
-                DialogResult = true;
             }
         }
     }
