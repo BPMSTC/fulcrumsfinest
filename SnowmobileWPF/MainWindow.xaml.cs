@@ -8,10 +8,10 @@ namespace SnowmobileWPF
 {
     public partial class MainWindow : Window
     {
+        private SearchWindow searchWindow;
         public MainWindow()
         {
             InitializeComponent();
-
             SourceComboBox.ItemsSource = Enum.GetValues(typeof(SubscriptionSource));
         }
 
@@ -23,10 +23,18 @@ namespace SnowmobileWPF
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            SearchWindow searchWindow = new SearchWindow
+            // checks if searchWindow is already opened
+            if (searchWindow == null || !searchWindow.IsLoaded)
             {
-                Owner = this
-            };
+                searchWindow = new SearchWindow
+                {
+                    Owner = this
+                };
+            }
+            if (searchWindow.WindowState == WindowState.Minimized)
+            {
+                searchWindow.WindowState = WindowState.Normal;
+            }
             searchWindow.Show();
         }
 
