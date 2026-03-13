@@ -27,14 +27,7 @@ namespace SnowmobileWPF
             {
                 Owner = this
             };
-
-            if (searchWindow.ShowDialog() == true)
-            {
-                if (DataContext is MainViewModel vm)
-                {
-                    vm.LoadSearchResults(searchWindow.SearchParams);
-                }
-            }
+            searchWindow.Show();
         }
 
         private void SubscriberList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
