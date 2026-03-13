@@ -28,18 +28,18 @@
 
             <StackPanel>
                 <TextBlock Text="LAST NAME" Style="{StaticResource FieldLabel}"/>
-                <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" TextChanged="UpdateSearchResults"/>
 
                 <TextBlock Text="FIRST NAME" Style="{StaticResource FieldLabel}"/>
-                <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" TextChanged="UpdateSearchResults"/>
 
                 <TextBlock Text="PHONE NUMBER" Style="{StaticResource FieldLabel}"/>
-                <TextBox Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" TextChanged="UpdateSearchResults"/>
 
                 <TextBlock Text="VSCA" Style="{StaticResource FieldLabel}"/>
-                <TextBox Text="{Binding VSCAText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20"/>
+                <TextBox Text="{Binding VSCAText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" TextChanged="UpdateSearchResults"/>
 
-                <Grid>
+                <!--<Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
@@ -56,7 +56,7 @@
                             IsEnabled="{Binding CanSearch}">
                         <TextBlock Text="Search" Foreground="White"/>
                     </Button>
-                </Grid>
+                </Grid>-->
             </StackPanel>
         </Border>
     </Grid>
