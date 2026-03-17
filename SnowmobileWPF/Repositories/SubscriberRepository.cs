@@ -10,9 +10,9 @@ namespace SnowmobileWPF.Repositories
     {
         private readonly SnowmobileContext _context;
 
-        public SubscriberRepository(SnowmobileContext context)
+        public SubscriberRepository(IDbContextFactory<SnowmobileContext> factory)
         {
-            _context = context;
+            _context = factory.CreateDbContext();
         }
 
         public List<Subscriber>? Search(SearchParams searchParams)

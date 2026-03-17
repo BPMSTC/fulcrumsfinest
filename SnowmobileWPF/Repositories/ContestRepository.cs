@@ -1,4 +1,5 @@
-﻿using SnowmobileLibrary.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SnowmobileLibrary.Data;
 using SnowmobileLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ namespace SnowmobileWPF.Repositories
     {
         private readonly SnowmobileContext _context;
 
-        public ContestRepository(SnowmobileContext context)
+        public ContestRepository(IDbContextFactory<SnowmobileContext> factory)
         {
-            _context = context;
+            _context = factory.CreateDbContext();
         }
 
         public bool CurrentlyInContest

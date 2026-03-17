@@ -1,27 +1,27 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SnowmobileWPF.Models;
 using SnowmobileWPF.ViewModels;
 
 namespace SnowmobileWPF
 {
     public partial class LoginWindow : Window
     {
+        public DbSettings? Settings { get; set; }
         public LoginWindow()
         {
             InitializeComponent();
-
-            var logger = App.AppHost.Services.GetRequiredService<ILogger<LoginViewModel>>();
-            DataContext = new LoginViewModel(logger);
+            Settings = null;
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is LoginViewModel vm)
             {
                 string password = UserPasswordBox.Password;
-
-                if (vm.Authenticate(password))
+                Settings = await vm.Authenticate(password);
+                if (Settings != null)
                 {
                     DialogResult = true;
                 }
