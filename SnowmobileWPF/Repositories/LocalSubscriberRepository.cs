@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Models;
 
@@ -115,6 +117,16 @@ namespace SnowmobileWPF.Repositories
                 subscriber.VSCA, subscriber.FirstName, subscriber.LastName);
 
             subscribers.Remove(subscriber);
+        }
+
+        public void SetIdentityInsert(bool enabled)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDbContextTransaction StartTx()
+        {
+            throw new NotImplementedException();
         }
     }
 }

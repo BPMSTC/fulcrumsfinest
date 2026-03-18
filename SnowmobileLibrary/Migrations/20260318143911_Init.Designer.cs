@@ -12,8 +12,8 @@ using SnowmobileLibrary.Data;
 namespace SnowmobileLibrary.Migrations
 {
     [DbContext(typeof(SnowmobileContext))]
-    [Migration("20260309062439_contest")]
-    partial class contest
+    [Migration("20260318143911_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,6 +80,11 @@ namespace SnowmobileLibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Acknowledged")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -94,7 +99,10 @@ namespace SnowmobileLibrary.Migrations
             modelBuilder.Entity("SnowmobileLibrary.Models.Subscriber", b =>
                 {
                     b.Property<int>("VSCA")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VSCA"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -112,7 +120,6 @@ namespace SnowmobileLibrary.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(320)
                         .HasColumnType("nvarchar(320)");
 
@@ -134,7 +141,6 @@ namespace SnowmobileLibrary.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -169,6 +175,9 @@ namespace SnowmobileLibrary.Migrations
 
                     b.HasKey("SubscriptionId");
 
+                    b.HasIndex("VSCA")
+                        .IsUnique();
+
                     b.ToTable("Subscriptions");
                 });
 
@@ -182,25 +191,22 @@ namespace SnowmobileLibrary.Migrations
                     b.Navigation("SubscriberObject");
                 });
 
-            modelBuilder.Entity("SnowmobileLibrary.Models.Subscriber", b =>
+            modelBuilder.Entity("Subscription", b =>
                 {
-                    b.HasOne("Subscription", "Subscription")
-                        .WithOne("Subscriber")
-                        .HasForeignKey("SnowmobileLibrary.Models.Subscriber", "VSCA")
+                    b.HasOne("SnowmobileLibrary.Models.Subscriber", "Subscriber")
+                        .WithOne("Subscription")
+                        .HasForeignKey("Subscription", "VSCA")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Subscription");
+                    b.Navigation("Subscriber");
                 });
 
             modelBuilder.Entity("SnowmobileLibrary.Models.Subscriber", b =>
                 {
                     b.Navigation("Address");
-                });
 
-            modelBuilder.Entity("Subscription", b =>
-                {
-                    b.Navigation("Subscriber")
+                    b.Navigation("Subscription")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

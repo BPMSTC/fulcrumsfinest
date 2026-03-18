@@ -14,7 +14,7 @@ namespace SnowmobileWPF.ViewModels
         private readonly SecureCredentialService _credentialService;
         private DbSettings _dbSettings;
         private string _serverIp = "(localdb)\\MSSQLLocalDB";
-        private string _username = string.Empty;
+        private string _username = "";
         private string _statusText = "Idle";
 
 
@@ -55,42 +55,51 @@ namespace SnowmobileWPF.ViewModels
             StatusText = "Logging in...";
             _logger.LogInformation("Login attempt for user '{Username}' at Server '{ServerIp}'", Username, ServerIp);
             bool success = false;
+            int connectionAttempts = 0;
             if (string.IsNullOrWhiteSpace(ServerIp))
             {
                 _logger.LogWarning("Login failed: ServerIp was empty.");
                 return null;
             }
-            try
+            while (connectionAttempts < 10)
             {
-                // creates connection string, needed for connections to the database
-                var builder = new SqlConnectionStringBuilder
+                connectionAttempts++;
+                StatusText = $"Logging in... (try {connectionAttempts})";
+                await Task.Delay(200);
+                try
                 {
-                    DataSource = ServerIp,
-                    UserID = Username,
-                    Password = password,
-                    InitialCatalog = "SnowmobileDb",
-                    TrustServerCertificate = true,
-                    ConnectTimeout = 5
-                };
-                _dbSettings.ConnectionString = builder.ConnectionString;
+                    // creates connection string, needed for connections to the database
+                    var builder = new SqlConnectionStringBuilder
+                    {
+                        DataSource = ServerIp,
+                        UserID = Username,
+                        Password = password,
+                        InitialCatalog = "SnowmobileDb",
+                        TrustServerCertificate = true,
+                        ConnectTimeout = 5
+                    };
+                    _dbSettings.ConnectionString = builder.ConnectionString;
 
-                // test connection
-                using var connection = new SqlConnection(_dbSettings.ConnectionString);
-                await connection.OpenAsync();
+                    // test connection
+                    using var connection = new SqlConnection(_dbSettings.ConnectionString);
+                    await connection.OpenAsync();
 
-                // this can only run if the connection is successfully opened
-                OnAuthSuccess(ref success);
-            } catch (Exception ex)
-            {
-                if (ex.Message.Contains("Cannot open database"))
-                {
-                    _logger.LogInformation("Target SQL Server does not have SnowmobileDb.");
-                    StatusText = "Login successful, initializing database...";
-                    ApplyMigrations();
+                    // this can only run if the connection is successfully opened
                     OnAuthSuccess(ref success);
-                } else
+                    break;
+                } catch (Exception ex)
                 {
-                    _logger.LogError($"Failed to connect to {ServerIp}: {ex.Message}");
+                    if (ex.Message.Contains("Cannot open database"))
+                    {
+                        _logger.LogInformation("Target SQL Server does not have SnowmobileDb.");
+                        StatusText = "Login successful, initializing database...";
+                        await ApplyMigrations();
+                        OnAuthSuccess(ref success);
+                        break;
+                    } else
+                    {
+                        _logger.LogError($"Failed to connect to {ServerIp}: {ex.Message}");
+                    }
                 }
             }
 
@@ -114,7 +123,7 @@ namespace SnowmobileWPF.ViewModels
             _credentialService.SaveConnectionString(_dbSettings);
         }
 
-        private void ApplyMigrations()
+        private async Task ApplyMigrations()
         {
             var options = new DbContextOptionsBuilder<SnowmobileContext>()
                 .UseSqlServer(_dbSettings.ConnectionString)
@@ -122,7 +131,7 @@ namespace SnowmobileWPF.ViewModels
 
             using var context = new SnowmobileContext(options);
 
-            context.Database.Migrate();
+            await context.Database.MigrateAsync();
         }
     }
 }

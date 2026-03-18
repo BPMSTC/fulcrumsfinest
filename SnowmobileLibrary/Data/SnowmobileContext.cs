@@ -32,10 +32,10 @@ namespace SnowmobileLibrary.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Subscription to Subscriber (1-1)
-            modelBuilder.Entity<Subscription>()
-                .HasOne(s => s.Subscriber)
-                .WithOne(s => s.Subscription)
-                .HasForeignKey<Subscriber>(s => s.VSCA)
+            modelBuilder.Entity<Subscriber>()
+                .HasOne(s => s.Subscription)
+                .WithOne(s => s.Subscriber)
+                .HasForeignKey<Subscription>(s => s.VSCA)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Enum stored as string (more readable, safer long-term)

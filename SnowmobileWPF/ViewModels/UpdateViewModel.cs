@@ -126,7 +126,6 @@ namespace SnowmobileWPF.ViewModels
         }
 
         [Required]
-        [Range(0, 4, ErrorMessage = "Issues remaining must be between 0 and 4.")]
         public int IssuesRemaining
         {
             get => Subscriber.Subscription.IssuesRemaining;

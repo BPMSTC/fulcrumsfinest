@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using SnowmobileLibrary.Data;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Models;
@@ -88,6 +89,23 @@ namespace SnowmobileWPF.Repositories
         {
             _context.Update(subscriber);
             _context.SaveChanges();
+        }
+
+        public void SetIdentityInsert(bool enabled)
+        {
+            if (enabled)
+            {
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Subscribers ON");
+            }
+            else
+            {
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Subscribers OFF");
+            }
+        }
+
+        public IDbContextTransaction StartTx()
+        {
+            return _context.Database.BeginTransaction();
         }
     }
 }

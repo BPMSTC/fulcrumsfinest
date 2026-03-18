@@ -1,4 +1,5 @@
-﻿using SnowmobileLibrary.Models;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using SnowmobileLibrary.Models;
 using SnowmobileWPF.Models;
 
 namespace SnowmobileWPF.Repositories
@@ -10,5 +11,7 @@ namespace SnowmobileWPF.Repositories
         void Create(Subscriber subscriber, bool forceCreation = false);
         void Delete(Subscriber subscriber);
         void Update(Subscriber subscriber);
+        void SetIdentityInsert(bool enabled);
+        IDbContextTransaction StartTx();
     }
 }
