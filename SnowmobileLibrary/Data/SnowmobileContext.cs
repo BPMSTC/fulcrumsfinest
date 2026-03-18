@@ -36,7 +36,7 @@ namespace SnowmobileLibrary.Data
                 .HasOne(s => s.Subscription)
                 .WithOne(s => s.Subscriber)
                 .HasForeignKey<Subscription>(s => s.VSCA)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Enum stored as string (more readable, safer long-term)
             modelBuilder.Entity<Subscription>()

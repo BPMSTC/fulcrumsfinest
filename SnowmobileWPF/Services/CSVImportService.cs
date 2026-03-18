@@ -7,6 +7,7 @@ using SnowmobileLibrary.Models;
 using SnowmobileWPF.Repositories;
 using System.Globalization;
 using System.IO;
+using System.Windows;
 
 namespace SnowmobileWPF.Services
 {
@@ -156,8 +157,17 @@ namespace SnowmobileWPF.Services
                 HasHeaderRecord = true
             };
 
-            // opens the file and provides a way to read it
-            StreamReader reader = new StreamReader(filePath);
+            StreamReader reader;
+
+            // attempt to open the file, and if it fails, show an error message and exit the method
+            try
+            {
+                reader = new StreamReader(filePath);
+            } catch (Exception e)
+            {
+                MessageBox.Show("Error opening file: " + e.Message, "File Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             using (CsvReader csv = new CsvReader(reader, config))
             {
                 // configure CsvReader to recognize "NULL" and other null placeholders

@@ -13,7 +13,7 @@
             <ColumnDefinition Width="269*"/>
         </Grid.ColumnDefinitions>
         <ProgressBar Name="ProgressBar" Margin="10,0,10,10" Height="39" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
-        <Label Name="VerboseProgress" Content="5% done" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Label Name="VerboseProgress" Content="0% done" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

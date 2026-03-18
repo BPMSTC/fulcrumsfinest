@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SnowmobileLibrary.Data;
 
@@ -11,9 +12,11 @@ using SnowmobileLibrary.Data;
 namespace SnowmobileLibrary.Migrations
 {
     [DbContext(typeof(SnowmobileContext))]
-    partial class SnowmobileContextModelSnapshot : ModelSnapshot
+    [Migration("20260318160706_SubscriptionDeleteCascade")]
+    partial class SubscriptionDeleteCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
