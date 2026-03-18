@@ -193,7 +193,7 @@ namespace SnowmobileWPF.Services
                     {
                         try
                         {
-                            _subscriberRepository.Create(record.ToSubscriber());
+                            _subscriberRepository.Create(record.ToSubscriber(), true);
                         }
                         catch (Exception ex)
                         {
