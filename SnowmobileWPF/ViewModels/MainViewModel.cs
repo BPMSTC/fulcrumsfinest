@@ -336,16 +336,20 @@ namespace SnowmobileWPF.ViewModels
             IsEditingSubscription = true;
         }
 
-        private void ExecuteSaveSubscription()
+        private void ExecuteSaveSubscription(bool isRenew = false)
         {
             if (SelectedSubscriber == null) return;
 
             _logger.LogInformation("Saving updated subscription for VSCA: {VSCA}", SelectedSubscriber.VSCA);
 
-            SelectedSubscriber.Subscription.ExpDate = DateOnly.FromDateTime(ExpDate);
-            SelectedSubscriber.Subscription.DateRenewed = DateOnly.FromDateTime(RenewDate);
-            SelectedSubscriber.Subscription.Source = Source;
-            SelectedSubscriber.Subscription.IssuesRemaining = IssuesRemaining ?? 0;
+            // renewals will disregard any manual changes to subscriptions
+            if (!isRenew)
+            {
+                SelectedSubscriber.Subscription.ExpDate = DateOnly.FromDateTime(ExpDate);
+                SelectedSubscriber.Subscription.DateRenewed = DateOnly.FromDateTime(RenewDate);
+                SelectedSubscriber.Subscription.Source = Source;
+                SelectedSubscriber.Subscription.IssuesRemaining = IssuesRemaining ?? 0;
+            }
 
             _repository.Update(SelectedSubscriber);
 
@@ -407,8 +411,9 @@ namespace SnowmobileWPF.ViewModels
             if (renewWindow.DialogResult == true)
             {
                 _logger.LogInformation("Renewal completed for VSCA: {VSCA}", SelectedSubscriber?.VSCA);
-                ExecuteCancelSubscription();
                 OnPropertyChanged(nameof(SelectedSubscriber));
+                ExecuteSaveSubscription(true);
+                _logger.LogInformation("Reached end of ExecuteRenew");
             }
             else
             {

@@ -6,17 +6,9 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
+		<AssemblyTitle>VSCA Subscriber Manager</AssemblyTitle>
+		<AssemblyName>VSCA Subscriber Manager</AssemblyName>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Remove="appsettings.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="appsettings.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CsvHelper" Version="33.1.0" />

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Repositories;
 using System;
@@ -36,7 +37,7 @@ namespace SnowmobileWPF.ViewModels
             {
                 CurrentSubscriber.Subscription.ExpDate = CurrentSubscriber.Subscription.ExpDate.AddYears(YearsToRenew);
                 CurrentSubscriber.Subscription.DateRenewed = DateOnly.FromDateTime(DateTime.Now);
-                CurrentSubscriber.Subscription.IssuesRemaining = 4 * YearsToRenew;
+                CurrentSubscriber.Subscription.IssuesRemaining += 4 * YearsToRenew;
                 if (_contestRepository.CurrentlyInContest)
                 {
                     CurrentSubscriber.Contest = true;

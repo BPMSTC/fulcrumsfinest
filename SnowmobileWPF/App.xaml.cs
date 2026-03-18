@@ -5,7 +5,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Data;
 using SnowmobileLibrary.Services;
+using SnowmobileWPF.Models;
 using SnowmobileWPF.Repositories;
+using SnowmobileWPF.Services;
 using SnowmobileWPF.ViewModels;
 using System.Windows;
 
@@ -20,24 +22,32 @@ namespace SnowmobileWPF
             AppHost = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    config.AddJsonFile("appsettings.json", optional: false);
+                    config.AddJsonFile("appsettings.json", optional: true);
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+                    services.AddSingleton<DbSettings>();
+                    services.AddSingleton<LoginViewModel>();
+                    services.AddSingleton<LoginWindow>(s => new LoginWindow
+                    {
+                        DataContext = s.GetRequiredService<LoginViewModel>()
+                    });
 
-                    services.AddDbContext<SnowmobileContext>(options =>
-                        options.UseSqlServer(connectionString), ServiceLifetime.Singleton);
+                    services.AddDbContextFactory<SnowmobileContext>((sp, options) =>
+                    {
+                        var settings = sp.GetRequiredService<DbSettings>();
+                        options.UseSqlServer(settings.ConnectionString);
+                    });
+                    
 
                     services.AddSingleton<SnowmobileLibrary.Services.ILogger, FileLogger>();
 
                     services.AddSingleton<ISubscriberRepository, SubscriberRepository>();
                     services.AddSingleton<IContestRepository, ContestRepository>();
+                    services.AddSingleton<SecureCredentialService>();
                     services.AddSingleton<MainViewModel>();
                     services.AddSingleton<ContestViewModel>();
                     services.AddSingleton<RenewViewModel>();
-                    //services.AddSingleton<RenewWindow>();
-                    //services.AddSingleton<ContestWindow>();
                     services.AddSingleton<MainWindow>(s => new MainWindow
                     {
                         DataContext = s.GetRequiredService<MainViewModel>()
@@ -73,9 +83,23 @@ namespace SnowmobileWPF
             {
                 customLogger.LogInfo("Application Startup Sequence Initiated.");
                 await AppHost.StartAsync();
+                
+                // set ShutdownMode to prevent app closing when login window is closed
+                this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                var loginWindow = AppHost.Services.GetRequiredService<LoginWindow>();
+                if (loginWindow.ShowDialog() == true)
+                {
+                    var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
 
-                var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
-                mainWindow.Show();
+                    // revert ShutdownMode now that the main window is open
+                    this.MainWindow = mainWindow;
+                    this.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+                    mainWindow.Show();
+                } else
+                {
+                    Shutdown();
+                }
             }
             catch (Exception ex)
             {

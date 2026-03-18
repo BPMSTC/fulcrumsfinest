@@ -173,7 +173,9 @@ namespace SnowmobileWPF.Services
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateOnly>(options);
                 csv.Context.TypeConverterOptionsCache.AddOptions<DateOnly?>(options);
 
-
+                // since we're carrying over old VSCA numbers, we tell SQL Server to allow explicit values for VSCA
+                var tx = _subscriberRepository.StartTx();
+                _subscriberRepository.SetIdentityInsert(true);
                 while (csv.Read())
                 {
                     var record = csv.GetRecord<SubscriberCSV>();
@@ -193,6 +195,8 @@ namespace SnowmobileWPF.Services
                     // report import progress as a percentage
                     progress?.Report((int)((double)reader.BaseStream.Position / reader.BaseStream.Length * 100));
                 }
+                _subscriberRepository.SetIdentityInsert(false);
+                tx.Commit();
             }
         }
     }
