@@ -2,9 +2,11 @@
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using CsvHelper.TypeConversion;
+using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Enums;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Repositories;
+using SnowmobileWPF.ViewModels;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -48,7 +50,7 @@ namespace SnowmobileWPF.Services
 
         [Index(11)]
         // since ExpDate is 00:00.0 in the entire CSV, let's just set it to default.
-        public DateTime ExpDate { get; set; }
+        public DateTime? ExpDate { get; set; }
 
         [Index(12)]
         public int IssuesLeft { get; set; }
@@ -130,7 +132,7 @@ namespace SnowmobileWPF.Services
                 },
                 Subscription = new Subscription
                 {
-                    ExpDate = DateOnly.FromDateTime(this.ExpDate),
+                    ExpDate = DateOnly.FromDateTime(this.ExpDate ?? DateTime.UnixEpoch),
                     IssuesRemaining = this.IssuesLeft,
                     DateRenewed = this.DateRenewed ?? DateOnly.FromDateTime(DateTime.UnixEpoch),
                     Source = SourceToEnum(this.Source)
@@ -141,17 +143,19 @@ namespace SnowmobileWPF.Services
     public class CSVImportService
     {
         private readonly ISubscriberRepository _subscriberRepository;
+        private readonly ILogger<CSVImportService> _logger;
 
-        public CSVImportService(ISubscriberRepository subscriberRepository)
+        public CSVImportService(ISubscriberRepository subscriberRepository, ILogger<CSVImportService> logger)
         {
             _subscriberRepository = subscriberRepository;
+            _logger = logger;
         }
 
         public async Task ImportCSV(string filePath, IProgress<int> progress)
         {
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                HasHeaderRecord = true
+                HasHeaderRecord = false
             };
 
             StreamReader reader;
@@ -195,7 +199,8 @@ namespace SnowmobileWPF.Services
                         catch (Exception ex)
                         {
                             // Log the error and continue with the next record
-                            Console.WriteLine($"Error importing record with VSCA {record.VSCA}: {ex.Message}");
+                            _logger.LogError($"Failed row {record.VSCA}");
+                            _logger.LogError($"Error importing record with VSCA {record.VSCA}: {ex.ToString()}");
                         }
                     });
 

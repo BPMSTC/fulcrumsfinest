@@ -427,7 +427,7 @@ namespace SnowmobileWPF.ViewModels
             if (fileDialog.ShowDialog() == true)
             {
                 _logger.LogInformation($"Starting import from {fileDialog.FileName}");
-                CSVImportService importService = new CSVImportService(_repository);
+                CSVImportService importService = new CSVImportService(_repository, _serviceProvider.GetRequiredService<ILogger<CSVImportService>>());
                 LoadingWindow loadingWindow = new LoadingWindow();
                 loadingWindow.Show();
                 await importService.ImportCSV(fileDialog.FileName, loadingWindow.progress);
