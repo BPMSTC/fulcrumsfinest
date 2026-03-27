@@ -69,12 +69,9 @@ namespace SnowmobileWPF.Services
         public string Notes { get; set; } = "";
 
         [Index(18)]
-        public bool? Lost { get; set; } = false;
-
-        [Index(19)]
         public string? Source { get; set; }
 
-        [Index(20)]
+        [Index(19)]
         public bool? Commercial { get; set; } = false;
 
         public SubscriptionSource? SourceToEnum(string source)
@@ -193,7 +190,7 @@ namespace SnowmobileWPF.Services
                     {
                         try
                         {
-                            _subscriberRepository.Create(record.ToSubscriber());
+                            _subscriberRepository.Create(record.ToSubscriber(), true);
                         }
                         catch (Exception ex)
                         {
