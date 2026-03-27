@@ -46,9 +46,9 @@ namespace SnowmobileWPF.Services
         [Index(10)]
         public bool Active { get; set; } = false;
 
-        //[Index(11)]
+        [Index(11)]
         // since ExpDate is 00:00.0 in the entire CSV, let's just set it to default.
-        public DateTime ExpDate = DateTime.UnixEpoch;
+        public DateTime ExpDate { get; set; }
 
         [Index(12)]
         public int IssuesLeft { get; set; }
