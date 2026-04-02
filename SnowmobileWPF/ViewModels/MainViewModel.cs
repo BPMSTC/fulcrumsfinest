@@ -267,6 +267,18 @@ namespace SnowmobileWPF.ViewModels
 
                 LoadSubscribers();
                 SelectedSubscriber = newSubscriber;
+
+                RenewWindow renewWindow = new RenewWindow(
+                    _serviceProvider.GetRequiredService<RenewViewModel>(),
+                    SelectedSubscriber
+                );
+                renewWindow.ShowDialog();
+                if (renewWindow.DialogResult == true)
+                {
+                    _logger.LogInformation("Renewal completed for new VSCA: {VSCA}", SelectedSubscriber?.VSCA);
+                    OnPropertyChanged(nameof(SelectedSubscriber));
+                    ExecuteSaveSubscription(true);
+                }
             }
         }
 

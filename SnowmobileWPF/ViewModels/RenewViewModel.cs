@@ -1,11 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace SnowmobileWPF.ViewModels

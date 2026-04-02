@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
+using SnowmobileLibrary.Enums;
+using SnowmobileLibrary.Helpers;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Models;
 using SnowmobileWPF.Repositories;
 using System.ComponentModel.DataAnnotations;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SnowmobileWPF.ViewModels
 {
@@ -15,6 +17,7 @@ namespace SnowmobileWPF.ViewModels
 
         public Subscriber Subscriber { get; }
         public string DisplayHeader => $"Editing {_originalSubscriberName}";
+        public IEnumerable<SubscriptionSource> SubscriptionSources { get; } = Enum.GetValues<SubscriptionSource>();
 
         public UpdateViewModel(Subscriber subscriber, ISubscriberRepository repository, ILogger<UpdateViewModel> logger)
         {
@@ -132,6 +135,12 @@ namespace SnowmobileWPF.ViewModels
             set { SetProperty(Subscriber.Subscription.IssuesRemaining, value, Subscriber.Subscription, (u, n) => u.IssuesRemaining = n, true); }
         }
 
+        public SubscriptionSource? SubscriptionSource
+        {
+            get => Subscriber.Subscription.Source;
+            set { SetProperty(Subscriber.Subscription.Source, value, Subscriber.Subscription, (u, n) => u.Source = n, true); }
+        }
+
         #endregion
 
         public void ValidateAllProperties()
@@ -159,13 +168,14 @@ namespace SnowmobileWPF.ViewModels
 
             Subscriber.FirstName = FirstName?.Trim() ?? string.Empty;
             Subscriber.LastName = LastName?.Trim() ?? string.Empty;
-            Subscriber.Phone = Phone?.Trim() ?? string.Empty;
+            Subscriber.Phone = PhoneFormatter.Format(Phone?.Trim()) ?? string.Empty;
             Subscriber.Email = Email?.Trim() ?? string.Empty;
             Subscriber.Address.Street = Street?.Trim() ?? string.Empty;
             Subscriber.Address.City = City?.Trim() ?? string.Empty;
             Subscriber.Address.Region = Region?.Trim() ?? string.Empty;
             Subscriber.Address.PostalCode = PostalCode?.Trim() ?? string.Empty;
             Subscriber.Address.Country = Country?.Trim() ?? string.Empty;
+            Subscriber.Subscription.Source = SubscriptionSource;
 
             var context = new ValidationContext(Subscriber);
             var results = new List<ValidationResult>();

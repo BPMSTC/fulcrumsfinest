@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SnowmobileLibrary.Helpers;
 
 namespace SnowmobileLibrary.Models
 {
@@ -48,7 +49,7 @@ namespace SnowmobileLibrary.Models
         public string? Email { get; set; } = string.Empty;
 
         public override string ToString() => $"{FirstName} {LastName} (VSCA: {VSCA})";
-        public string PhoneDisplay => string.IsNullOrWhiteSpace(Phone) ? "No Phone Number Provided" : Phone;
+        public string PhoneDisplay => string.IsNullOrWhiteSpace(Phone) ? "No Phone Number Provided" : PhoneFormatter.Format(Phone);
         public string EmailDisplay => string.IsNullOrWhiteSpace(Email) ? "No Email Provided" : Email;
     }
 }

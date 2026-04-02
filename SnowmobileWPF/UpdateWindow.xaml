@@ -98,6 +98,15 @@
 
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,5,0,20"/>
 
+                    <TextBlock Text="SUBSCRIPTION SOURCE" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox ItemsSource="{Binding SubscriptionSources}"
+                              SelectedItem="{Binding SubscriptionSource}"
+                              Width="160"
+                              HorizontalAlignment="Left"
+                              Margin="0,0,0,20"/>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,5,0,20"/>
+
                     <TextBlock Text="SUBSCRIBER STATUS" Style="{StaticResource FieldLabel}"/>
                     <Border Background="#F8FAFC" Padding="15" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,5,0,20">
                         <UniformGrid Columns="2" Rows="2">
