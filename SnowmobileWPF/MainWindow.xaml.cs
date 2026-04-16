@@ -16,6 +16,10 @@ namespace SnowmobileWPF
             SourceComboBox.ItemsSource = Enum.GetValues(typeof(SubscriptionSource));
         }
 
+        /// <summary>
+        /// Input masking logic to ensure only numeric data is entered into specific fields.
+        /// Prevents invalid data types from ever reaching the ViewModel.
+        /// </summary>
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
@@ -47,6 +51,11 @@ namespace SnowmobileWPF
             }
         }
 
+        /// <summary>
+        /// Focus management logic. 
+        /// Uses Dispatcher.BeginInvoke to ensure the UI has finished rendering the 
+        /// Edit mode before attempting to set focus and move the caret to the end of the text.
+        /// </summary>
         private void EditNotesButton_Click(object sender, RoutedEventArgs e)
         {
             Dispatcher.BeginInvoke(new Action(() =>
@@ -59,6 +68,10 @@ namespace SnowmobileWPF
             }), System.Windows.Threading.DispatcherPriority.Input);
         }
 
+        /// <summary>
+        /// Post-login notification logic.
+        /// Triggers a non-intrusive ToolTip if the contest state changed while the user was away.
+        /// </summary>
         private void ContestButton_Loaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is MainViewModel vm)

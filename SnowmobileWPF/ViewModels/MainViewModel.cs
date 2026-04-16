@@ -12,6 +12,11 @@ using System.Windows.Input;
 
 namespace SnowmobileWPF.ViewModels
 {
+    /// <summary>
+    /// The primary coordinator for the application's main workspace.
+    /// Manages the master-detail view logic, subscriber searching, and orchestrates 
+    /// the launching of secondary windows (Import, Update, Renew, Contest).
+    /// </summary>
     public class MainViewModel : ViewModelBase
     {
         private readonly ISubscriberRepository _repository;
@@ -43,7 +48,9 @@ namespace SnowmobileWPF.ViewModels
 
             _logger.LogInformation("MainViewModel initialized.");
 
-            // Initialize Commands
+            // Commands are initialized here to centralize action-to-method mapping.
+            // Several use 'CanExecuteOnSelected' to automatically disable UI buttons 
+            // when no subscriber is active in the detail pane.
             DeleteCommand = new RelayCommand(ExecuteDelete, CanExecuteOnSelected);
             ImportCommand = new RelayCommand(_ => ExecuteImport());
             EditNotesCommand = new RelayCommand(_ => ExecuteEditNotes(), CanExecuteOnSelected);
@@ -79,7 +86,9 @@ namespace SnowmobileWPF.ViewModels
                 if (SetProperty(ref _selectedSubscriber, value))
                 {
                     _logger.LogDebug("SelectedSubscriber changed to VSCA: {VSCA}", value?.VSCA);
-                    // Reset UI state when a new subscriber is selected
+
+                    // Cleanup: Ensure that selecting a new record clears out any pending 
+                    // unsaved edits from a previous selection to prevent data leakage.
                     ExecuteCancelNotes();
                     ExecuteCancelSubscription();
                     OnPropertyChanged(nameof(IsDetailsVisible));
@@ -120,6 +129,8 @@ namespace SnowmobileWPF.ViewModels
             set => SetProperty(ref _notesText, value);
         }
 
+        // These hold temporary "old" values to support the Undo/Cancel
+        // functionality in the UI without re-fetching from the database.
         public DateTime RenewDate
         {
             get => _oldRenewDate;
@@ -175,10 +186,14 @@ namespace SnowmobileWPF.ViewModels
 
         internal bool CheckAcknowledged => _contestRepository.IsLastContestAcknowledged();
 
+        /// <summary>
+        /// Manually triggers a property notification for the complex SelectedSubscriber object.
+        /// This is required when sub-properties (like Subscription or Address) change, 
+        /// as the top-level object reference remains the same.
+        /// </summary>
         public void RefreshDisplay()
         {
             _logger.LogDebug("Refreshing UI display for SelectedSubscriber.");
-            // Forces UI elements bound to the object or its strings to re-evaluate
             OnPropertyChanged(nameof(SelectedSubscriber));
             OnPropertyChanged(nameof(ViewingTitle));
             UpdateNotesDisplay();
@@ -204,6 +219,8 @@ namespace SnowmobileWPF.ViewModels
                 return;
             }
 
+            // Translates Domain-specific DateOnly types back to standard DateTime 
+            // for compatibility with WPF DatePicker controls.
             RenewDate = sub.DateRenewed.ToDateTime(new TimeOnly(0));
             ExpDate = sub.ExpDate.ToDateTime(new TimeOnly(0));
             Source = sub.Source;
@@ -235,6 +252,11 @@ namespace SnowmobileWPF.ViewModels
 
         private bool CanExecuteOnSelected(object? parameter) => SelectedSubscriber != null;
 
+        /// <summary>
+        /// Handles the multi-step workflow of creating a new subscriber.
+        /// This method chains two windows: first the profile creation, and if successful, 
+        /// it immediately forces a subscription renewal to ensure the new record is valid for mailing.
+        /// </summary>
         private void ExecuteCreate()
         {
             _logger.LogInformation("Opening Create Window for new subscriber.");
@@ -268,6 +290,8 @@ namespace SnowmobileWPF.ViewModels
                 LoadSubscribers();
                 SelectedSubscriber = newSubscriber;
 
+                // User Experience: New subscribers are rarely "free," so we prompt 
+                // for an immediate renewal payment/term selection.
                 RenewWindow renewWindow = new RenewWindow(
                     _serviceProvider.GetRequiredService<RenewViewModel>(),
                     SelectedSubscriber
@@ -449,23 +473,15 @@ namespace SnowmobileWPF.ViewModels
             }
         }
 
+        /// <summary>
+        /// Implements a "Nested Cancel" logic for the Escape key.
+        /// Priority: 1. Close active edits -> 2. Deselect the record (close detail pane).
+        /// </summary>
         private void ExecuteEscape()
         {
-            // If editing subscription, cancel that first
-            if (IsEditingSubscription)
-            {
-                ExecuteCancelSubscription();
-                return;
-            }
+            if (IsEditingSubscription) { ExecuteCancelSubscription(); return; }
+            if (IsEditingNotes) { ExecuteCancelNotes(); return; }
 
-            // If editing notes, cancel that
-            if (IsEditingNotes)
-            {
-                ExecuteCancelNotes();
-                return;
-            }
-
-            // If not editing anything, deselect the subscriber (close the "tab")
             if (SelectedSubscriber != null)
             {
                 SelectedSubscriber = null;

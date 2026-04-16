@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Models;
 
 namespace SnowmobileWPF.Repositories
 {
+    /// <summary>
+    /// In-memory repository for local development and UI prototyping.
+    /// Simulates database behavior using a static list.
+    /// </summary>
     public class LocalSubscriberRepository : ISubscriberRepository
     {
         private readonly List<Subscriber> subscribers = new();
@@ -16,7 +19,7 @@ namespace SnowmobileWPF.Repositories
             _logger = logger;
             _logger.LogInformation("Initializing LocalSubscriberRepository with sample data.");
 
-            // Initial Seed Data
+            // Seeding data to ensure the UI has visible content immediately during testing
             subscribers.Add(new Subscriber
             {
                 VSCA = 12345,
@@ -53,6 +56,7 @@ namespace SnowmobileWPF.Repositories
 
             IEnumerable<Subscriber> results = subscribers;
 
+            // Simulates SQL WHERE clauses by layering LINQ filters
             if (searchParams.VSCA != null)
                 results = results.Where(s => s.VSCA == searchParams.VSCA);
 
@@ -93,6 +97,7 @@ namespace SnowmobileWPF.Repositories
                 LastName = subscriber.LastName
             };
 
+            // Basic logic to prevent duplicate entries in the local list unless the check is explicitly bypassed
             if (Search(searchParams)?.Count > 0 && !forceCreation)
             {
                 _logger.LogWarning("Create failed: Subscriber {FirstName} {LastName} already exists.", subscriber.FirstName, subscriber.LastName);
@@ -107,6 +112,7 @@ namespace SnowmobileWPF.Repositories
         {
             _logger.LogInformation("Updating subscriber VSCA: {VSCA}", subscriber.VSCA);
 
+            // Replaces the existing reference by deleting and re-adding the modified object
             Delete(subscriber);
             Create(subscriber, true);
         }
@@ -121,11 +127,13 @@ namespace SnowmobileWPF.Repositories
 
         public void SetIdentityInsert(bool enabled)
         {
+            // Identity Insert is a SQL-specific command; not applicable to in-memory lists
             throw new NotImplementedException();
         }
 
         public IDbContextTransaction StartTx()
         {
+            // Transactions are not supported for simple List operations
             throw new NotImplementedException();
         }
     }

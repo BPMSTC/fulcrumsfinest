@@ -16,6 +16,11 @@ namespace SnowmobileWPF
             DialogResult = false;
         }
 
+        /// <summary>
+        /// Handles the final UI-level validation and user confirmation.
+        /// This method acts as a gatekeeper, checking for soft-errors (duplicates) 
+        /// and hard-errors (validation rules) before committing changes to the database.
+        /// </summary>
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is UpdateViewModel vm)

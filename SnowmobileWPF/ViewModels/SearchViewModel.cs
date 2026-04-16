@@ -3,6 +3,11 @@ using SnowmobileWPF.Models;
 
 namespace SnowmobileWPF.ViewModels
 {
+    /// <summary>
+    /// Coordinates the multi-field search interface.
+    /// Manages the reactive "CanSearch" state to ensure the UI only allows execution when 
+    /// actionable criteria have been provided.
+    /// </summary>
     public class SearchViewModel : ViewModelBase
     {
         private readonly ILogger<SearchViewModel> _logger;
@@ -64,8 +69,11 @@ namespace SnowmobileWPF.ViewModels
             }
         }
 
-        // Gathers the UI input and packages it into a SearchParams object.
-        // Converts empty strings to null for cleaner database queries.
+        /// <summary>
+        /// Gathers the UI input and packages it into a SearchParams object.
+        /// Converts empty strings to null for cleaner database queries and ensures VSCA 
+        /// is handled as a numeric type.
+        /// </summary>
         public SearchParams GetParameters()
         {
             _logger.LogDebug("Constructing SearchParams from UI input.");

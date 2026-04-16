@@ -1,15 +1,6 @@
 ﻿using SnowmobileWPF.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
@@ -24,6 +15,10 @@ namespace SnowmobileWPF
             DataContext = vm;
         }
 
+        /// <summary>
+        /// Manual event trigger to bridge a mouse event on a TextBlock to a ViewModel command.
+        /// Useful when the UI element does not natively support the Command property.
+        /// </summary>
         private void StopTextBlock_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is ContestViewModel vm)

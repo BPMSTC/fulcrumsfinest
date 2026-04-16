@@ -35,6 +35,11 @@ namespace SnowmobileWPF
             }
         }
 
+        /// <summary>
+        /// Facilitates "Live Search" functionality.
+        /// As the user types in the SearchWindow, it pushes the updated parameters 
+        /// directly to the MainViewModel to filter the primary subscriber list in real-time.
+        /// </summary>
         private void UpdateSearchResults(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (DataContext is SearchViewModel vm)

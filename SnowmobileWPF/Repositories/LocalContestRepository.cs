@@ -1,19 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SnowmobileWPF.Repositories
 {
+    /// <summary>
+    /// A mock implementation of the contest repository for development and UI testing.
+    /// Provides predictable behavior without requiring a live database connection.
+    /// </summary>
     public class LocalContestRepository : IContestRepository
     {
         private readonly ILogger<LocalSubscriberRepository> _logger;
 
-        // no date here since it's just for testing
+        // Simplified state management for testing; does not persist across application restarts
         private bool _currentlyInContest;
 
-        public bool CurrentlyInContest 
+        public bool CurrentlyInContest
         {
             get => _currentlyInContest;
         }
@@ -39,6 +40,7 @@ namespace SnowmobileWPF.Repositories
 
         public Contest? GetCurrentContest()
         {
+            // Returns a dummy contest object to ensure UI components have data to bind to
             return new Contest
             {
                 EndDate = DateTime.Now.AddDays(7)

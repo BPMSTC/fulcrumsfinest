@@ -6,7 +6,9 @@ using SnowmobileWPF.Models;
 
 namespace SnowmobileWPF.Repositories
 {
-    // Handles database operations for Subscriber entities.
+    /// <summary>
+    /// Handles production database operations for Subscriber entities using Entity Framework Core.
+    /// </summary>
     public class SubscriberRepository : ISubscriberRepository
     {
         private readonly SnowmobileContext _context;
@@ -18,8 +20,8 @@ namespace SnowmobileWPF.Repositories
 
         public List<Subscriber>? Search(SearchParams searchParams)
         {
-            // Base query with eager loading so Address and Subscription
-            // are retrieved with the Subscriber in one database call.
+            // .Include() performs Eager Loading to fetch related Address and Subscription 
+            // data in a single SQL JOIN, preventing the N+1 performance issue.
             var query = _context.Subscribers
                 .Include(s => s.Address)
                 .Include(s => s.Subscription)
@@ -37,7 +39,6 @@ namespace SnowmobileWPF.Repositories
             if (searchParams.VSCA.HasValue)
                 query = query.Where(s => s.VSCA == searchParams.VSCA.Value);
 
-            // Execute query
             return query
                 .OrderByDescending(s => s.VSCA)
                 .ToList();
@@ -52,6 +53,7 @@ namespace SnowmobileWPF.Repositories
 
             if (max > 0)
             {
+                // Explicit cast ensures we maintain the correctly typed collection after truncation
                 subscribers = (Microsoft.EntityFrameworkCore.DbSet<Subscriber>)subscribers.Take(max);
             }
 
@@ -60,7 +62,6 @@ namespace SnowmobileWPF.Repositories
 
         public void Create(Subscriber subscriber, bool forceCreation = false)
         {
-            // Check for existing subscribers with the same name
             SearchParams searchParams = new SearchParams
             {
                 FirstName = subscriber.FirstName,
@@ -69,7 +70,8 @@ namespace SnowmobileWPF.Repositories
 
             var existingSubscribers = Search(searchParams);
 
-            // Prevent accidental duplicates unless explicitly overridden
+            // Validation logic to prevent accidental duplicates during manual entry,
+            // while allowing the 'force' flag for bulk migrations/imports.
             if (existingSubscribers.Count != 0 && !forceCreation)
             {
                 throw new ArgumentException($"A subscriber with the name {subscriber.FirstName} {subscriber.LastName} already exists. Use forceCreation to override this check.");
@@ -87,12 +89,15 @@ namespace SnowmobileWPF.Repositories
 
         public void Update(Subscriber subscriber)
         {
+            // Marks the entity as modified and pushes only changed properties to the database
             _context.Update(subscriber);
             _context.SaveChanges();
         }
 
         public void SetIdentityInsert(bool enabled)
         {
+            // Direct SQL execution to override SQL Server's automatic ID generation.
+            // Essential when importing legacy data where IDs (VSCA numbers) must be preserved.
             if (enabled)
             {
                 _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Subscribers ON");
@@ -105,6 +110,7 @@ namespace SnowmobileWPF.Repositories
 
         public IDbContextTransaction StartTx()
         {
+            // Provides an atomic transaction to ensure data integrity during multi-step operations (like bulk imports)
             return _context.Database.BeginTransaction();
         }
     }

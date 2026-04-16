@@ -1,16 +1,6 @@
 ﻿using SnowmobileLibrary.Models;
 using SnowmobileWPF.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
@@ -23,6 +13,8 @@ namespace SnowmobileWPF
         {
             InitializeComponent();
             vm.CurrentSubscriber = subscriber;
+            // The ViewModel triggers this Action, allowing the logic layer
+            // to close the View without a direct reference to it.
             vm.CloseWindow = () => HandleClose();
             DataContext = vm;
         }

@@ -8,7 +8,7 @@
 
         public FileLogger()
         {
-            // Stores logs in: C:\Users\<User>\AppData\Local\VSCASubscriberManager\
+            // Ensures a dedicated local folder exists to prevent I/O errors during first write
             _logDirectory = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "VSCASubscriberManager");
@@ -21,8 +21,10 @@
 
         public void LogInfo(string message) => WriteEntry("INFO", message);
         public void LogWarning(string message) => WriteEntry("WARN", message);
+
         public void LogError(string message, Exception? ex = null)
         {
+            // Unpacks exception details into a flat string for easier grep/searching in text files
             string fullMessage = ex != null
                 ? $"{message} | Exception: {ex.Message} | StackTrace: {ex.StackTrace}"
                 : message;
@@ -36,18 +38,21 @@
                 RotateLogIfLarge();
 
                 string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                // PadRight ensures uniform columns in the text file for easier visual scanning
                 string entry = $"{timestamp} [{level.PadRight(5)}] {message}{Environment.NewLine}";
 
                 File.AppendAllText(_logPath, entry);
             }
             catch (Exception ex)
             {
+                // Fallback to Debug so errors in the logging infrastructure don't crash the app
                 System.Diagnostics.Debug.WriteLine($"Critical Logger Failure: {ex.Message}");
             }
         }
 
         private void RotateLogIfLarge()
         {
+            // Archive-and-replace strategy to prevent the log file from bloating disk space indefinitely
             if (File.Exists(_logPath) && new FileInfo(_logPath).Length > MaxFileSizeBytes)
             {
                 string archivePath = Path.Combine(_logDirectory, $"log_archive_{DateTime.Now:yyyyMMdd_HHmmss}.txt");

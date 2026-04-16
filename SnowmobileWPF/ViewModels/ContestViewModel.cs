@@ -1,13 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
 using SnowmobileWPF.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
 namespace SnowmobileWPF.ViewModels
 {
+    /// <summary>
+    /// Manages the lifecycle of promotional contests.
+    /// Acts as the coordinator between the Contest Repository and the UI, handling validation 
+    /// to ensure only one contest is active at any given time.
+    /// </summary>
     public class ContestViewModel : ViewModelBase
     {
         private readonly ILogger<ContestViewModel> _logger;
@@ -25,7 +27,8 @@ namespace SnowmobileWPF.ViewModels
         }
 
         private bool _currentlyInContest;
-        public bool CurrentlyInContest {
+        public bool CurrentlyInContest
+        {
             get => _currentlyInContest;
             set
             {
@@ -56,6 +59,10 @@ namespace SnowmobileWPF.ViewModels
             _logger.LogInformation($"Using {this.GetType().Name}");
         }
 
+        /// <summary>
+        /// Synchronizes the View's state with the repository.
+        /// Determines the UI visibility and text feedback based on whether a contest record is currently active.
+        /// </summary>
         private void UpdateStatus()
         {
             CurrentlyInContest = _contestRepository.CurrentlyInContest;
@@ -86,6 +93,10 @@ namespace SnowmobileWPF.ViewModels
             }
         }
 
+        /// <summary>
+        /// Logic for manually terminating a contest. 
+        /// Includes a confirmation safety check to prevent accidental closure of active promotions.
+        /// </summary>
         private void ExecuteStop()
         {
             if (_contestRepository.CurrentlyInContest)

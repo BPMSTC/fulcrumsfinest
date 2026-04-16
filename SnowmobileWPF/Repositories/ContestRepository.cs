@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SnowmobileLibrary.Data;
 using SnowmobileLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SnowmobileWPF.Repositories
 {
@@ -20,11 +17,11 @@ namespace SnowmobileWPF.Repositories
         {
             get
             {
-                // checks if a contest is currently running
+                // Evaluates if any contest record is active based on the current system time
                 if (GetCurrentContest() != null)
                 {
                     return true;
-                } 
+                }
                 else
                 {
                     return false;
@@ -34,6 +31,7 @@ namespace SnowmobileWPF.Repositories
 
         public void Create(DateTime endDate)
         {
+            // Enforces business logic to prevent overlapping active contest periods
             if (CurrentlyInContest)
             {
                 throw new Exception("A contest is already running.");
@@ -49,11 +47,11 @@ namespace SnowmobileWPF.Repositories
 
         public void End()
         {
-            // prevent running if there's no running contest
             if (!CurrentlyInContest)
             {
                 throw new Exception("A contest is already running.");
             }
+            // Removes the active record to immediately terminate contest functionality
             _context.Contests.Remove(GetCurrentContest());
             _context.SaveChanges();
 
@@ -61,6 +59,7 @@ namespace SnowmobileWPF.Repositories
 
         public Contest? GetCurrentContest()
         {
+            // Defines an active contest as one where 'Now' is between the Start and End boundaries
             return _context.Contests
                     .Where(c => c.EndDate > DateTime.Now)
                     .Where(c => c.StartDate <= DateTime.Now)
@@ -69,6 +68,8 @@ namespace SnowmobileWPF.Repositories
 
         public bool IsLastContestAcknowledged()
         {
+            // Identifies contests that have expired but haven't been "cleared" or viewed by the user yet.
+            // This allows the UI to trigger notifications even after the contest has technically ended.
             var contest = _context.Contests
                     .Where(c => c.Acknowledged == false)
                     .Where(c => c.EndDate <= DateTime.Now)
@@ -76,6 +77,7 @@ namespace SnowmobileWPF.Repositories
             if (contest != null)
             {
                 contest.Acknowledged = true;
+                _context.SaveChanges();
                 return true;
             }
             else

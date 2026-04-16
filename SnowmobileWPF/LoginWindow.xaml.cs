@@ -1,6 +1,4 @@
 ﻿using System.Windows;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SnowmobileWPF.Models;
 using SnowmobileWPF.ViewModels;
 
@@ -15,6 +13,11 @@ namespace SnowmobileWPF
             Settings = null;
         }
 
+        /// <summary>
+        /// Handles the secure password extraction. 
+        /// PasswordBox is not dependency-property bound for security reasons, 
+        /// so we manually pass the clear-text password to the ViewModel for authentication.
+        /// </summary>
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is LoginViewModel vm)

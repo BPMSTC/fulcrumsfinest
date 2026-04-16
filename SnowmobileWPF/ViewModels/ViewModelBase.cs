@@ -3,6 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace SnowmobileWPF.ViewModels
 {
+    /// <summary>
+    /// Serves as the foundation for all ViewModels, providing the boilerplate implementation 
+    /// for data-binding and property change notifications required by the WPF framework.
+    /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -13,7 +17,10 @@ namespace SnowmobileWPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // A helper to update a field and notify the UI in one line
+        /// <summary>
+        /// Standard implementation of property updates for MVVM.
+        /// Checks for equality to prevent redundant UI updates and "flashing" of bound controls.
+        /// </summary>
         protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
@@ -21,9 +28,5 @@ namespace SnowmobileWPF.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
-
-        public virtual string Error => string.Empty;
-
-        public virtual string this[string columnName] => string.Empty;
     }
 }

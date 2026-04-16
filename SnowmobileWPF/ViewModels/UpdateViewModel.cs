@@ -9,6 +9,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SnowmobileWPF.ViewModels
 {
+    /// <summary>
+    /// Facilitates the editing or creation of subscriber records.
+    /// Utilizes a wrapper property pattern to bridge the gap between the raw Domain Model (Subscriber)
+    /// and the UI's validation requirements (ObservableValidator).
+    /// </summary>
     public partial class UpdateViewModel : ObservableValidator
     {
         private readonly ILogger<UpdateViewModel> _logger;
@@ -25,6 +30,7 @@ namespace SnowmobileWPF.ViewModels
             _repository = repository;
             Subscriber = subscriber;
 
+            // Auto-activates new records (where names are missing) to streamline the onboarding workflow.
             if (string.IsNullOrWhiteSpace(subscriber.FirstName) && string.IsNullOrWhiteSpace(subscriber.LastName))
             {
                 Subscriber.Active = true;
@@ -38,6 +44,7 @@ namespace SnowmobileWPF.ViewModels
         }
 
         #region Wrapper Properties
+        // These properties wrap the underlying model to trigger UI validation errors via the CommunityToolkit.
 
         [Required(ErrorMessage = "First name is required.")]
         [MinLength(2, ErrorMessage = "First name is too short.")]
@@ -149,7 +156,10 @@ namespace SnowmobileWPF.ViewModels
             OnPropertyChanged(nameof(HasErrors));
         }
 
-        // Checks if a subscriber with the same name already exists in the database.
+        /// <summary>
+        /// Checks if a subscriber with the same name already exists in the database.
+        /// Excludes the current record's VSCA to avoid flagging the record being edited as a duplicate of itself.
+        /// </summary>
         public bool CheckForDuplicate()
         {
             var results = _repository.Search(new SearchParams
@@ -162,6 +172,10 @@ namespace SnowmobileWPF.ViewModels
             return results != null && results.Any(s => s.VSCA != Subscriber.VSCA);
         }
 
+        /// <summary>
+        /// Finalizes data sanitization and executes a comprehensive validation check on the model.
+        /// Ensures data such as phone numbers are normalized via PhoneFormatter before the repository commit.
+        /// </summary>
         public void SaveChanges()
         {
             _logger.LogInformation("Preparing final save for VSCA: {VSCA}", Subscriber.VSCA);

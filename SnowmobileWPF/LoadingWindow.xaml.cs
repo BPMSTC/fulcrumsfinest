@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SnowmobileWPF
 {
@@ -17,6 +8,10 @@ namespace SnowmobileWPF
     /// </summary>
     public partial class LoadingWindow : Window
     {
+        /// <summary>
+        /// Provides a thread-safe progress reporter.
+        /// Bridges the background import task to the UI thread to update the ProgressBar and status label.
+        /// </summary>
         public Progress<int> progress { get; set; }
         public LoadingWindow()
         {
