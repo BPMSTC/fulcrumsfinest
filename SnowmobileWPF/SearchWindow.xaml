@@ -38,25 +38,6 @@
 
                 <TextBlock Text="VSCA" Style="{StaticResource FieldLabel}"/>
                 <TextBox Text="{Binding VSCAText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" TextChanged="UpdateSearchResults"/>
-
-                <!--<Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Button Content="Cancel" Grid.Column="0" Style="{StaticResource SecondaryButton}" 
-                            Click="CancelButton_Click" IsCancel="True"/>
-
-                    <Button Grid.Column="2" 
-                            Style="{StaticResource SearchButton}" 
-                            Click="SearchButton_Click" 
-                            IsDefault="True"
-                            IsEnabled="{Binding CanSearch}">
-                        <TextBlock Text="Search" Foreground="White"/>
-                    </Button>
-                </Grid>-->
             </StackPanel>
         </Border>
     </Grid>

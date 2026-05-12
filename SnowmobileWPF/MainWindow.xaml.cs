@@ -31,6 +31,11 @@ namespace SnowmobileWPF
                 {
                     Owner = this
                 };
+                searchWindow.Closed += (s, e) =>
+                {
+                    if (DataContext is MainViewModel vm)
+                        vm.LoadSubscribers();
+                };
             }
             if (searchWindow.WindowState == WindowState.Minimized)
             {

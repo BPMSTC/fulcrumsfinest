@@ -246,7 +246,8 @@ namespace SnowmobileWPF.ViewModels
                 {
                     ExpDate = DateOnly.FromDateTime(DateTime.Today),
                     DateRenewed = DateOnly.FromDateTime(DateTime.Today)
-                }
+                },
+                Contest = _contestRepository.CurrentlyInContest
             };
 
             var createLogger = _serviceProvider.GetRequiredService<ILogger<UpdateViewModel>>();

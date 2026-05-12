@@ -26,15 +26,6 @@ namespace SnowmobileWPF
             DialogResult = false;
         }
 
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is SearchViewModel vm)
-            {
-                SearchParams = vm.GetParameters();
-                DialogResult = true;
-            }
-        }
-
         private void UpdateSearchResults(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (DataContext is SearchViewModel vm)
