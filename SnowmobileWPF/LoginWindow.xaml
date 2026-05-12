@@ -39,7 +39,7 @@
                 <PasswordBox x:Name="UserPasswordBox" Height="34" Margin="0,0,0,20" VerticalContentAlignment="Center"/>
 
                 <Button Content="Login" Style="{StaticResource BlueButton}" Height="38" 
-                        HorizontalAlignment="Stretch" IsDefault="True" Click="LoginButton_Click" Foreground="White"/>
+                        HorizontalAlignment="Stretch" IsDefault="True" Click="LoginButton_Click"/>
 
                 <TextBlock Text="Contact Admin for access" HorizontalAlignment="Center" Margin="0,15,0,0" 
                            FontSize="10" Foreground="{StaticResource MutedTextBrush}"/>
