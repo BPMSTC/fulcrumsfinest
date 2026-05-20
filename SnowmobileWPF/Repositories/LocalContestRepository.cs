@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SnowmobileWPF.Repositories
 {
@@ -43,6 +40,11 @@ namespace SnowmobileWPF.Repositories
             {
                 EndDate = DateTime.Now.AddDays(7)
             };
+        }
+
+        public void ClearContestEntries()
+        {
+            _logger.LogInformation("Clearing all contest entries (local stub — no-op).");
         }
 
         public bool IsLastContestAcknowledged()

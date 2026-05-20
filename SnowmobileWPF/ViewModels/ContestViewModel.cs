@@ -45,11 +45,13 @@ namespace SnowmobileWPF.ViewModels
 
         public ICommand StopCommand { get; }
         public ICommand SaveCommand { get; }
+        public ICommand ClearCommand { get; }
 
         public ContestViewModel(IContestRepository contestRepository, ILogger<ContestViewModel> logger)
         {
             StopCommand = new RelayCommand(_ => ExecuteStop());
             SaveCommand = new RelayCommand(_ => ExecuteSave());
+            ClearCommand = new RelayCommand(_ => ExecuteClear());
             _contestRepository = contestRepository;
             UpdateStatus();
             _logger = logger;
@@ -83,6 +85,22 @@ namespace SnowmobileWPF.ViewModels
                 _contestRepository.Create(EndDate);
                 UpdateStatus();
                 MessageBox.Show($"Contest started and will end on {EndDate}.", "Contest Started", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void ExecuteClear()
+        {
+            var confirm = MessageBox.Show(
+                "This will uncheck 'Contest' for all subscribers. This cannot be undone. Are you sure?",
+                "Clear Contest Entries",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm == MessageBoxResult.Yes)
+            {
+                _contestRepository.ClearContestEntries();
+                _logger.LogInformation("All contest entries cleared.");
+                MessageBox.Show("All contest entries have been cleared.", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

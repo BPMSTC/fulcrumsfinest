@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:ContestViewModel}"
         Title="Contest Settings"
-        Height="328" Width="380"
+        Height="370" Width="380"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="{StaticResource BackgroundBrush}">
@@ -32,7 +32,7 @@
 
         <Border Background="{StaticResource CardBackgroundBrush}" VerticalAlignment="Top"
                 Margin="25,60,25,0" Padding="25" CornerRadius="12" BorderBrush="{StaticResource BorderBrush}" 
-                BorderThickness="1" Effect="{StaticResource CardShadow}" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="209">
+                BorderThickness="1" Effect="{StaticResource CardShadow}" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="251">
 
             <StackPanel>
                 <TextBlock Text="CONTEST STATUS" Style="{StaticResource FieldLabel}"/>
@@ -53,6 +53,7 @@
 
                     <Button Content="Save" Grid.Column="2" Style="{StaticResource PrimaryButton}" IsDefault="True" Command="{Binding SaveCommand}"/>
                 </Grid>
+                <Button Content="Clear Contest Entries" Style="{StaticResource SecondaryButton}" Margin="0,10,0,0" Command="{Binding ClearCommand}"/>
             </StackPanel>
         </Border>
     </Grid>

@@ -10,6 +10,7 @@ namespace SnowmobileWPF.Repositories
         bool CurrentlyInContest { get; }
         void Create(DateTime endDate);
         void End();
+        void ClearContestEntries();
         Contest? GetCurrentContest();
         bool IsLastContestAcknowledged();
     }

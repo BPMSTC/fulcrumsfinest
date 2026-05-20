@@ -59,6 +59,18 @@ namespace SnowmobileWPF.Repositories
 
         }
 
+        public void ClearContestEntries()
+        {
+            var contestants = _context.Subscribers
+                .Where(s => s.Contest)
+                .ToList();
+
+            foreach (var subscriber in contestants)
+                subscriber.Contest = false;
+
+            _context.SaveChanges();
+        }
+
         public Contest? GetCurrentContest()
         {
             return _context.Contests

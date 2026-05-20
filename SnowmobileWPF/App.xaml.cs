@@ -42,6 +42,8 @@ namespace SnowmobileWPF
 
                     services.AddSingleton<SnowmobileLibrary.Services.ILogger, FileLogger>();
 
+                    services.AddSingleton<SubscriptionExpirationService>();
+                    services.AddHostedService(s => s.GetRequiredService<SubscriptionExpirationService>());
                     services.AddSingleton<ISubscriberRepository, SubscriberRepository>();
                     services.AddSingleton<IContestRepository, ContestRepository>();
                     services.AddSingleton<SecureCredentialService>();
@@ -89,6 +91,11 @@ namespace SnowmobileWPF
                 var loginWindow = AppHost.Services.GetRequiredService<LoginWindow>();
                 if (loginWindow.ShowDialog() == true)
                 {
+                    // Run expiration check before the main window loads subscribers,
+                    // so the UI reflects up-to-date Active values from the start.
+                    var expirationService = AppHost.Services.GetRequiredService<SubscriptionExpirationService>();
+                    await expirationService.DeactivateExpiredAsync();
+
                     var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
 
                     // revert ShutdownMode now that the main window is open

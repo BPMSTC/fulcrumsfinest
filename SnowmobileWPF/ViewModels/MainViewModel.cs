@@ -46,6 +46,7 @@ namespace SnowmobileWPF.ViewModels
             // Initialize Commands
             DeleteCommand = new RelayCommand(ExecuteDelete, CanExecuteOnSelected);
             ImportCommand = new RelayCommand(_ => ExecuteImport());
+            ExportCommand = new RelayCommand(_ => ExecuteExport());
             EditNotesCommand = new RelayCommand(_ => ExecuteEditNotes(), CanExecuteOnSelected);
             SaveNotesCommand = new RelayCommand(_ => ExecuteSaveNotes());
             CancelNotesCommand = new RelayCommand(_ => ExecuteCancelNotes());
@@ -156,6 +157,7 @@ namespace SnowmobileWPF.ViewModels
 
         public ICommand DeleteCommand { get; }
         public ICommand ImportCommand { get; }
+        public ICommand ExportCommand { get; }
         public ICommand EditNotesCommand { get; }
         public ICommand SaveNotesCommand { get; }
         public ICommand CancelNotesCommand { get; }
@@ -406,10 +408,10 @@ namespace SnowmobileWPF.ViewModels
         private void ExecuteContest()
         {
             _logger.LogDebug("Opening contest window");
-            var contestRepo = _serviceProvider.GetRequiredService<IContestRepository>();
             ContestWindow contestWindow = new ContestWindow(
                 _serviceProvider.GetRequiredService<ContestViewModel>()
                 );
+            contestWindow.Closed += (s, e) => LoadSubscribers();
             contestWindow.Show();
         }
 
@@ -447,6 +449,27 @@ namespace SnowmobileWPF.ViewModels
                 loadingWindow.Close();
                 _logger.LogInformation($"Import complete.");
                 LoadSubscribers();
+            }
+        }
+
+        private async void ExecuteExport()
+        {
+            var saveDialog = new SaveFileDialog
+            {
+                Filter = "CSV files (*.csv)|*.csv",
+                FileName = $"subscribers_{DateTime.Today:yyyy-MM-dd}.csv"
+            };
+
+            if (saveDialog.ShowDialog() == true)
+            {
+                _logger.LogInformation($"Starting export to {saveDialog.FileName}");
+                CSVExportService exportService = new CSVExportService(_repository, _serviceProvider.GetRequiredService<ILogger<CSVExportService>>());
+                LoadingWindow loadingWindow = new LoadingWindow();
+                loadingWindow.Title = "Exporting to CSV...";
+                loadingWindow.Show();
+                await exportService.ExportCSV(saveDialog.FileName, loadingWindow.progress);
+                loadingWindow.Close();
+                _logger.LogInformation($"Export complete.");
             }
         }
 
