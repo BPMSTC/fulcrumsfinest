@@ -39,6 +39,7 @@ namespace SnowmobileWPF.ViewModels
                 {
                     CurrentSubscriber.Contest = true;
                 }
+                CurrentSubscriber.Active = true;
                 CloseWindow?.Invoke();
             }
         }
