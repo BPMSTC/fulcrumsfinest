@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SnowmobileWPF.Repositories;
 using System.Windows;
 using System.Windows.Input;
@@ -11,50 +11,61 @@ namespace SnowmobileWPF.ViewModels
         private readonly IContestRepository _contestRepository;
 
         private DateTime _endDate;
+        private DateTime _originalEndDate;
 
         public DateTime EndDate
         {
             get => _endDate;
             set
             {
-                SetProperty(ref _endDate, value);
+                if (SetProperty(ref _endDate, value))
+                    IsEditing = true;
             }
         }
 
+        private bool _isEditing;
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set => SetProperty(ref _isEditing, value);
+        }
+
         private bool _currentlyInContest;
-        public bool CurrentlyInContest {
+        public bool CurrentlyInContest
+        {
             get => _currentlyInContest;
-            set
-            {
-                SetProperty(ref _currentlyInContest, value);
-            }
+            set => SetProperty(ref _currentlyInContest, value);
         }
 
         private string _statusText;
         public string StatusText
         {
             get => _statusText;
-            set
-            {
-                SetProperty(ref _statusText, value);
-            }
+            set => SetProperty(ref _statusText, value);
         }
+
+        // Invoked after any action that modifies subscriber data, so the main window can refresh.
+        public Action? OnDataChanged { get; set; }
 
         public ICommand StopCommand { get; }
         public ICommand SaveCommand { get; }
+        public ICommand CancelEditCommand { get; }
         public ICommand ClearContestCommand { get; }
         public ICommand ClearAdContestCommand { get; }
 
         public ContestViewModel(IContestRepository contestRepository, ILogger<ContestViewModel> logger)
         {
+            _contestRepository = contestRepository;
+            _logger = logger;
+
             StopCommand = new RelayCommand(_ => ExecuteStop());
             SaveCommand = new RelayCommand(_ => ExecuteSave());
+            CancelEditCommand = new RelayCommand(_ => ExecuteCancelEdit());
             ClearContestCommand = new RelayCommand(_ => ExecuteClearContest());
             ClearAdContestCommand = new RelayCommand(_ => ExecuteClearAdContest());
-            _contestRepository = contestRepository;
-            UpdateStatus();
-            _logger = logger;
+
             _logger.LogInformation($"Using {this.GetType().Name}");
+            UpdateStatus();
         }
 
         private void UpdateStatus()
@@ -63,14 +74,18 @@ namespace SnowmobileWPF.ViewModels
             if (CurrentlyInContest)
             {
                 var endDate = _contestRepository.GetCurrentContest().EndDate;
-                StatusText = $"Active until {_contestRepository.GetCurrentContest().EndDate}";
-                EndDate = endDate;
+                StatusText = $"Ends {endDate:MMM d, yyyy}";
+                _endDate = endDate;
             }
             else
             {
-                StatusText = "Inactive";
-                EndDate = DateTime.Now;
+                StatusText = string.Empty;
+                _endDate = DateTime.Now;
             }
+
+            OnPropertyChanged(nameof(EndDate));
+            _originalEndDate = _endDate;
+            IsEditing = false;
         }
 
         private void ExecuteSave()
@@ -85,6 +100,13 @@ namespace SnowmobileWPF.ViewModels
                 UpdateStatus();
                 MessageBox.Show($"Contest started and will end on {EndDate}.", "Contest Started", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        private void ExecuteCancelEdit()
+        {
+            _endDate = _originalEndDate;
+            OnPropertyChanged(nameof(EndDate));
+            IsEditing = false;
         }
 
         private void ExecuteClearContest()
@@ -105,6 +127,7 @@ namespace SnowmobileWPF.ViewModels
             {
                 _contestRepository.ClearContestEntries();
                 _logger.LogInformation("All contest entries cleared.");
+                OnDataChanged?.Invoke();
                 MessageBox.Show("All contest entries have been cleared.", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -121,6 +144,7 @@ namespace SnowmobileWPF.ViewModels
             {
                 _contestRepository.ClearAdContestEntries();
                 _logger.LogInformation("All ad contest entries cleared.");
+                OnDataChanged?.Invoke();
                 MessageBox.Show("All ad contest entries have been cleared.", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -134,6 +158,7 @@ namespace SnowmobileWPF.ViewModels
                 {
                     _contestRepository.End();
                     UpdateStatus();
+                    OnDataChanged?.Invoke();
                     MessageBox.Show("Contest ended.", "Contest Ended", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }

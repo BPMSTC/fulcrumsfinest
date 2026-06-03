@@ -408,11 +408,19 @@ namespace SnowmobileWPF.ViewModels
         private void ExecuteContest()
         {
             _logger.LogDebug("Opening contest window");
-            ContestWindow contestWindow = new ContestWindow(
-                _serviceProvider.GetRequiredService<ContestViewModel>()
-                );
-            contestWindow.Closed += (s, e) => LoadSubscribers();
+            var vm = _serviceProvider.GetRequiredService<ContestViewModel>();
+            vm.OnDataChanged = () => LoadAndRestoreSelection();
+            ContestWindow contestWindow = new ContestWindow(vm);
+            contestWindow.Closed += (s, e) => LoadAndRestoreSelection();
             contestWindow.Show();
+        }
+
+        private void LoadAndRestoreSelection()
+        {
+            var vsca = SelectedSubscriber?.VSCA;
+            LoadSubscribers();
+            if (vsca.HasValue)
+                SelectedSubscriber = Subscribers.FirstOrDefault(s => s.VSCA == vsca.Value);
         }
 
         private void ExecuteRenew()

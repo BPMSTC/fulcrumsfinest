@@ -23,6 +23,7 @@ namespace SnowmobileWPF.Repositories
             var query = _context.Subscribers
                 .Include(s => s.Address)
                 .Include(s => s.Subscription)
+                .AsNoTracking()
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchParams.LastName))
@@ -48,6 +49,7 @@ namespace SnowmobileWPF.Repositories
             var subscribers = _context.Subscribers
                 .Include(s => s.Address)
                 .Include(s => s.Subscription)
+                .AsNoTracking()
                 .AsQueryable();
 
             if (max > 0)

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="VSCA Subscriber Manager" Height="690" Width="1200"
+        Title="VSCA Subscriber Manager" Height="700" Width="1200"
         Background="{StaticResource BackgroundBrush}"
         WindowStartupLocation="CenterScreen">
 
@@ -168,6 +168,17 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="SUBSCRIPTION DETAILS" Style="{StaticResource AccentFieldLabel}" VerticalAlignment="Center"/>
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+                                            <Button Content="Renew" Command="{Binding RenewCommand}" Width="70" Margin="0,0,5,0">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsEditingSubscription}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                             <Button Content="Edit" Command="{Binding EditSubscriptionCommand}" Width="70" Margin="0,0,5,0">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource ToolbarButton}">
@@ -179,8 +190,7 @@
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
-                                            <Button Content="Renew" Style="{StaticResource SecondaryButton}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" Width="70" Margin="0,0,5,0" HorizontalAlignment="Left" Command="{Binding RenewCommand}" Height="30"/>
-                                            <Button Content="Save" Style="{StaticResource PrimaryButton}" Height="30" Width="70" Margin="0,0,5,0" Command="{Binding SaveSubscriptionCommand}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"/>
+                                            <Button Content="Save" Style="{StaticResource BlueButton}" Height="30" Width="70" Margin="0,0,5,0" Command="{Binding SaveSubscriptionCommand}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"/>
                                             <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Height="30" Width="70" Command="{Binding CancelSubscriptionCommand}" Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"/>
                                         </StackPanel>
                                     </Grid>
@@ -298,7 +308,7 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                    <Button Content="Save" Style="{StaticResource PrimaryButton}" Height="30" Width="70" Margin="0,0,5,0" Command="{Binding SaveNotesCommand}" Visibility="{Binding IsEditingNotes, Converter={StaticResource BoolToVis}}"/>
+                                    <Button Content="Save" Style="{StaticResource BlueButton}" Height="30" Width="70" Margin="0,0,5,0" Command="{Binding SaveNotesCommand}" Visibility="{Binding IsEditingNotes, Converter={StaticResource BoolToVis}}"/>
                                     <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Height="30" Width="70" Command="{Binding CancelNotesCommand}" Visibility="{Binding IsEditingNotes, Converter={StaticResource BoolToVis}}"/>
                                 </StackPanel>
                                 <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Padding="12">
