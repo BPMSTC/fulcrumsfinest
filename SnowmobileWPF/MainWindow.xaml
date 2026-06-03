@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnowmobileWPF"
         mc:Ignorable="d"
-        Title="VSCA Subscriber Manager" Height="700" Width="1200"
+        Title="VSCA Subscriber Manager" Height="720" Width="1200"
         Background="{StaticResource BackgroundBrush}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
 
     <Window.InputBindings>
         <KeyBinding Key="Esc" Command="{Binding EscapeCommand}" />
@@ -38,14 +39,19 @@
                         Width="100" Margin="0,0,10,0"
                         Command="{Binding ContestCommand}" Loaded="ContestButton_Loaded">
                     </Button>
-                    <Button Content="Clear Search" 
-                                Style="{StaticResource ToolbarButton}" 
-                                Width="120" 
-                                Margin="0,0,10,0" 
+                    <Button Content="Clear Search"
+                                Style="{StaticResource ToolbarButton}"
+                                Width="120"
+                                Margin="0,0,10,0"
                                 Command="{Binding ClearSearchCommand}"
                                 Visibility="{Binding IsFiltered, Converter={StaticResource BoolToVis}}"/>
                 </StackPanel>
-                <Button Name="DeleteButton" Content="Delete" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" Width="100" Height="32" Command="{Binding DeleteCommand}"/>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Style="{StaticResource ToolbarButton}"
+                        Width="40" MinWidth="0" Height="32" ToolTip="Settings"
+                        Command="{Binding SettingsCommand}">
+                    <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="18"/>
+                </Button>
             </DockPanel>
         </Border>
 
@@ -91,8 +97,14 @@
                 </Grid.RowDefinitions>
 
                 <DockPanel Margin="0,0,0,15" Visibility="{Binding IsDetailsVisible, Converter={StaticResource BoolToVis}}">
+                    <Button DockPanel.Dock="Right" Content="Delete" Style="{StaticResource PrimaryButton}"
+                            Width="100" Height="32" VerticalAlignment="Center"
+                            Command="{Binding DeleteCommand}"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="{Binding ViewingTitle}" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"/>
+                        <TextBlock Text="{Binding MemberSinceDisplay}" FontSize="12"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   VerticalAlignment="Center" Margin="12,3,0,0"/>
 
                         <Border CornerRadius="12" Padding="10,3" Margin="15,5,0,0" VerticalAlignment="Center">
                             <Border.Style>

@@ -118,6 +118,12 @@ namespace SnowmobileWPF.Repositories
             subscribers.Remove(subscriber);
         }
 
+        public void DeleteAll()
+        {
+            _logger.LogWarning("Deleting all subscribers.");
+            subscribers.Clear();
+        }
+
         public void SetIdentityInsert(bool enabled)
         {
             throw new NotImplementedException();

@@ -98,12 +98,22 @@
 
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,5,0,20"/>
 
-                    <TextBlock Text="SUBSCRIPTION SOURCE" Style="{StaticResource FieldLabel}"/>
-                    <ComboBox ItemsSource="{Binding SubscriptionSources}"
-                              SelectedItem="{Binding SubscriptionSource}"
-                              Width="160"
-                              HorizontalAlignment="Left"
-                              Margin="0,0,0,20"/>
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="DATE JOINED" Style="{StaticResource FieldLabel}"/>
+                            <DatePicker SelectedDate="{Binding DateJoined}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="SUBSCRIPTION SOURCE" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding SubscriptionSources}"
+                                      SelectedItem="{Binding SubscriptionSource}"/>
+                        </StackPanel>
+                    </Grid>
 
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,5,0,20"/>
 

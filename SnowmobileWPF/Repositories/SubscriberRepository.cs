@@ -87,8 +87,21 @@ namespace SnowmobileWPF.Repositories
             _context.SaveChanges();
         }
 
+        public void DeleteAll()
+        {
+            var all = _context.Subscribers
+                .Include(s => s.Address)
+                .Include(s => s.Subscription)
+                .ToList();
+            _context.Subscribers.RemoveRange(all);
+            _context.SaveChanges();
+        }
+
         public void Update(Subscriber subscriber)
         {
+            // Clear stale tracked entities to prevent identity conflicts with the
+            // singleton DbContext when the incoming entity was fetched with AsNoTracking.
+            _context.ChangeTracker.Clear();
             _context.Update(subscriber);
             _context.SaveChanges();
         }

@@ -1,0 +1,76 @@
+<Window x:Class="SnowmobileWPF.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="clr-namespace:SnowmobileWPF.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
+        Title="Settings"
+        Height="500" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
+                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                           Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Text="Settings" Style="{StaticResource HeaderText}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Background="{StaticResource CardBackgroundBrush}"
+                Margin="25,15" Padding="25" CornerRadius="12"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                Effect="{StaticResource CardShadow}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Top sections -->
+                <StackPanel Grid.Row="0" VerticalAlignment="Top">
+
+                    <!-- Maintenance -->
+                    <TextBlock Text="MAINTENANCE" Style="{StaticResource FieldLabel}" Margin="0,0,0,10"/>
+                    <Button Content="Force Expiration Check" Style="{StaticResource SecondaryButton}"
+                            MinWidth="0" Height="36" Margin="0,0,0,4"
+                            Command="{Binding ForceExpirationCheckCommand}"/>
+                    <TextBlock Text="Manually deactivates any subscribers whose subscription has expired."
+                               FontSize="11" Foreground="{StaticResource MutedTextBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,0"/>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,18,0,18"/>
+
+                    <!-- Danger Zone -->
+                    <TextBlock Text="DANGER ZONE" Style="{StaticResource FieldLabel}"
+                               Foreground="{StaticResource AccentBrush}" Margin="0,0,0,10"/>
+                    <Button Content="Clear All Subscribers" Style="{StaticResource PrimaryButton}"
+                            MinWidth="0" Height="36" Margin="0,0,0,4"
+                            Command="{Binding ClearAllSubscribersCommand}"/>
+                    <TextBlock Text="Permanently deletes every subscriber and all associated data."
+                               FontSize="11" Foreground="{StaticResource MutedTextBrush}"
+                               TextWrapping="Wrap"/>
+
+                </StackPanel>
+
+                <!-- Session pinned to bottom -->
+                <StackPanel Grid.Row="1">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,0,0,18"/>
+                    <TextBlock Text="SESSION" Style="{StaticResource FieldLabel}" Margin="0,0,0,10"/>
+                    <Button Content="Log Out" Style="{StaticResource SecondaryButton}"
+                            MinWidth="0" Height="36"
+                            Command="{Binding LogoutCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -44,7 +44,7 @@ namespace SnowmobileWPF.ViewModels
             _logger.LogInformation("MainViewModel initialized.");
 
             // Initialize Commands
-            DeleteCommand = new RelayCommand(ExecuteDelete, CanExecuteOnSelected);
+            DeleteCommand = new RelayCommand(ExecuteDelete);
             ImportCommand = new RelayCommand(_ => ExecuteImport());
             ExportCommand = new RelayCommand(_ => ExecuteExport());
             EditNotesCommand = new RelayCommand(_ => ExecuteEditNotes(), CanExecuteOnSelected);
@@ -58,6 +58,7 @@ namespace SnowmobileWPF.ViewModels
             CreateCommand = new RelayCommand(_ => ExecuteCreate());
             ContestCommand = new RelayCommand(_ => ExecuteContest());
             RenewCommand = new RelayCommand(_ => ExecuteRenew(), CanExecuteOnSelected);
+            SettingsCommand = new RelayCommand(_ => ExecuteSettings());
             EscapeCommand = new RelayCommand(_ => ExecuteEscape());
 
             // Initial load
@@ -85,11 +86,16 @@ namespace SnowmobileWPF.ViewModels
                     ExecuteCancelSubscription();
                     OnPropertyChanged(nameof(IsDetailsVisible));
                     OnPropertyChanged(nameof(ViewingTitle));
+                    OnPropertyChanged(nameof(MemberSinceDisplay));
                 }
             }
         }
 
         public bool IsDetailsVisible => SelectedSubscriber != null;
+
+        public string MemberSinceDisplay => SelectedSubscriber != null
+            ? $"Member since {SelectedSubscriber.DateJoined:MMM d, yyyy}"
+            : string.Empty;
 
         public bool IsListEmpty => Subscribers == null || Subscribers.Count == 0;
 
@@ -170,6 +176,10 @@ namespace SnowmobileWPF.ViewModels
         public ICommand EscapeCommand { get; }
         public ICommand ContestCommand { get; }
         public ICommand RenewCommand { get; }
+        public ICommand SettingsCommand { get; }
+
+        // Set by MainWindow code-behind to handle the async window swap on logout.
+        public Action? LogoutAction { get; set; }
 
         #endregion
 
@@ -183,6 +193,7 @@ namespace SnowmobileWPF.ViewModels
             // Forces UI elements bound to the object or its strings to re-evaluate
             OnPropertyChanged(nameof(SelectedSubscriber));
             OnPropertyChanged(nameof(ViewingTitle));
+            OnPropertyChanged(nameof(MemberSinceDisplay));
             UpdateNotesDisplay();
             UpdateSubscriptionDisplay();
         }
@@ -249,7 +260,8 @@ namespace SnowmobileWPF.ViewModels
                     ExpDate = DateOnly.FromDateTime(DateTime.Today),
                     DateRenewed = DateOnly.FromDateTime(DateTime.Today)
                 },
-                Contest = _contestRepository.CurrentlyInContest
+                Contest = _contestRepository.CurrentlyInContest,
+                DateJoined = DateOnly.FromDateTime(DateTime.Today)
             };
 
             var createLogger = _serviceProvider.GetRequiredService<ILogger<UpdateViewModel>>();
@@ -405,6 +417,18 @@ namespace SnowmobileWPF.ViewModels
             UpdateNotesDisplay();
         }
 
+        private void ExecuteSettings()
+        {
+            var vm = _serviceProvider.GetRequiredService<SettingsViewModel>();
+            vm.OnDataChanged = () => LoadSubscribers();
+            vm.OnLogoutRequested = () => LogoutAction?.Invoke();
+            var settingsWindow = new SettingsWindow(vm)
+            {
+                Owner = Application.Current.MainWindow
+            };
+            settingsWindow.ShowDialog();
+        }
+
         private void ExecuteContest()
         {
             _logger.LogDebug("Opening contest window");
@@ -415,7 +439,7 @@ namespace SnowmobileWPF.ViewModels
             contestWindow.Show();
         }
 
-        private void LoadAndRestoreSelection()
+        internal void LoadAndRestoreSelection()
         {
             var vsca = SelectedSubscriber?.VSCA;
             LoadSubscribers();

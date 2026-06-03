@@ -128,6 +128,12 @@ namespace SnowmobileWPF.ViewModels
             set { SetProperty(Subscriber.Address.Country, value, Subscriber.Address, (u, n) => u.Country = n, true); }
         }
 
+        public DateTime DateJoined
+        {
+            get => Subscriber.DateJoined.ToDateTime(TimeOnly.MinValue);
+            set { SetProperty(Subscriber.DateJoined, DateOnly.FromDateTime(value), Subscriber, (u, n) => u.DateJoined = n, true); }
+        }
+
         [Required]
         public int IssuesRemaining
         {

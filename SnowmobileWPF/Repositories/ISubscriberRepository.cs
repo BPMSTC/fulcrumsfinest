@@ -10,6 +10,7 @@ namespace SnowmobileWPF.Repositories
         List<Subscriber> Retrieve(int max);
         void Create(Subscriber subscriber, bool forceCreation = false);
         void Delete(Subscriber subscriber);
+        void DeleteAll();
         void Update(Subscriber subscriber);
         void SetIdentityInsert(bool enabled);
         IDbContextTransaction StartTx();

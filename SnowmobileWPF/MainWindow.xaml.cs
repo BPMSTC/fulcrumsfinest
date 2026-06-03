@@ -1,9 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using System.Text.RegularExpressions;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SnowmobileLibrary.Enums;
+using SnowmobileWPF.Services;
 using SnowmobileWPF.ViewModels;
+using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SnowmobileWPF
 {
@@ -34,7 +36,7 @@ namespace SnowmobileWPF
                 searchWindow.Closed += (s, e) =>
                 {
                     if (DataContext is MainViewModel vm)
-                        vm.LoadSubscribers();
+                        vm.LoadAndRestoreSelection();
                 };
             }
             if (searchWindow.WindowState == WindowState.Minimized)
@@ -62,6 +64,42 @@ namespace SnowmobileWPF
                     NotesTextBox.CaretIndex = NotesTextBox.Text.Length;
                 }
             }), System.Windows.Threading.DispatcherPriority.Input);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+                vm.LogoutAction = async () => await HandleLogoutAsync();
+        }
+
+        private async Task HandleLogoutAsync()
+        {
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            this.Hide();
+
+            // Reset login status text so the re-login screen looks fresh
+            var loginVm = App.AppHost.Services.GetRequiredService<LoginViewModel>();
+            loginVm.StatusText = "Idle";
+
+            var loginWindow = App.AppHost.Services.GetRequiredService<LoginWindow>();
+            if (loginWindow.ShowDialog() == true)
+            {
+                var expirationService = App.AppHost.Services.GetRequiredService<SubscriptionExpirationService>();
+                await expirationService.DeactivateExpiredAsync();
+
+                if (DataContext is MainViewModel vm)
+                {
+                    vm.SelectedSubscriber = null;
+                    vm.LoadSubscribers();
+                }
+
+                Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                this.Show();
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
         }
 
         private void ContestButton_Loaded(object sender, RoutedEventArgs e)

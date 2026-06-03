@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SnowmobileWPF.Models;
@@ -13,6 +14,8 @@ namespace SnowmobileWPF
         {
             InitializeComponent();
             Settings = null;
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            VersionText.Text = version != null ? $"v{version.Major}.{version.Minor}.{version.Build}" : "v1.0.0";
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)

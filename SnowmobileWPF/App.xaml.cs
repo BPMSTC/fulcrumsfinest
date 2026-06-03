@@ -28,7 +28,7 @@ namespace SnowmobileWPF
                 {
                     services.AddSingleton<DbSettings>();
                     services.AddSingleton<LoginViewModel>();
-                    services.AddSingleton<LoginWindow>(s => new LoginWindow
+                    services.AddTransient<LoginWindow>(s => new LoginWindow
                     {
                         DataContext = s.GetRequiredService<LoginViewModel>()
                     });
@@ -50,6 +50,7 @@ namespace SnowmobileWPF
                     services.AddSingleton<MainViewModel>();
                     services.AddSingleton<ContestViewModel>();
                     services.AddSingleton<RenewViewModel>();
+                    services.AddSingleton<SettingsViewModel>();
                     services.AddSingleton<MainWindow>(s => new MainWindow
                     {
                         DataContext = s.GetRequiredService<MainViewModel>()
