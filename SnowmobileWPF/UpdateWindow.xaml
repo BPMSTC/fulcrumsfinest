@@ -109,20 +109,32 @@
 
                     <TextBlock Text="SUBSCRIBER STATUS" Style="{StaticResource FieldLabel}"/>
                     <Border Background="#F8FAFC" Padding="15" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,5,0,20">
-                        <UniformGrid Columns="2" Rows="2">
-                            <CheckBox Content="Active" 
-                                      IsChecked="{Binding Subscriber.Active, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" 
-                                      Margin="5"/>
-                            <CheckBox Content="Contest" 
-                                      IsChecked="{Binding Subscriber.Contest, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" 
-                                      Margin="5"/>
-                            <CheckBox Content="Manual Mail" 
-                                      IsChecked="{Binding Subscriber.ManualMail, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" 
-                                      Margin="5"/>
-                            <CheckBox Content="Commercial" 
-                                      IsChecked="{Binding Subscriber.Commercial, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" 
-                                      Margin="5"/>
-                        </UniformGrid>
+                        <StackPanel>
+                            <TextBlock Text="CONTEST &amp; SUBSCRIPTION" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+                            <UniformGrid Columns="3" Margin="0,0,0,12">
+                                <CheckBox Content="Active"
+                                          IsChecked="{Binding Subscriber.Active, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                                          Margin="5,6"/>
+                                <CheckBox Content="Contest"
+                                          IsChecked="{Binding Subscriber.Contest, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                                          Margin="5,6"/>
+                                <CheckBox Content="Ad Contest"
+                                          IsChecked="{Binding Subscriber.AdContest, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                                          Margin="5,6"/>
+                            </UniformGrid>
+
+                            <Border BorderBrush="#E2E8F0" BorderThickness="0,1,0,0" Margin="0,0,0,12"/>
+
+                            <TextBlock Text="MAILING" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+                            <UniformGrid Columns="3" >
+                                <CheckBox Content="Manual Mail"
+                                          IsChecked="{Binding Subscriber.ManualMail, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                                          Margin="5,6"/>
+                                <CheckBox Content="Commercial"
+                                          IsChecked="{Binding Subscriber.Commercial, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                                          Margin="5,6"/>
+                            </UniformGrid>
+                        </StackPanel>
                     </Border>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">

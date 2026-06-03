@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SnowmobileLibrary.Data;
 using SnowmobileLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SnowmobileWPF.Repositories
 {
@@ -20,7 +17,6 @@ namespace SnowmobileWPF.Repositories
         {
             get
             {
-                // checks if a contest is currently running
                 if (GetCurrentContest() != null)
                 {
                     return true;
@@ -67,6 +63,18 @@ namespace SnowmobileWPF.Repositories
 
             foreach (var subscriber in contestants)
                 subscriber.Contest = false;
+
+            _context.SaveChanges();
+        }
+
+        public void ClearAdContestEntries()
+        {
+            var contestants = _context.Subscribers
+                .Where(s => s.AdContest)
+                .ToList();
+
+            foreach (var subscriber in contestants)
+                subscriber.AdContest = false;
 
             _context.SaveChanges();
         }

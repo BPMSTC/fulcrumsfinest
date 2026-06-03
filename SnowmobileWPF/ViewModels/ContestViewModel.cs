@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SnowmobileWPF.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
@@ -45,13 +42,15 @@ namespace SnowmobileWPF.ViewModels
 
         public ICommand StopCommand { get; }
         public ICommand SaveCommand { get; }
-        public ICommand ClearCommand { get; }
+        public ICommand ClearContestCommand { get; }
+        public ICommand ClearAdContestCommand { get; }
 
         public ContestViewModel(IContestRepository contestRepository, ILogger<ContestViewModel> logger)
         {
             StopCommand = new RelayCommand(_ => ExecuteStop());
             SaveCommand = new RelayCommand(_ => ExecuteSave());
-            ClearCommand = new RelayCommand(_ => ExecuteClear());
+            ClearContestCommand = new RelayCommand(_ => ExecuteClearContest());
+            ClearAdContestCommand = new RelayCommand(_ => ExecuteClearAdContest());
             _contestRepository = contestRepository;
             UpdateStatus();
             _logger = logger;
@@ -88,8 +87,14 @@ namespace SnowmobileWPF.ViewModels
             }
         }
 
-        private void ExecuteClear()
+        private void ExecuteClearContest()
         {
+            if (_contestRepository.CurrentlyInContest)
+            {
+                MessageBox.Show("Cannot clear contest entries while a contest is active. Please end the current contest first.", "Contest Active", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var confirm = MessageBox.Show(
                 "This will uncheck 'Contest' for all subscribers. This cannot be undone. Are you sure?",
                 "Clear Contest Entries",
@@ -101,6 +106,22 @@ namespace SnowmobileWPF.ViewModels
                 _contestRepository.ClearContestEntries();
                 _logger.LogInformation("All contest entries cleared.");
                 MessageBox.Show("All contest entries have been cleared.", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void ExecuteClearAdContest()
+        {
+            var confirm = MessageBox.Show(
+                "This will uncheck 'Ad Contest' for all subscribers. This cannot be undone. Are you sure?",
+                "Clear Ad Contest Entries",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm == MessageBoxResult.Yes)
+            {
+                _contestRepository.ClearAdContestEntries();
+                _logger.LogInformation("All ad contest entries cleared.");
+                MessageBox.Show("All ad contest entries have been cleared.", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

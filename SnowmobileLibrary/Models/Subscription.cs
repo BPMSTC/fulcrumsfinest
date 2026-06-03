@@ -5,25 +5,39 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class Subscription
 {
+    // Id & Foreign Key to Subscriber
     [Key]
     public int SubscriptionId { get; set; }
 
     [ForeignKey(nameof(Subscriber))]
     public int VSCA { get; set; }
 
-    public Subscriber Subscriber { get; set; } = null!;
 
+    // Expiration Date & Renewal Date
     [Required(ErrorMessage = "Expiration date is required.")]
     public DateOnly ExpDate { get; set; }
 
     [Required(ErrorMessage = "Renewal date is required.")]
     public DateOnly DateRenewed { get; set; }
 
+
+    // Issues Remaining & Subscription Source
+    public SubscriptionSource? Source { get; set; }
+
+    [Required]
+    public int IssuesRemaining { get; set; }
+
+
+    // Navigation Property
+    public Subscriber Subscriber { get; set; } = null!;
+
+
+    // Final Issue & Eligibility Logic
     public string FinalIssue 
     { 
         get
         {
-            // we default to December since subscriptions to simplify subscriptions ending before the March cutoff.
+            // default to December to simplify subscriptions ending before the March cutoff.
             string month = "December";
             string year = ExpDate.Year.ToString();
 
@@ -55,19 +69,16 @@ public class Subscription
         } 
     }
 
-    [Required]
-    public int IssuesRemaining { get; set; }
-
-    public SubscriptionSource? Source { get; set; }
-
     private bool IsEligible(int month)
     {
-        // the cutoff date for all subscriptions is the 10th of the month before the issue
-        DateOnly cutoff = new DateOnly(ExpDate.Year, month, 10);
+        // cutoff date for all subscriptions is the 10th of the month before the issue
+        DateOnly cutoff = new(ExpDate.Year, month, 10);
+
         if (ExpDate > cutoff)
         {
             return true;
-        } else
+        } 
+        else
         {
             return false;
         }

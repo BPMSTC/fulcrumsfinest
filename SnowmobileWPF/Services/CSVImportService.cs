@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SnowmobileLibrary.Enums;
 using SnowmobileLibrary.Models;
 using SnowmobileWPF.Repositories;
-using SnowmobileWPF.ViewModels;
 using System.Globalization;
 using System.IO;
 using System.Windows;

@@ -7,7 +7,6 @@ namespace SnowmobileWPF.Repositories
     {
         private readonly ILogger<LocalSubscriberRepository> _logger;
 
-        // no date here since it's just for testing
         private bool _currentlyInContest;
 
         public bool CurrentlyInContest 
@@ -44,7 +43,12 @@ namespace SnowmobileWPF.Repositories
 
         public void ClearContestEntries()
         {
-            _logger.LogInformation("Clearing all contest entries (local stub — no-op).");
+            _logger.LogInformation("Clearing all contest entries.");
+        }
+
+        public void ClearAdContestEntries()
+        {
+            _logger.LogInformation("Clearing all ad contest entries.");
         }
 
         public bool IsLastContestAcknowledged()

@@ -19,6 +19,8 @@
                 Directory.CreateDirectory(_logDirectory);
         }
 
+
+        // Logging
         public void LogInfo(string message) => WriteEntry("INFO", message);
         public void LogWarning(string message) => WriteEntry("WARN", message);
         public void LogError(string message, Exception? ex = null)
@@ -29,6 +31,8 @@
             WriteEntry("ERROR", fullMessage);
         }
 
+
+        // Private Helpers
         private void WriteEntry(string level, string message)
         {
             try
