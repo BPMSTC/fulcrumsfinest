@@ -188,63 +188,58 @@
                                     <Border Background="#F8FAFC" Padding="15" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,0,10,25">
                                         <UniformGrid Columns="5">
                                             <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="SOURCE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
-                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+                                                <TextBlock Text="SOURCE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"/>
 
-                                                <ComboBox Name="SourceComboBox" 
-                                                  SelectedItem="{Binding Source}" 
+                                                <ComboBox Name="SourceComboBox"
+                                                  SelectedItem="{Binding Source}"
                                                   Height="26"
-                                                  Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                  Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"
                                                   Margin="0,0,0,5"/>
 
                                                 <TextBlock Text="{Binding Source}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
                                                     Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
                                             <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="LAST RENEWED" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
-                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+                                                <TextBlock Text="LAST RENEWED" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"/>
 
-                                                <DatePicker SelectedDate="{Binding RenewDate}" 
-                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                <DatePicker SelectedDate="{Binding RenewDate}"
+                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"
                                                     Margin="0,0,0,5"/>
 
                                                 <TextBlock Text="{Binding RenewDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
                                                     Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
                                             <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="EXPIRES ON" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+                                                <TextBlock Text="EXPIRES ON" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"/>
 
-                                                <DatePicker SelectedDate="{Binding ExpDate}" 
-                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                <DatePicker SelectedDate="{Binding ExpDate}"
+                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"
                                                             Margin="0,0,0,5"/>
 
                                                 <TextBlock Text="{Binding ExpDate, StringFormat='\{0:d\}'}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}"
                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
                                             <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="ISSUES REMAINING" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
-                                                           Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
+                                                <TextBlock Text="ISSUES REMAINING" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"/>
 
-                                                <TextBox Text="{Binding IssuesRemaining, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}" 
-                                                         Height="26" 
-                                                         VerticalContentAlignment="Center" 
-                                                         Padding="5,0" 
+                                                <TextBox Text="{Binding IssuesRemaining, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"
+                                                         Height="26"
+                                                         VerticalContentAlignment="Center"
+                                                         Padding="5,0"
                                                          PreviewTextInput="NumberValidationTextBox"
-                                                         Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}" 
+                                                         Visibility="{Binding IsEditingSubscription, Converter={StaticResource BoolToVis}}"
                                                          Margin="0,0,0,5"/>
 
-                                                <TextBlock Text="{Binding IssuesRemaining}" 
-                                                           FontSize="14" 
-                                                           FontWeight="SemiBold" 
+                                                <TextBlock Text="{Binding IssuesRemaining}"
+                                                           FontSize="14"
+                                                           FontWeight="SemiBold"
                                                            Foreground="{StaticResource PrimaryBrush}"
-                                                           Height="26" 
-                                                           VerticalAlignment="Center" 
+                                                           Height="26"
+                                                           VerticalAlignment="Center"
                                                            Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}"/>
                                             </StackPanel>
                                             <StackPanel>
-                                                <TextBlock Text="FINAL ISSUE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5"
-                                                    Visibility="{Binding IsEditingSubscription, Converter={StaticResource InverseBooleanConverter}}">
+                                                <TextBlock Text="FINAL ISSUE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,5">
                                                     <TextBlock.ToolTip>
                                                         <ToolTip Content="This is the last issue the subscriber is eligible for if they do not renew."></ToolTip>
                                                     </TextBlock.ToolTip>
@@ -256,11 +251,31 @@
 
                                     <Separator Background="#F1F5F9" Margin="0,0,0,20"/>
                                     <TextBlock Text="ACCOUNT FLAGS" Style="{StaticResource AccentFieldLabel}"/>
-                                    <UniformGrid Columns="3" Margin="0,10,0,20">
-                                        <CheckBox Content="Contest" IsChecked="{Binding SelectedSubscriber.Contest}" IsEnabled="False"/>
-                                        <CheckBox Content="Manual Mail" IsChecked="{Binding SelectedSubscriber.ManualMail}" IsEnabled="False"/>
-                                        <CheckBox Content="Commercial" IsChecked="{Binding SelectedSubscriber.Commercial}" IsEnabled="False"/>
-                                    </UniformGrid>
+                                    <Border Background="#F8FAFC" Padding="12,10" CornerRadius="6" BorderBrush="#F1F5F9" BorderThickness="1" Margin="0,5,10,20">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="1"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="CONTEST" Style="{StaticResource FieldLabel}" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="MAILING" Style="{StaticResource FieldLabel}" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+
+                                            <Border Grid.Column="2" Grid.RowSpan="2" Background="#E2E8F0" Margin="8,0"/>
+
+                                            <CheckBox Grid.Row="1" Grid.Column="0" Content="Contest" IsChecked="{Binding SelectedSubscriber.Contest}" IsEnabled="False" Margin="5,3" HorizontalAlignment="Center"/>
+                                            <CheckBox Grid.Row="1" Grid.Column="1" Content="Ad Contest" IsChecked="{Binding SelectedSubscriber.AdContest}" IsEnabled="False" Margin="5,3" HorizontalAlignment="Center"/>
+                                            <CheckBox Grid.Row="1" Grid.Column="3" Content="Manual Mail" IsChecked="{Binding SelectedSubscriber.ManualMail}" IsEnabled="False" Margin="5,3" HorizontalAlignment="Center"/>
+                                            <CheckBox Grid.Row="1" Grid.Column="4" Content="Commercial" IsChecked="{Binding SelectedSubscriber.Commercial}" IsEnabled="False" Margin="5,3" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
