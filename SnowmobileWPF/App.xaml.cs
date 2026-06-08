@@ -89,25 +89,34 @@ namespace SnowmobileWPF
                 
                 // set ShutdownMode to prevent app closing when login window is closed
                 this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                var loginWindow = AppHost.Services.GetRequiredService<LoginWindow>();
-                if (loginWindow.ShowDialog() == true)
+
+                // Attempt auto-connect using saved Server IP (Windows Authentication).
+                // On success the login window is skipped entirely.
+                var loginVm = AppHost.Services.GetRequiredService<LoginViewModel>();
+                bool autoConnected = await loginVm.TryAutoConnectAsync();
+
+                if (!autoConnected)
                 {
-                    // Run expiration check before the main window loads subscribers,
-                    // so the UI reflects up-to-date Active values from the start.
-                    var expirationService = AppHost.Services.GetRequiredService<SubscriptionExpirationService>();
-                    await expirationService.DeactivateExpiredAsync();
-
-                    var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
-
-                    // revert ShutdownMode now that the main window is open
-                    this.MainWindow = mainWindow;
-                    this.ShutdownMode = ShutdownMode.OnMainWindowClose;
-
-                    mainWindow.Show();
-                } else
-                {
-                    Shutdown();
+                    var loginWindow = AppHost.Services.GetRequiredService<LoginWindow>();
+                    if (loginWindow.ShowDialog() != true)
+                    {
+                        Shutdown();
+                        return;
+                    }
                 }
+
+                // Run expiration check before the main window loads subscribers,
+                // so the UI reflects up-to-date Active values from the start.
+                var expirationService = AppHost.Services.GetRequiredService<SubscriptionExpirationService>();
+                await expirationService.DeactivateExpiredAsync();
+
+                var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
+
+                // revert ShutdownMode now that the main window is open
+                this.MainWindow = mainWindow;
+                this.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+                mainWindow.Show();
             }
             catch (Exception ex)
             {
