@@ -281,7 +281,7 @@ namespace SnowmobileWPF.ViewModels
                 _repository.Create(newSubscriber, true);
 
                 LoadSubscribers();
-                SelectedSubscriber = newSubscriber;
+                SelectedSubscriber = Subscribers.FirstOrDefault(s => s.VSCA == newSubscriber.VSCA);
 
                 RenewWindow renewWindow = new RenewWindow(
                     _serviceProvider.GetRequiredService<RenewViewModel>(),

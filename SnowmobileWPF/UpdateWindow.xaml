@@ -87,12 +87,16 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="COUNTRY" Style="{StaticResource FieldLabel}"/>
-                            <TextBox Text="{Binding Country, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLength="50"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2">
                             <TextBlock Text="POSTAL CODE" Style="{StaticResource FieldLabel}"/>
                             <TextBox Text="{Binding PostalCode, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" MaxLength="20"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="COUNTRY" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox IsEditable="True"
+                                      HorizontalAlignment="Stretch"
+                                      Validation.ErrorTemplate="{StaticResource ErrorTemplate}"
+                                      Text="{Binding Country, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                      ItemsSource="{Binding CountryOptions}"/>
                         </StackPanel>
                     </Grid>
 

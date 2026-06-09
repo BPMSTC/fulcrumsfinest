@@ -18,6 +18,7 @@ namespace SnowmobileWPF.ViewModels
         public Subscriber Subscriber { get; }
         public string DisplayHeader => $"Editing {_originalSubscriberName}";
         public IEnumerable<SubscriptionSource> SubscriptionSources { get; } = Enum.GetValues<SubscriptionSource>();
+        public IEnumerable<string> CountryOptions { get; } = ["United States", "Canada"];
 
         public UpdateViewModel(Subscriber subscriber, ISubscriberRepository repository, ILogger<UpdateViewModel> logger)
         {
