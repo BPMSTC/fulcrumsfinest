@@ -54,6 +54,7 @@ namespace SnowmobileWPF.ViewModels
             {
                 using var connection = new SqlConnection(_dbSettings.ConnectionString);
                 await connection.OpenAsync();
+                await ApplyMigrations();
                 _logger.LogInformation("Auto-connect successful.");
                 return true;
             }
@@ -89,6 +90,8 @@ namespace SnowmobileWPF.ViewModels
                     using var connection = new SqlConnection(_dbSettings.ConnectionString);
                     await connection.OpenAsync();
 
+                    StatusText = "Connected, checking database...";
+                    await ApplyMigrations();
                     OnConnectSuccess(ref success);
                     break;
                 }
